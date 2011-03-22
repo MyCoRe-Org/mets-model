@@ -15,6 +15,11 @@
   <version>0.0.1-SNAPSHOT</version>
   <artifactId>mets-model</artifactId>
   <packaging>jar</packaging>
+  <scm>
+    <connection>scm:svn:http://server.mycore.de/svn/maven/mets-model/trunk</connection>
+    <developerConnection>scm:svn:https://server.mycore.de/svn/maven/mets-model/trunk</developerConnection>
+    <url>http://www.mycore.de/viewvc/viewvc.cgi/maven/mets-model/</url>
+  </scm>
   <repositories>
     <repository>
       <id>MyCoRe HQ</id>
