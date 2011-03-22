@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>mycore-parent</artifactId>
     <groupId>org.mycore</groupId>
-    <version>9-SNAPSHOT</version>
+    <version>9</version>
   </parent>
   <properties>
     <java.target.version>1.6</java.target.version>
   </properties>
   <groupId>org.mycore.mets</groupId>
   <name>Mets Model</name>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   <artifactId>mets-model</artifactId>
   <packaging>jar</packaging>
   <repositories>
@@ -62,4 +61,10 @@
   		<scope>compile</scope>
   	</dependency>
   </dependencies>
+
+  <scm>
+    <connection>scm:svn:http://server.mycore.de/svn/maven/org.mycore/tags/mets-model-0.0.1</connection>
+    <developerConnection>scm:svn:https://server.mycore.de/svn/maven/org.mycore/tags/mets-model-0.0.1</developerConnection>
+    <url>http://www.mycore.de/viewvc/viewvc.cgi/maven/org.mycore/mets-model/tags/mets-model-0.0.1</url>
+  </scm>
 </project>
