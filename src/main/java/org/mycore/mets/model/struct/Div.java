@@ -28,7 +28,9 @@ import org.mycore.mets.model.IMetsElement;
 /**
  * @author Silvio Hermann (shermann)
  * 
+ * @deprecated use IDiv classes instead e.g. LogicalDiv
  */
+@Deprecated
 public class Div implements IMetsElement {
 
     public static String TYPE_PHYS_SEQ = "physSequence";

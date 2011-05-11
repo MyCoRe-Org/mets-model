@@ -27,7 +27,9 @@ import org.mycore.mets.model.IMetsElement;
 
 /**
  * @author Silvio Hermann (shermann)
+ * @deprecated use IDiv instead
  */
+@Deprecated
 public class SubDiv implements IMetsElement {
     public static final String TYPE_PAGE = "page";
 

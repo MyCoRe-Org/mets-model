@@ -20,12 +20,14 @@ package org.mycore.mets.model;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.jdom.Document;
 import org.jdom.Element;
 import org.mycore.mets.model.files.FileSec;
 import org.mycore.mets.model.sections.AmdSec;
 import org.mycore.mets.model.sections.DmdSec;
+import org.mycore.mets.model.struct.IStructMap;
 import org.mycore.mets.model.struct.LogicalStructMap;
 import org.mycore.mets.model.struct.PhysicalStructMap;
 import org.mycore.mets.model.struct.StructLink;
@@ -35,13 +37,11 @@ import org.mycore.mets.model.struct.StructLink;
  */
 public class Mets {
 
-    private HashMap<String, DmdSec> dmdsecs;
+    private Map<String, DmdSec> dmdsecs;
 
-    private HashMap<String, AmdSec> amdsecs;
+    private Map<String, AmdSec> amdsecs;
 
-    private PhysicalStructMap psm;
-
-    private LogicalStructMap lsm;
+    private Map<String, IStructMap> structMaps;
 
     private StructLink structLink;
 
@@ -51,10 +51,11 @@ public class Mets {
      * 
      */
     public Mets() {
-        dmdsecs = new HashMap<String, DmdSec>();
-        amdsecs = new HashMap<String, AmdSec>();
-        psm = new PhysicalStructMap();
-        lsm = new LogicalStructMap();
+        this.dmdsecs = new HashMap<String, DmdSec>();
+        this.amdsecs = new HashMap<String, AmdSec>();
+        this.structMaps = new HashMap<String, IStructMap>();
+        this.structMaps.put(PhysicalStructMap.TYPE, new PhysicalStructMap());
+        this.structMaps.put(LogicalStructMap.TYPE, new LogicalStructMap());
     }
 
     /**
@@ -106,31 +107,48 @@ public class Mets {
     /**
      * @return the psm
      */
+    @Deprecated
     public PhysicalStructMap getPysicalStructMap() {
-        return psm;
+        return (PhysicalStructMap)getStructMap(PhysicalStructMap.TYPE);
     }
 
     /**
      * @param psm
      *            the psm to set
      */
+    @Deprecated
     public void setPysicalStructMap(PhysicalStructMap psm) {
-        this.psm = psm;
+        this.structMaps.put(PhysicalStructMap.TYPE, psm);
     }
 
     /**
      * @return the lsm
      */
+    @Deprecated
     public LogicalStructMap getLogicalStructMap() {
-        return lsm;
+        return (LogicalStructMap)getStructMap(LogicalStructMap.TYPE);
     }
 
     /**
      * @param lsm
      *            the lsm to set
      */
+    @Deprecated
     public void setLogicalStructMap(LogicalStructMap lsm) {
-        this.lsm = lsm;
+        this.structMaps.put(LogicalStructMap.TYPE, lsm);
+    }
+
+    /**
+     * @param type
+     */
+    public IStructMap getStructMap(String type) {
+        return this.structMaps.get(type);
+    }
+    public void addStructMap(IStructMap structMap) {
+        this.structMaps.put(structMap.getType(), structMap);
+    }
+    public void removeStructMap(String type) {
+        this.structMaps.remove(type);
     }
 
     /**
@@ -183,8 +201,9 @@ public class Mets {
         }
 
         mets.addContent(this.getFileSec().asElement());
-        mets.addContent(this.getPysicalStructMap().asElement());
-        mets.addContent(this.getLogicalStructMap().asElement());
+        for(IStructMap sM : this.structMaps.values()) {
+            mets.addContent(sM.asElement());
+        }
         mets.addContent(this.getStructLink().asElement());
         return doc;
     }

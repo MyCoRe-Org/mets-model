@@ -23,20 +23,23 @@ import org.mycore.mets.model.IMetsElement;
 
 /**
  * @author Silvio Hermann (shermann)
- * 
+ * @author Matthias Eichner (matthias)
  */
-public class PhysicalStructMap extends StructMap implements IMetsElement {
+public class PhysicalStructMap implements IStructMap {
+    
+    public final static String TYPE = "PHYSICAL";
+    
+    private PhysicalDiv divContainer;
 
-    private Div divContainer;
-
-    public PhysicalStructMap() {
-        super(StructMap.TYPE_PHYSICAL);
+    @Override
+    public String getType() {
+        return TYPE;
     }
 
     /**
      * @return the divContainer
      */
-    public Div getDivContainer() {
+    public PhysicalDiv getDivContainer() {
         return divContainer;
     }
 
@@ -44,7 +47,7 @@ public class PhysicalStructMap extends StructMap implements IMetsElement {
      * @param divContainer
      *            the divContainer to set
      */
-    public void setDivContainer(Div divContainer) {
+    public void setDivContainer(PhysicalDiv divContainer) {
         this.divContainer = divContainer;
     }
 
@@ -54,8 +57,8 @@ public class PhysicalStructMap extends StructMap implements IMetsElement {
      * @see org.mycore.mets.model.IMetsElement#asElement()
      */
     public Element asElement() {
-        Element structMap = new Element("structMap", IMetsElement.METS);
-        structMap.setAttribute("TYPE", this.getType());
+        Element structMap = new Element(XML_NAME, IMetsElement.METS);
+        structMap.setAttribute(XML_TYPE, this.getType());
         structMap.addContent(this.getDivContainer().asElement());
         return structMap;
     }

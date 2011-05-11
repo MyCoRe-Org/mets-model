@@ -23,23 +23,23 @@ import org.mycore.mets.model.IMetsElement;
 
 /**
  * @author Silvio Hermann (shermann)
- * 
+ * @author Matthias Eichner (matthias)
  */
-public class LogicalStructMap extends StructMap implements IMetsElement {
+public class LogicalStructMap implements IStructMap {
 
-    private Div divContainer;
+    public final static String TYPE = "LOGICAL";
 
-    /**
-     * 
-     */
-    public LogicalStructMap() {
-        super(StructMap.TYPE_LOGICAL);
+    private LogicalDiv divContainer;
+
+    @Override
+    public String getType() {
+        return TYPE;
     }
 
     /**
      * @return the divContainer
      */
-    public Div getDivContainer() {
+    public LogicalDiv getDivContainer() {
         return divContainer;
     }
 
@@ -47,13 +47,13 @@ public class LogicalStructMap extends StructMap implements IMetsElement {
      * @param divContainer
      *            the divContainer to set
      */
-    public void setDivContainer(Div divContainer) {
+    public void setDivContainer(LogicalDiv divContainer) {
         this.divContainer = divContainer;
     }
 
     public Element asElement() {
-        Element structMap = new Element("structMap", IMetsElement.METS);
-        structMap.setAttribute("TYPE", this.getType());
+        Element structMap = new Element(XML_NAME, IMetsElement.METS);
+        structMap.setAttribute(XML_TYPE, this.getType());
         structMap.addContent(this.getDivContainer().asElement());
         return structMap;
     }

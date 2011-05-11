@@ -21,7 +21,9 @@ package org.mycore.mets.model.struct;
 /**
  * @author Silvio Hermann (shermann)
  * 
+ * @deprecated use IStructMap instead
  */
+@Deprecated
 abstract public class StructMap {
 
     public static final String TYPE_LOGICAL = "LOGICAL";

@@ -26,22 +26,36 @@ import org.mycore.mets.model.IMetsElement;
  * 
  */
 public class SmLink implements IMetsElement {
+    
+    public static final String XML_NAME = "smLink";
+    public static final String XML_FROM = "from";
+    public static final String XML_TO = "to";
+    
     private SubDiv logical;
 
     private SubDiv physical;
 
+    private String from, to;
+    
     /**
      * @param logical
      * @param physical
      * */
+    @Deprecated
     public SmLink(SubDiv logical, SubDiv physical) {
         this.logical = logical;
         this.physical = physical;
     }
 
+    public SmLink(String from, String to) {
+        this.from = from;
+        this.to = to;
+    }
+
     /**
      * @return the logical
      */
+    @Deprecated
     public SubDiv getLogical() {
         return logical;
     }
@@ -50,6 +64,7 @@ public class SmLink implements IMetsElement {
      * @param logical
      *            the logical to set
      */
+    @Deprecated
     public void setLogical(SubDiv logical) {
         this.logical = logical;
     }
@@ -57,6 +72,7 @@ public class SmLink implements IMetsElement {
     /**
      * @return the physical
      */
+    @Deprecated
     public SubDiv getPhysical() {
         return physical;
     }
@@ -65,8 +81,23 @@ public class SmLink implements IMetsElement {
      * @param physical
      *            the physical to set
      */
+    @Deprecated
     public void setPhysical(SubDiv physical) {
         this.physical = physical;
+    }
+
+    
+    public String getFrom() {
+        return from;
+    }
+    public String getTo() {
+        return to;
+    }
+    public void setFrom(String from) {
+        this.from = from;
+    }
+    public void setTo(String to) {
+        this.to = to;
     }
 
     /*
@@ -75,9 +106,14 @@ public class SmLink implements IMetsElement {
      * @see org.mycore.mets.model.IMetsElement#asElement()
      */
     public Element asElement() {
-        Element smLink = new Element("smLink", IMetsElement.METS);
-        smLink.setAttribute("from", this.getLogical().getId(), IMetsElement.XLINK);
-        smLink.setAttribute("to", this.getPhysical().getId(), IMetsElement.XLINK);
+        Element smLink = new Element(XML_NAME, IMetsElement.METS);
+        if(this.getLogical() != null && this.getPhysical() != null) {
+            smLink.setAttribute(XML_FROM, this.getLogical().getId(), IMetsElement.XLINK);
+            smLink.setAttribute(XML_TO, this.getPhysical().getId(), IMetsElement.XLINK);
+        }else if(this.getFrom() != null && this.getTo() != null) {
+            smLink.setAttribute(XML_FROM, this.getFrom(), IMetsElement.XLINK);
+            smLink.setAttribute(XML_TO, this.getTo(), IMetsElement.XLINK);
+        }
         return smLink;
     }
 }
