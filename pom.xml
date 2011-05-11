@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>mycore-parent</artifactId>
@@ -11,7 +12,7 @@
   </properties>
   <groupId>org.mycore.mets</groupId>
   <name>Mets Model</name>
-  <version>0.1</version>
+  <version>0.1-SNAPSHOT</version>
   <artifactId>mets-model</artifactId>
   <packaging>jar</packaging>
   <scm>
@@ -58,12 +59,12 @@
     </pluginRepository>
   </pluginRepositories>
   <dependencies>
-  	<dependency>
-  		<groupId>org.jdom</groupId>
-  		<artifactId>jdom</artifactId>
-  		<version>1.1</version>
-  		<type>jar</type>
-  		<scope>compile</scope>
-  	</dependency>
+    <dependency>
+      <groupId>org.jdom</groupId>
+      <artifactId>jdom</artifactId>
+      <version>1.1</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
 </project>
