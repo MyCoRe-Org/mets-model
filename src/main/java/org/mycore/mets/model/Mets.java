@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
@@ -43,7 +44,8 @@ import org.mycore.mets.model.struct.StructLink;
  */
 public class Mets {
 
-    
+    private static final Logger LOGGER = Logger.getLogger(Mets.class);
+
     private Map<String, DmdSec> dmdsecs;
 
     private Map<String, AmdSec> amdsecs;
@@ -284,12 +286,14 @@ public class Mets {
         try {
             s.build(in);
         } catch (Exception e) {
+            LOGGER.error("Error building and validating mets document", e);
             return false;
         } finally {
             try {
                 in.close();
                 outStream.close();
             } catch (IOException e) {
+                LOGGER.error("Error while closing byte array streams", e);
                 return false;
             }
         }
