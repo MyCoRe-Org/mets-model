@@ -32,6 +32,8 @@ public interface IMetsElement {
     public static final Namespace MODS = Namespace.getNamespace("mods",
             "http://www.loc.gov/mods/v3");
 
+    public static final Namespace XSI = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+    
     public static final Namespace DV = Namespace.getNamespace("dv", "http://dfg-viewer.de/");
 
     /**

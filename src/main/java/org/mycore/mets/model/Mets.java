@@ -18,12 +18,18 @@
  */
 package org.mycore.mets.model;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
 import org.mycore.mets.model.files.FileSec;
 import org.mycore.mets.model.sections.AmdSec;
 import org.mycore.mets.model.sections.DmdSec;
@@ -37,6 +43,7 @@ import org.mycore.mets.model.struct.StructLink;
  */
 public class Mets {
 
+    
     private Map<String, DmdSec> dmdsecs;
 
     private Map<String, AmdSec> amdsecs;
@@ -190,8 +197,15 @@ public class Mets {
      */
     public Document asDocument() {
         Document doc = new Document();
+
         Element mets = new Element("mets", IMetsElement.METS);
+        mets.addNamespaceDeclaration(IMetsElement.XSI);
+        mets.setAttribute(
+                "schemaLocation",
+                "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd",
+                IMetsElement.XSI);
         doc.setRootElement(mets);
+
         Iterator<DmdSec> dmdSecIt = this.dmdsecs.values().iterator();
         while (dmdSecIt.hasNext()) {
             mets.addContent(dmdSecIt.next().asElement());
@@ -242,5 +256,44 @@ public class Mets {
      */
     public DmdSec getDmdSecById(String id) {
         return this.dmdsecs.get(id);
+    }
+
+    /**
+     * Validates the mets object.
+     * 
+     * @return <code>true</code> if the underlying mets document ist valid,
+     *         <code>false</code> otherwise
+     */
+    public boolean isValid() {
+        Document doc = this.asDocument();
+        XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+
+        try {
+            outputter.output(doc, outStream);
+        } catch (IOException e) {
+            return false;
+        }
+
+        byte[] xml = outStream.toByteArray();
+        SAXBuilder s = new SAXBuilder(true);
+        s.setFeature("http://apache.org/xml/features/validation/schema", true);
+        s.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation", "http://www.loc.gov/standards/mets/mets.xsd");
+
+        ByteArrayInputStream in = new ByteArrayInputStream(xml);
+        try {
+            s.build(in);
+        } catch (Exception e) {
+            return false;
+        } finally {
+            try {
+                in.close();
+                outStream.close();
+            } catch (IOException e) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
