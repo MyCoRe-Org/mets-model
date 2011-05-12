@@ -54,8 +54,8 @@ public class Mets {
         this.dmdsecs = new HashMap<String, DmdSec>();
         this.amdsecs = new HashMap<String, AmdSec>();
         this.structMaps = new HashMap<String, IStructMap>();
-        this.structMaps.put(PhysicalStructMap.TYPE, new PhysicalStructMap());
         this.structMaps.put(LogicalStructMap.TYPE, new LogicalStructMap());
+        this.structMaps.put(PhysicalStructMap.TYPE, new PhysicalStructMap());
     }
 
     /**
@@ -109,7 +109,7 @@ public class Mets {
      */
     @Deprecated
     public PhysicalStructMap getPysicalStructMap() {
-        return (PhysicalStructMap)getStructMap(PhysicalStructMap.TYPE);
+        return (PhysicalStructMap) getStructMap(PhysicalStructMap.TYPE);
     }
 
     /**
@@ -126,7 +126,7 @@ public class Mets {
      */
     @Deprecated
     public LogicalStructMap getLogicalStructMap() {
-        return (LogicalStructMap)getStructMap(LogicalStructMap.TYPE);
+        return (LogicalStructMap) getStructMap(LogicalStructMap.TYPE);
     }
 
     /**
@@ -144,9 +144,11 @@ public class Mets {
     public IStructMap getStructMap(String type) {
         return this.structMaps.get(type);
     }
+
     public void addStructMap(IStructMap structMap) {
         this.structMaps.put(structMap.getType(), structMap);
     }
+
     public void removeStructMap(String type) {
         this.structMaps.remove(type);
     }
@@ -201,7 +203,7 @@ public class Mets {
         }
 
         mets.addContent(this.getFileSec().asElement());
-        for(IStructMap sM : this.structMaps.values()) {
+        for (IStructMap sM : this.structMaps.values()) {
             mets.addContent(sM.asElement());
         }
         mets.addContent(this.getStructLink().asElement());
