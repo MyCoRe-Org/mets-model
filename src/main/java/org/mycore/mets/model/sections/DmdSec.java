@@ -1,6 +1,6 @@
 /*
- * $Revision: 3281 $ $Date: 2011-01-13 17:15:44 +0100 (Do, 13. Jan 2011) $
- * $LastChangedBy: shermann $ Copyright 2010 - Thüringer Universitäts- und
+ * $Revision$ $Date$
+ * $LastChangedBy$ Copyright 2010 - Thüringer Universitäts- und
  * Landesbibliothek Jena
  * 
  * Mets-Editor is free software: you can redistribute it and/or modify it under

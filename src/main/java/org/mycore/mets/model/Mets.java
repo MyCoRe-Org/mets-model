@@ -1,6 +1,6 @@
 /*
- * $Revision: 3271 $ $Date: 2011-01-13 15:06:19 +0100 (Do, 13. Jan 2011) $
- * $LastChangedBy: shermann $ Copyright 2010 - Thüringer Universitäts- und
+ * $Revision$ $Date$
+ * $LastChangedBy$ Copyright 2010 - Thüringer Universitäts- und
  * Landesbibliothek Jena
  * 
  * Mets-Editor is free software: you can redistribute it and/or modify it under
@@ -112,40 +112,6 @@ public class Mets {
     public void removeAmdSec(AmdSec section) {
         String id = section.getId();
         amdsecs.remove(id);
-    }
-
-    /**
-     * @return the psm
-     */
-    @Deprecated
-    public PhysicalStructMap getPysicalStructMap() {
-        return (PhysicalStructMap) getStructMap(PhysicalStructMap.TYPE);
-    }
-
-    /**
-     * @param psm
-     *            the psm to set
-     */
-    @Deprecated
-    public void setPysicalStructMap(PhysicalStructMap psm) {
-        this.structMaps.put(PhysicalStructMap.TYPE, psm);
-    }
-
-    /**
-     * @return the lsm
-     */
-    @Deprecated
-    public LogicalStructMap getLogicalStructMap() {
-        return (LogicalStructMap) getStructMap(LogicalStructMap.TYPE);
-    }
-
-    /**
-     * @param lsm
-     *            the lsm to set
-     */
-    @Deprecated
-    public void setLogicalStructMap(LogicalStructMap lsm) {
-        this.structMaps.put(LogicalStructMap.TYPE, lsm);
     }
 
     /**

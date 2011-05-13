@@ -23,10 +23,21 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
 
     private Fptr fprt;
 
+    /**
+     * @param id
+     * @param type
+     * @param order
+     */
     public PhysicalSubDiv(String id, String type, int order) {
         this(id, type, order, null);
     }
 
+    /**
+     * @param id
+     * @param type
+     * @param order
+     * @param orderLabel
+     */
     public PhysicalSubDiv(String id, String type, int order, String orderLabel) {
         this.id = id;
         this.type = type;
@@ -35,6 +46,13 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
         this.label = null;
     }
 
+    /**
+     * @param id
+     * @param type
+     * @param order
+     * @param orderLabel
+     * @param label
+     */
     public PhysicalSubDiv(String id, String type, int order, String orderLabel, String label) {
         this(id, type, order, orderLabel);
         this.label = label;
@@ -43,6 +61,7 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
     /**
      * Adds a new file pointer. Only one is allowed.
      */
+
     @Override
     public void add(Fptr fprt) {
         this.fprt = fprt;
