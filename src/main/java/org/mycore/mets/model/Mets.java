@@ -28,6 +28,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
@@ -285,8 +286,11 @@ public class Mets {
         ByteArrayInputStream in = new ByteArrayInputStream(xml);
         try {
             s.build(in);
-        } catch (Exception e) {
-            LOGGER.error("Error building and validating mets document", e);
+        } catch (JDOMException jdomEx) {
+            LOGGER.error("Error parsing and validating mets document", jdomEx);
+            return false;
+        } catch (IOException ioEx) {
+            LOGGER.error("Error reading input stream", ioEx);
             return false;
         } finally {
             try {
