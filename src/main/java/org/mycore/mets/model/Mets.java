@@ -160,40 +160,6 @@ public class Mets {
     }
 
     /**
-     * Returns the Mets Object as Document
-     * 
-     * @return Document
-     */
-    public Document asDocument() {
-        Document doc = new Document();
-
-        Element mets = new Element("mets", IMetsElement.METS);
-        mets.addNamespaceDeclaration(IMetsElement.XSI);
-        mets.setAttribute(
-                "schemaLocation",
-                "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd",
-                IMetsElement.XSI);
-        doc.setRootElement(mets);
-
-        Iterator<DmdSec> dmdSecIt = this.dmdsecs.values().iterator();
-        while (dmdSecIt.hasNext()) {
-            mets.addContent(dmdSecIt.next().asElement());
-        }
-
-        Iterator<AmdSec> amdSecIt = this.amdsecs.values().iterator();
-        while (amdSecIt.hasNext()) {
-            mets.addContent(amdSecIt.next().asElement());
-        }
-
-        mets.addContent(this.getFileSec().asElement());
-        for (IStructMap sM : this.structMaps.values()) {
-            mets.addContent(sM.asElement());
-        }
-        mets.addContent(this.getStructLink().asElement());
-        return doc;
-    }
-
-    /**
      * @param id
      *            the id of the amdsec to retrieve
      * @return the amdsec with the given id or null if there is no such amd
@@ -228,13 +194,53 @@ public class Mets {
     }
 
     /**
-     * Validates the mets object.
+     * Returns the Mets Object as {@link Document}. <br/>
+     * Internally the document is validated and <code>null</code> is returned if
+     * the document is invalid.
      * 
-     * @return <code>true</code> if the underlying mets document ist valid,
-     *         <code>false</code> otherwise
+     * @return {@link Document} or <code>null</code> if the document is not
+     *         valid related to the mets schema
      */
-    public boolean isValid() {
-        Document doc = this.asDocument();
+    public Document asDocument() {
+        Document doc = new Document();
+
+        Element mets = new Element("mets", IMetsElement.METS);
+        mets.addNamespaceDeclaration(IMetsElement.XSI);
+        mets.setAttribute(
+                "schemaLocation",
+                "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd",
+                IMetsElement.XSI);
+        doc.setRootElement(mets);
+
+        Iterator<DmdSec> dmdSecIt = this.dmdsecs.values().iterator();
+        while (dmdSecIt.hasNext()) {
+            mets.addContent(dmdSecIt.next().asElement());
+        }
+
+        Iterator<AmdSec> amdSecIt = this.amdsecs.values().iterator();
+        while (amdSecIt.hasNext()) {
+            mets.addContent(amdSecIt.next().asElement());
+        }
+
+        mets.addContent(this.getFileSec().asElement());
+        for (IStructMap sM : this.structMaps.values()) {
+            mets.addContent(sM.asElement());
+        }
+        mets.addContent(this.getStructLink().asElement());
+
+        boolean isValid = this.isValid(doc);
+        if (!isValid) {
+            return null;
+        }
+        return doc;
+    }
+
+    /**
+     * @param doc
+     *            the document do validate against the mets schema
+     * @return true if the document is a valid mets document false otherwise
+     */
+    private boolean isValid(Document doc) {
         XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 
@@ -267,7 +273,17 @@ public class Mets {
                 return false;
             }
         }
-
         return true;
+    }
+
+    /**
+     * Validates the mets object.
+     * 
+     * @return <code>true</code> if the underlying mets document ist valid,
+     *         <code>false</code> otherwise
+     */
+    public boolean isValid() {
+        Document doc = this.asDocument();
+        return doc == null ? false : isValid(doc);
     }
 }
