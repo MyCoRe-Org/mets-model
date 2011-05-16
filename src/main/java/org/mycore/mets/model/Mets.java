@@ -195,13 +195,15 @@ public class Mets {
 
     /**
      * Returns the Mets Object as {@link Document}. <br/>
-     * Internally the document is validated and <code>null</code> is returned if
-     * the document is invalid.
+     * Internally the document is validated and exception is thrown if the
+     * document is invalid.
      * 
-     * @return {@link Document} or <code>null</code> if the document is not
-     *         valid related to the mets schema
+     * @return {@link Document}
+     * @throws Exception
+     *             if the document generated is invalid as the underlying mets
+     *             is invalid
      */
-    public Document asDocument() {
+    public Document asDocument() throws Exception {
         Document doc = new Document();
 
         Element mets = new Element("mets", IMetsElement.METS);
@@ -228,9 +230,9 @@ public class Mets {
         }
         mets.addContent(this.getStructLink().asElement());
 
-        boolean isValid = this.isValid(doc);
+        boolean isValid = Mets.isValid(doc);
         if (!isValid) {
-            return null;
+            throw new IllegalStateException("The mets document is not valid");
         }
         return doc;
     }
@@ -240,7 +242,7 @@ public class Mets {
      *            the document do validate against the mets schema
      * @return true if the document is a valid mets document false otherwise
      */
-    private boolean isValid(Document doc) {
+    final public static boolean isValid(Document doc) {
         XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 
@@ -282,8 +284,14 @@ public class Mets {
      * @return <code>true</code> if the underlying mets document ist valid,
      *         <code>false</code> otherwise
      */
-    public boolean isValid() {
-        Document doc = this.asDocument();
-        return doc == null ? false : isValid(doc);
+    final public boolean isValid() {
+        Document doc = null;
+        try {
+            doc = this.asDocument();
+        } catch (Throwable t) {
+            return false;
+        }
+
+        return Mets.isValid(doc);
     }
 }
