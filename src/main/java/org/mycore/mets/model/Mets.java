@@ -203,7 +203,7 @@ public class Mets {
      *             if the document generated is invalid as the underlying mets
      *             is invalid
      */
-    public Document asDocument() throws Exception {
+    public Document asDocument() {
         Document doc = new Document();
 
         Element mets = new Element("mets", IMetsElement.METS);
@@ -230,10 +230,6 @@ public class Mets {
         }
         mets.addContent(this.getStructLink().asElement());
 
-        boolean isValid = Mets.isValid(doc);
-        if (!isValid) {
-            throw new IllegalStateException("The mets document is not valid");
-        }
         return doc;
     }
 
