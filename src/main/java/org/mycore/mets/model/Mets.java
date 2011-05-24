@@ -18,20 +18,21 @@
  */
 package org.mycore.mets.model;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+
 import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
+import org.jdom.transform.JDOMSource;
 import org.mycore.mets.model.files.FileSec;
 import org.mycore.mets.model.sections.AmdSec;
 import org.mycore.mets.model.sections.DmdSec;
@@ -39,6 +40,7 @@ import org.mycore.mets.model.struct.IStructMap;
 import org.mycore.mets.model.struct.LogicalStructMap;
 import org.mycore.mets.model.struct.PhysicalStructMap;
 import org.mycore.mets.model.struct.StructLink;
+import org.xml.sax.SAXException;
 
 /**
  * @author Silvio Hermann (shermann)
@@ -208,10 +210,9 @@ public class Mets {
 
         Element mets = new Element("mets", IMetsElement.METS);
         mets.addNamespaceDeclaration(IMetsElement.XSI);
-        mets.setAttribute(
-                "schemaLocation",
-                "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd",
-                IMetsElement.XSI);
+        mets.setAttribute("schemaLocation",
+            "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd",
+            IMetsElement.XSI);
         doc.setRootElement(mets);
 
         Iterator<DmdSec> dmdSecIt = this.dmdsecs.values().iterator();
@@ -239,37 +240,17 @@ public class Mets {
      * @return true if the document is a valid mets document false otherwise
      */
     final public static boolean isValid(Document doc) {
-        XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-
+        SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         try {
-            outputter.output(doc, outStream);
-        } catch (IOException e) {
-            return false;
-        }
-
-        byte[] xml = outStream.toByteArray();
-        SAXBuilder s = new SAXBuilder(true);
-        s.setFeature("http://apache.org/xml/features/validation/schema", true);
-        s.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation", "http://www.loc.gov/standards/mets/mets.xsd");
-
-        ByteArrayInputStream in = new ByteArrayInputStream(xml);
-        try {
-            s.build(in);
-        } catch (JDOMException jdomEx) {
-            LOGGER.error("Error parsing and validating mets document", jdomEx);
+            Schema schema = sf.newSchema(new StreamSource("http://www.loc.gov/standards/mets/mets.xsd"));
+            Validator validator = schema.newValidator();
+            validator.validate(new JDOMSource(doc));
+        } catch (SAXException saxEx) {
+            LOGGER.error("Error parsing and validating mets document", saxEx);
             return false;
         } catch (IOException ioEx) {
             LOGGER.error("Error reading input stream", ioEx);
             return false;
-        } finally {
-            try {
-                in.close();
-                outStream.close();
-            } catch (IOException e) {
-                LOGGER.error("Error while closing byte array streams", e);
-                return false;
-            }
         }
         return true;
     }
