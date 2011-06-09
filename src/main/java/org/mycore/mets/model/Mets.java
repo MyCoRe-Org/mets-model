@@ -47,7 +47,23 @@ import org.xml.sax.SAXException;
  */
 public class Mets {
 
-    private static final Logger LOGGER = Logger.getLogger(Mets.class);
+    private static final Logger LOGGER;
+
+    private static final SchemaFactory SCHEMA_FACTORY;
+
+    private static Schema SCHEMA;
+
+    private static Validator VALIDATOR;
+    static {
+        LOGGER = Logger.getLogger(Mets.class);
+        SCHEMA_FACTORY = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        try {
+            SCHEMA = SCHEMA_FACTORY.newSchema(new StreamSource("http://www.loc.gov/standards/mets/mets.xsd"));
+            VALIDATOR = SCHEMA.newValidator();
+        } catch (Exception ex) {
+            LOGGER.error("Error initializing mets validator", ex);
+        }
+    }
 
     private Map<String, DmdSec> dmdsecs;
 
@@ -210,9 +226,10 @@ public class Mets {
 
         Element mets = new Element("mets", IMetsElement.METS);
         mets.addNamespaceDeclaration(IMetsElement.XSI);
-        mets.setAttribute("schemaLocation",
-            "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd",
-            IMetsElement.XSI);
+        mets.setAttribute(
+                "schemaLocation",
+                "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd",
+                IMetsElement.XSI);
         doc.setRootElement(mets);
 
         Iterator<DmdSec> dmdSecIt = this.dmdsecs.values().iterator();
@@ -240,11 +257,12 @@ public class Mets {
      * @return true if the document is a valid mets document false otherwise
      */
     final public static boolean isValid(Document doc) {
-        SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         try {
-            Schema schema = sf.newSchema(new StreamSource("http://www.loc.gov/standards/mets/mets.xsd"));
-            Validator validator = schema.newValidator();
-            validator.validate(new JDOMSource(doc));
+            if (VALIDATOR == null) {
+                LOGGER.warn("Validator has not been initialized. Returning 'false' as default value");
+                return false;
+            }
+            VALIDATOR.validate(new JDOMSource(doc));
         } catch (SAXException saxEx) {
             LOGGER.error("Error parsing and validating mets document", saxEx);
             return false;
