@@ -228,7 +228,7 @@ public class Mets {
         mets.addNamespaceDeclaration(IMetsElement.XSI);
         mets.setAttribute(
                 "schemaLocation",
-                "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd",
+                "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-4.xsd",
                 IMetsElement.XSI);
         doc.setRootElement(mets);
 
