@@ -4,7 +4,7 @@
     <parent>
         <artifactId>mycore-parent</artifactId>
         <groupId>org.mycore</groupId>
-        <version>10-SNAPSHOT</version>
+        <version>11-SNAPSHOT</version>
     </parent>
     <properties>
         <java.target.version>1.6</java.target.version>
@@ -57,11 +57,28 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
+    <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>jar-no-fork</goal>
+              <goal>test-jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+    </build>
     <dependencies>
         <dependency>
             <groupId>org.jdom</groupId>
             <artifactId>jdom</artifactId>
-            <version>1.1</version>
+            <version>1.1.1.1</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
