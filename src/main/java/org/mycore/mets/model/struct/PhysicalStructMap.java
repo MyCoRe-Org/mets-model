@@ -59,7 +59,9 @@ public class PhysicalStructMap implements IStructMap {
     public Element asElement() {
         Element structMap = new Element(XML_NAME, IMetsElement.METS);
         structMap.setAttribute(XML_TYPE, this.getType());
-        structMap.addContent(this.getDivContainer().asElement());
+        if(this.getDivContainer() != null) {
+            structMap.addContent(this.getDivContainer().asElement());
+        }
         return structMap;
     }
 }

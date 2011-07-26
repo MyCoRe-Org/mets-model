@@ -223,14 +223,14 @@ public class Mets {
      */
     public Document asDocument() {
         Document doc = new Document();
+        doc.setRootElement(asElement());
+        return doc;
+    }
 
+    public Element asElement() {
         Element mets = new Element("mets", IMetsElement.METS);
         mets.addNamespaceDeclaration(IMetsElement.XSI);
-        mets.setAttribute(
-                "schemaLocation",
-                "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-4.xsd",
-                IMetsElement.XSI);
-        doc.setRootElement(mets);
+        mets.setAttribute("schemaLocation", IMetsElement.SCHEMA_LOC_METS, IMetsElement.XSI);
 
         Iterator<DmdSec> dmdSecIt = this.dmdsecs.values().iterator();
         while (dmdSecIt.hasNext()) {
@@ -241,14 +241,16 @@ public class Mets {
         while (amdSecIt.hasNext()) {
             mets.addContent(amdSecIt.next().asElement());
         }
-
-        mets.addContent(this.getFileSec().asElement());
+        if(this.getFileSec() != null) {
+            mets.addContent(this.getFileSec().asElement());
+        }
         for (IStructMap sM : this.structMaps.values()) {
             mets.addContent(sM.asElement());
         }
-        mets.addContent(this.getStructLink().asElement());
-
-        return doc;
+        if(this.getStructLink() != null) {
+            mets.addContent(this.getStructLink().asElement());
+        }
+        return mets;
     }
 
     /**

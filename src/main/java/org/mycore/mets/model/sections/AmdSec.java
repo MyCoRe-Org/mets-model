@@ -23,9 +23,48 @@ import org.mycore.mets.model.IMetsElement;
 
 /**
  * @author Silvio Hermann (shermann)
- * 
  */
 public class AmdSec extends MdSection {
+
+    private TechMD techMD;
+
+    private RightsMD rightsMD;
+
+    private SourceMD sourceMD;
+
+    private DigiprovMD digiprovMD;
+
+    public TechMD getTechMD() {
+        return techMD;
+    }
+
+    public void setTechMD(TechMD techMD) {
+        this.techMD = techMD;
+    }
+
+    public RightsMD getRightsMD() {
+        return rightsMD;
+    }
+
+    public void setRightsMD(RightsMD rightsMD) {
+        this.rightsMD = rightsMD;
+    }
+
+    public SourceMD getSourceMD() {
+        return sourceMD;
+    }
+
+    public void setSourceMD(SourceMD sourceMD) {
+        this.sourceMD = sourceMD;
+    }
+
+    public DigiprovMD getDigiprovMD() {
+        return digiprovMD;
+    }
+
+    public void setDigiprovMD(DigiprovMD digiprovMD) {
+        this.digiprovMD = digiprovMD;
+    }
 
     /**
      * @param id
@@ -43,8 +82,18 @@ public class AmdSec extends MdSection {
     public Element asElement() {
         Element amdSec = new Element("amdSec", IMetsElement.METS);
         amdSec.setAttribute("ID", getId());
-        //addTestData(amdSec);
-
+        if(getRightsMD() != null) {
+            amdSec.addContent(getRightsMD().asElement());
+        }
+        if(getSourceMD() != null) {
+            amdSec.addContent(getSourceMD().asElement());
+        }
+        if(getTechMD() != null) {
+            amdSec.addContent(getTechMD().asElement());
+        }
+        if(getDigiprovMD() != null) {
+            amdSec.addContent(getDigiprovMD().asElement());
+        }
         return amdSec;
     }
 }

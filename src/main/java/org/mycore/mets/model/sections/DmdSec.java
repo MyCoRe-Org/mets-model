@@ -18,13 +18,11 @@
  */
 package org.mycore.mets.model.sections;
 
-import org.jdom.Element;
-import org.mycore.mets.model.IMetsElement;
 
 /**
  * @author Silvio Hermann (shermann)
  */
-public class DmdSec extends MdSection {
+public class DmdSec extends MdWrapSection {
 
     /**
      * @param id
@@ -34,16 +32,9 @@ public class DmdSec extends MdSection {
         super(id);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.mycore.mets.model.IMetsElement#asElement()
-     */
-    public Element asElement() {
-        Element dmdSec = new Element("dmdSec", IMetsElement.METS);
-        dmdSec.setAttribute("ID", getId());
-        // addTestData(dmdSec);
-
-        return dmdSec;
+    @Override
+    public String getXMLName() {
+        return "dmdSec";
     }
+
 }

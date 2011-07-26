@@ -32,14 +32,14 @@ public interface IMetsElement {
     /** Namespace constant for XLINK namespace */
     public static final Namespace XLINK = Namespace.getNamespace("xlink", "http://www.w3.org/1999/xlink");
 
-    /** Namespace constant for MODS namespace */
-    public static final Namespace MODS = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");
-
     /** Namespace constant for XSI namespace */
     public static final Namespace XSI = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
 
     /** Namespace constant for DV namespace */
     public static final Namespace DV = Namespace.getNamespace("dv", "http://dfg-viewer.de/");
+
+    /** Schema location of METS */
+    public static final String SCHEMA_LOC_METS = METS.getURI() + " http://www.loc.gov/standards/mets/mets.xsd";
 
     /**
      * Creates an {@link org.jdom.Element} of the IMetsElement.
