@@ -23,7 +23,6 @@ import org.mycore.mets.model.IMetsElement;
 
 /**
  * @author Silvio Hermann (shermann)
- * 
  */
 public class Fptr implements IMetsElement {
 
@@ -46,6 +45,11 @@ public class Fptr implements IMetsElement {
      */
     public void setFileId(String fileId) {
         this.fileId = fileId;
+    }
+
+    @Override
+    public String toString() {
+        return this.fileId;
     }
 
     /*

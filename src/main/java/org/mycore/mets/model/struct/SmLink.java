@@ -59,6 +59,11 @@ public class SmLink implements IMetsElement {
         this.to = to;
     }
 
+    @Override
+    public String toString() {
+        return from + ", " + to;
+    }
+
     /*
      * (non-Javadoc)
      * 

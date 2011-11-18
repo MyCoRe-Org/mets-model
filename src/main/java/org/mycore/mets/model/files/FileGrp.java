@@ -27,18 +27,23 @@ import org.mycore.mets.model.IMetsElement;
 
 /**
  * @author Silvio Hermann (shermann)
- * 
  */
 public class FileGrp implements IMetsElement {
 
     public static final String USE_MIN = "MIN";
+
     public static final String USE_MAX = "MAX";
+
     public static final String USE_DEFAULT = "DEFAULT";
+
     public static final String USE_MASTER = "MASTER";
 
     public static final String PREFIX_MIN = "min_";
+
     public static final String PREFIX_MAX = "max_";
+
     public static final String PREFIX_DEFAULT = "default_";
+
     public static final String PREFIX_MASTER = "master_";
 
     private String use;
@@ -76,6 +81,11 @@ public class FileGrp implements IMetsElement {
 
     public List<File> getfList() {
         return fList;
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + " USE=" + this.use;
     }
 
     /*

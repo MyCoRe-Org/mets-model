@@ -11,6 +11,8 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
 
     public static final String XML_ORDERLABEL = "ORDERLABEL";
 
+    public static final String XML_CONTENTIDS = "CONTENTIDS";
+
     public static final String XML_LABEL = "LABEL";
 
     public static final String TYPE_PAGE = "page";
@@ -19,7 +21,7 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
 
     private int order;
 
-    private String orderLabel, label;
+    private String orderLabel, label, contentids;
 
     private Fptr fprt;
 
@@ -44,6 +46,7 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
         this.order = order;
         this.orderLabel = orderLabel;
         this.label = null;
+        this.contentids = null;
     }
 
     /**
@@ -56,6 +59,20 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
     public PhysicalSubDiv(String id, String type, int order, String orderLabel, String label) {
         this(id, type, order, orderLabel);
         this.label = label;
+    }
+
+    /**
+     * @param id
+     * @param type
+     * @param order
+     * @param orderLabel
+     * @param label
+     * @param contentids
+     */
+    public PhysicalSubDiv(String id, String type, int order, String orderLabel, String label, String contentids) {
+        this(id, type, order, orderLabel);
+        this.label = label;
+        this.contentids = contentids;
     }
 
     /**
@@ -110,6 +127,21 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
         this.label = label;
     }
 
+    /**
+     * @param contentids
+     *            the contentids to set
+     */
+    public void setContentids(String contentids) {
+        this.contentids = contentids;
+    }
+
+    /**
+     * @return the contentids
+     */
+    public String getContentids() {
+        return contentids;
+    }
+
     @Override
     public Element asElement() {
         Element div = super.asElement();
@@ -121,6 +153,9 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
         }
         if (this.getLabel() != null && !this.getLabel().equals("")) {
             div.setAttribute(XML_LABEL, this.getLabel());
+        }
+        if (this.getContentids() != null && !this.getContentids().equals("")) {
+            div.setAttribute(XML_CONTENTIDS, this.getContentids());
         }
         if (this.fprt != null) {
             div.addContent(this.fprt.asElement());
