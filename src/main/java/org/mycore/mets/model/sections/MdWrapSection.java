@@ -2,6 +2,7 @@ package org.mycore.mets.model.sections;
 
 import org.jdom.Element;
 import org.mycore.mets.model.IMetsElement;
+import org.mycore.mets.model.struct.MDTYPE;
 import org.mycore.mets.model.struct.MdRef;
 import org.mycore.mets.model.struct.MdWrap;
 
@@ -51,6 +52,24 @@ public abstract class MdWrapSection extends MdSection {
 
     public void setMdWrap(MdWrap mdWrap) {
         this.mdWrap = mdWrap;
+    }
+
+    /**
+     * Returns the enum constant of the specified enum type with the specified
+     * name. The name must match exactly an identifier used to declare an enum
+     * constant in this type. (Extraneous whitespace characters are not
+     * permitted.)
+     * 
+     * @param name
+     * @return {@link MDTYPE.OTHER} if no other matching MDTYPE could be found
+     */
+    public static MDTYPE findMDTYPEByName(String name) {
+        Object o = MDTYPE.valueOf(name);
+        if (o instanceof MDTYPE) {
+            return (MDTYPE) o;
+        }
+
+        return MDTYPE.OTHER;
     }
 
     public abstract String getXMLName();

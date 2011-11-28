@@ -1,10 +1,13 @@
 package org.mycore.mets.model.struct;
 
 import org.jdom.Element;
+
 import org.mycore.mets.model.IMetsElement;
+import org.mycore.mets.model.struct.MDTYPE;
 
 /**
- * An mdWrap element provides a wrapper around metadata embedded within a METS document.
+ * An mdWrap element provides a wrapper around metadata embedded within a METS
+ * document.
  * 
  * @author Matthias Eichner
  */
@@ -41,7 +44,8 @@ public class MdWrap implements IMetsElement {
      * 
      * @param mdtype
      * @param binData
-     *            any arbitrary binary or textual form, PROVIDED that the metadata is Base64 encoded
+     *            any arbitrary binary or textual form, PROVIDED that the
+     *            metadata is Base64 encoded
      * @param mimetype
      */
     public MdWrap(MDTYPE mdtype, String bindata, String mimetype) {
@@ -52,6 +56,7 @@ public class MdWrap implements IMetsElement {
 
     @Override
     public Element asElement() {
+        // create the element to return
         Element mdwrap = new Element("mdWrap", IMetsElement.METS);
         mdwrap.setAttribute("MIMETYPE", this.mimetype);
         mdwrap.setAttribute("MDTYPE", this.mdtype.name());
@@ -60,14 +65,14 @@ public class MdWrap implements IMetsElement {
         }
         if (mimetype.equals(MIMETYPE_XML)) {
             Element xmlData = new Element("xmlData", IMetsElement.METS);
-            xmlData.addContent(this.metadata);
+            xmlData.addContent((Element) this.metadata.clone());
             mdwrap.addContent(xmlData);
         } else {
             Element binData = new Element("binData", IMetsElement.METS);
             binData.setText(this.bindata);
             mdwrap.addContent(binData);
         }
-        if(mdtype.equals(MDTYPE.OTHER) && othermdtype != null) {
+        if (mdtype.equals(MDTYPE.OTHER) && othermdtype != null) {
             mdwrap.setAttribute("OTHERMDTYPE", this.othermdtype);
         }
         return mdwrap;
@@ -96,13 +101,12 @@ public class MdWrap implements IMetsElement {
     public void setLabel(String label) {
         this.label = label;
     }
-    
+
     public String getOthermdtype() {
         return othermdtype;
     }
-    
+
     public void setOthermdtype(String othermdtype) {
         this.othermdtype = othermdtype;
     }
-
 }

@@ -36,7 +36,6 @@ import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
-import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
@@ -48,11 +47,16 @@ import org.mycore.mets.model.files.FileGrp;
 import org.mycore.mets.model.files.FileSec;
 import org.mycore.mets.model.sections.AmdSec;
 import org.mycore.mets.model.sections.DmdSec;
+import org.mycore.mets.model.sections.MdWrapSection;
 import org.mycore.mets.model.struct.Fptr;
 import org.mycore.mets.model.struct.IStructMap;
+import org.mycore.mets.model.struct.LOCTYPE;
 import org.mycore.mets.model.struct.LogicalDiv;
 import org.mycore.mets.model.struct.LogicalStructMap;
 import org.mycore.mets.model.struct.LogicalSubDiv;
+import org.mycore.mets.model.struct.MDTYPE;
+import org.mycore.mets.model.struct.MdRef;
+import org.mycore.mets.model.struct.MdWrap;
 import org.mycore.mets.model.struct.PhysicalDiv;
 import org.mycore.mets.model.struct.PhysicalStructMap;
 import org.mycore.mets.model.struct.PhysicalSubDiv;
@@ -64,10 +68,6 @@ import org.xml.sax.SAXException;
  * @author Silvio Hermann (shermann)
  */
 public class Mets {
-
-    public static final Namespace METS_NAMESPACE = Namespace.getNamespace("mets", "http://www.loc.gov/METS/");
-
-    public final static Namespace XLINK_NAMESPACE = Namespace.getNamespace("xlink", "http://www.w3.org/1999/xlink");
 
     private static final Logger LOGGER;
 
@@ -129,14 +129,54 @@ public class Mets {
         createStuctLinks(source);
     }
 
-    private void createAmdSec(Document source) {
-        DmdSec dmdSec = new DmdSec("");
-        dmdsecs.put(dmdSec.getId(), dmdSec);
+    @SuppressWarnings("unchecked")
+    private void createDmdSec(Document source) throws JDOMException {
+        XPath xp = XPath.newInstance("mets:mets/mets:dmdSec");
+        xp.addNamespace(IMetsElement.METS);
+
+        for (Element section : (List<Element>) xp.selectNodes(source)) {
+            DmdSec dmdSec = new DmdSec(section.getAttributeValue("ID"));
+            dmdsecs.put(dmdSec.getId(), dmdSec);
+
+            // handle mdWrap
+            xp = XPath.newInstance("mets:mdWrap");
+            xp.addNamespace(IMetsElement.METS);
+
+            for (Element wrap : (List<Element>) xp.selectNodes(section)) {
+                XPath xmlData = XPath.newInstance("mets:xmlData/*");
+                xmlData.addNamespace(IMetsElement.METS);
+                Element element = (Element) xmlData.selectSingleNode(wrap);
+
+                MdWrap mdWrap = new MdWrap(MdWrapSection.findMDTYPEByName(wrap.getAttributeValue("MDTYPE")), (Element) element.clone());
+                dmdSec.setMdWrap(mdWrap);
+            }
+
+            // handle mdRef
+            xp = XPath.newInstance("mets:mdRef");
+            xp.addNamespace(IMetsElement.METS);
+
+            for (Element refElem : (List<Element>) xp.selectNodes(section)) {
+                LOCTYPE loctype = LOCTYPE.valueOf(refElem.getAttributeValue("LOCTYPE"));
+                String mimetype = refElem.getAttributeValue("MIMETYPE");
+                MDTYPE mdtype = MdWrapSection.findMDTYPEByName(refElem.getAttributeValue("MDTYPE"));
+                String href = refElem.getAttributeValue("href", IMetsElement.XLINK);
+                MdRef mdRef = new MdRef(href, loctype, mimetype, mdtype, refElem.getText());
+                dmdSec.setMdRef(mdRef);
+            }
+        }
     }
 
-    private void createDmdSec(Document source) {
-        AmdSec amdSec = new AmdSec("");
-        amdsecs.put(amdSec.getId(), amdSec);
+    @SuppressWarnings("unchecked")
+    private void createAmdSec(Document source) throws JDOMException {
+        XPath xp = XPath.newInstance("mets:mets/mets:amdSec");
+        xp.addNamespace(IMetsElement.METS);
+
+        List<Element> allSections = xp.selectNodes(source);
+
+        for (Element section : allSections) {
+            AmdSec amdSec = new AmdSec(section.getAttributeValue("ID"));
+            amdsecs.put(amdSec.getId(), amdSec);
+        }
     }
 
     /**
@@ -147,7 +187,7 @@ public class Mets {
     @SuppressWarnings("unchecked")
     private void createLogicalStructMap(Document source) throws JDOMException {
         XPath xp = XPath.newInstance("mets:mets/mets:structMap[@TYPE='LOGICAL']/mets:div");
-        xp.addNamespace(Mets.METS_NAMESPACE);
+        xp.addNamespace(IMetsElement.METS);
 
         Element logDivContainerElem = (Element) xp.selectSingleNode(source);
 
@@ -191,7 +231,7 @@ public class Mets {
     @SuppressWarnings("unchecked")
     private void createPhysicalStructMap(Document source) throws JDOMException {
         XPath xp = XPath.newInstance("mets:mets/mets:structMap[@TYPE='PHYSICAL']/mets:div");
-        xp.addNamespace(Mets.METS_NAMESPACE);
+        xp.addNamespace(IMetsElement.METS);
 
         Element physDivElem = (Element) xp.selectSingleNode(source);
         String id = physDivElem.getAttributeValue("ID");
@@ -219,7 +259,7 @@ public class Mets {
             }
 
             xp = XPath.newInstance("./mets:fptr");
-            xp.addNamespace(Mets.METS_NAMESPACE);
+            xp.addNamespace(IMetsElement.METS);
 
             for (Element fptrElem : (List<Element>) xp.selectNodes(subDiv)) {
                 Fptr fptr = new Fptr(fptrElem.getAttributeValue("FILEID"));
@@ -237,11 +277,11 @@ public class Mets {
     @SuppressWarnings("unchecked")
     private void createStuctLinks(Document source) throws JDOMException {
         XPath smLinksXP = XPath.newInstance("mets:mets/mets:structLink/mets:smLink");
-        smLinksXP.addNamespace(Mets.METS_NAMESPACE);
+        smLinksXP.addNamespace(IMetsElement.METS);
 
         for (Element smLink : (List<Element>) smLinksXP.selectNodes(source)) {
-            String from = smLink.getAttributeValue("from", Mets.XLINK_NAMESPACE);
-            String to = smLink.getAttributeValue("to", Mets.XLINK_NAMESPACE);
+            String from = smLink.getAttributeValue("from", IMetsElement.XLINK);
+            String to = smLink.getAttributeValue("to", IMetsElement.XLINK);
             if (from == null || to == null) {
                 throw new IllegalArgumentException("xlink:from and xlink:to must not be null in mets:smLink element");
             }
@@ -259,7 +299,7 @@ public class Mets {
     @SuppressWarnings("unchecked")
     private void createFileSec(Document source) throws JDOMException {
         XPath grpXPath = XPath.newInstance("mets:mets/mets:fileSec/mets:fileGrp");
-        grpXPath.addNamespace(Mets.METS_NAMESPACE);
+        grpXPath.addNamespace(IMetsElement.METS);
 
         List<Element> fGrpList = grpXPath.selectNodes(source);
 
@@ -273,7 +313,7 @@ public class Mets {
 
             // get the files to add to the file grp object
             XPath filesXP = XPath.newInstance("./mets:file");
-            filesXP.addNamespace(Mets.METS_NAMESPACE);
+            filesXP.addNamespace(IMetsElement.METS);
 
             for (Element aFile : (List<Element>) filesXP.selectNodes(aFileGroup)) {
                 String id = aFile.getAttributeValue("ID");
@@ -283,8 +323,8 @@ public class Mets {
                 }
                 File f = new File(id, mimeType);
                 // create the FLocat element and add it to the file element
-                String locType = aFile.getChild("FLocat", Mets.METS_NAMESPACE).getAttributeValue("LOCTYPE");
-                String href = aFile.getChild("FLocat", Mets.METS_NAMESPACE).getAttributeValue("href", XLINK_NAMESPACE);
+                String locType = aFile.getChild("FLocat", IMetsElement.METS).getAttributeValue("LOCTYPE");
+                String href = aFile.getChild("FLocat", IMetsElement.METS).getAttributeValue("href", IMetsElement.XLINK);
 
                 if (locType == null || href == null) {
                     throw new IllegalArgumentException("LOCTYPE or xlink:href of a mets:FLocat must not be null");
@@ -494,6 +534,7 @@ public class Mets {
         try {
             doc = this.asDocument();
         } catch (Throwable t) {
+            LOGGER.error("Error occured while validating mets document", t);
             return false;
         }
 
