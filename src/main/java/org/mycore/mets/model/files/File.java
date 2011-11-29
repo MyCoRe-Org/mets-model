@@ -26,14 +26,46 @@ import org.mycore.mets.model.IMetsElement;
  */
 public class File implements IMetsElement {
 
+    /**
+     * Constant for an id prefix when the file is in a file group with USE
+     * attribute = MIN
+     */
+    public static final String PREFIX_MIN = "min_";
+
+    /**
+     * Constant for an id prefix when the file is in a file group with USE
+     * attribute = MAX
+     */
+    public static final String PREFIX_MAX = "max_";
+
+    /**
+     * Constant for an id prefix when the file is in a file group with USE
+     * attribute = DEFAULT
+     */
+    public static final String PREFIX_DEFAULT = "default_";
+
+    /**
+     * Constant for an id prefix when the file is in a file group with USE
+     * attribute = MASTER
+     */
+    public static final String PREFIX_MASTER = "master_";
+
+    /** Constant for image/jpeg mime type */
     public static final String MIME_TYPE_JPEG = "image/jpeg";
 
+    /** Constant for image/tiff mime type */
     public static final String MIME_TYPE_TIFF = "image/tiff";
 
     private String id, mimeType;
 
     private FLocat fLocat;
 
+    /**
+     * @param id
+     *            the id of the file
+     * @param mimeType
+     *            the mime type of the file
+     */
     public File(String id, String mimeType) {
         this.id = id;
         this.mimeType = mimeType;

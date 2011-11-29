@@ -18,6 +18,7 @@
  */
 package org.mycore.mets.model.files;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -26,34 +27,35 @@ import org.jdom.Element;
 import org.mycore.mets.model.IMetsElement;
 
 /**
+ * Implementation for the mets:fileGrp element in a mets document.
+ * 
  * @author Silvio Hermann (shermann)
  */
 public class FileGrp implements IMetsElement {
 
+    /** Constant for the USE attribute */
     public static final String USE_MIN = "MIN";
 
+    /** Constant for the USE attribute */
     public static final String USE_MAX = "MAX";
 
+    /** Constant for the USE attribute */
     public static final String USE_DEFAULT = "DEFAULT";
 
+    /** Constant for the USE attribute */
     public static final String USE_MASTER = "MASTER";
-
-    public static final String PREFIX_MIN = "min_";
-
-    public static final String PREFIX_MAX = "max_";
-
-    public static final String PREFIX_DEFAULT = "default_";
-
-    public static final String PREFIX_MASTER = "master_";
 
     private String use;
 
-    private List<File> fList;
+    private HashMap<String, File> fMap;
 
-    /***/
+    /**
+     * @param use
+     *            the use attribute of the file group
+     */
     public FileGrp(String use) {
         this.use = use;
-        this.fList = new Vector<File>();
+        this.fMap = new HashMap<String, File>();
     }
 
     /**
@@ -71,16 +73,66 @@ public class FileGrp implements IMetsElement {
         this.use = use;
     }
 
+    /**
+     * Adds a {@link File} to the file group.
+     * 
+     * @param f
+     *            the file to add, the id of the file must not be null
+     * @throws IllegalArgumentException
+     *             when the id of the file is null
+     */
     public void addFile(File f) {
-        fList.add(f);
+        if (f == null || f.getId() == null || f.getId().length() == 0) {
+            throw new IllegalArgumentException("ID must not be null");
+        }
+        fMap.put(f.getId(), f);
     }
 
+    /**
+     * Removes a file from the file group.
+     * 
+     * @param f
+     *            the file to remove
+     */
     public void removeFile(File f) {
-        fList.remove(f);
+        fMap.remove(f);
     }
 
-    public List<File> getfList() {
-        return fList;
+    /**
+     * Removes the file with the given id from the file group.
+     * 
+     * @param id
+     *            the of of the file to be removed
+     */
+    public void removeFileById(String id) {
+        if (id == null) {
+            return;
+        }
+        removeFile(getFileById(id));
+    }
+
+    /**
+     * Gets all the files owned by this file group as {@link List<File>}
+     * 
+     * @return a list of files
+     */
+    public List<File> getFileList() {
+        return new Vector<File>(fMap.values());
+    }
+
+    /**
+     * Retrieves the {@link File} by the given id.
+     * 
+     * @param id
+     *            the id of the file to return
+     * @return the {@link File} with the given id or null
+     */
+    public File getFileById(String id) {
+        if (id == null || id.length() == 0) {
+            return null;
+        }
+
+        return fMap.get(id);
     }
 
     @Override
@@ -96,7 +148,7 @@ public class FileGrp implements IMetsElement {
     public Element asElement() {
         Element fileGrp = new Element("fileGrp", IMetsElement.METS);
         fileGrp.setAttribute("USE", this.getUse());
-        Iterator<File> iterator = this.fList.iterator();
+        Iterator<File> iterator = this.fMap.values().iterator();
         while (iterator.hasNext()) {
             fileGrp.addContent(iterator.next().asElement());
         }
