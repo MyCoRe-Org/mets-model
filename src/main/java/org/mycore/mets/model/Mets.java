@@ -544,7 +544,7 @@ public class Mets {
 
     /**
      * @param doc
-     *            the document do validate against the mets schema
+     *            the document to validate against the mets schema
      * @return true if the document is a valid mets document false otherwise
      */
     final public static boolean isValid(Document doc) {
