@@ -1,9 +1,7 @@
 package org.mycore.mets.model.struct;
 
 import org.jdom.Element;
-
 import org.mycore.mets.model.IMetsElement;
-import org.mycore.mets.model.struct.MDTYPE;
 
 /**
  * An mdWrap element provides a wrapper around metadata embedded within a METS
@@ -106,7 +104,17 @@ public class MdWrap implements IMetsElement {
         return othermdtype;
     }
 
-    public void setOthermdtype(String othermdtype) {
-        this.othermdtype = othermdtype;
+    /**
+     * Sets the OTHERMDTYPE attribute. As a side effect: if a non null argument
+     * is passed the {@link MdWrap#mdtype} will be set to {@link MDTYPE#OTHER}.
+     * 
+     * @param otherMdType
+     *            the OTHERMDTYPE attribute to set
+     */
+    public void setOtherMdType(String otherMdType) {
+        if (otherMdType != null && otherMdType.length() > 0) {
+            this.othermdtype = otherMdType;
+            this.mdtype = MDTYPE.OTHER;
+        }
     }
 }

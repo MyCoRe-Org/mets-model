@@ -48,6 +48,7 @@ import org.mycore.mets.model.files.FileSec;
 import org.mycore.mets.model.sections.AmdSec;
 import org.mycore.mets.model.sections.DmdSec;
 import org.mycore.mets.model.sections.MdWrapSection;
+import org.mycore.mets.model.sections.RightsMD;
 import org.mycore.mets.model.struct.Fptr;
 import org.mycore.mets.model.struct.IStructMap;
 import org.mycore.mets.model.struct.LOCTYPE;
@@ -143,11 +144,11 @@ public class Mets {
             xp.addNamespace(IMetsElement.METS);
 
             for (Element wrap : (List<Element>) xp.selectNodes(section)) {
-                XPath xmlData = XPath.newInstance("mets:xmlData/*");
-                xmlData.addNamespace(IMetsElement.METS);
-                Element element = (Element) xmlData.selectSingleNode(wrap);
+                XPath xmlDataXP = XPath.newInstance("mets:xmlData/*");
+                xmlDataXP.addNamespace(IMetsElement.METS);
+                Element element = (Element) xmlDataXP.selectSingleNode(wrap);
 
-                MdWrap mdWrap = new MdWrap(MdWrapSection.findMDTYPEByName(wrap.getAttributeValue("MDTYPE")), (Element) element.clone());
+                MdWrap mdWrap = new MdWrap(MdWrapSection.findTypeByName(wrap.getAttributeValue("MDTYPE")), (Element) element.clone());
                 dmdSec.setMdWrap(mdWrap);
             }
 
@@ -158,7 +159,7 @@ public class Mets {
             for (Element refElem : (List<Element>) xp.selectNodes(section)) {
                 LOCTYPE loctype = LOCTYPE.valueOf(refElem.getAttributeValue("LOCTYPE"));
                 String mimetype = refElem.getAttributeValue("MIMETYPE");
-                MDTYPE mdtype = MdWrapSection.findMDTYPEByName(refElem.getAttributeValue("MDTYPE"));
+                MDTYPE mdtype = MdWrapSection.findTypeByName(refElem.getAttributeValue("MDTYPE"));
                 String href = refElem.getAttributeValue("href", IMetsElement.XLINK);
                 MdRef mdRef = new MdRef(href, loctype, mimetype, mdtype, refElem.getText());
                 dmdSec.setMdRef(mdRef);
@@ -176,6 +177,46 @@ public class Mets {
         for (Element section : allSections) {
             AmdSec amdSec = new AmdSec(section.getAttributeValue("ID"));
             amdsecs.put(amdSec.getId(), amdSec);
+
+            addOther(section, amdSec, "rightsMD");
+            addOther(section, amdSec, "digiprovMD");
+        }
+    }
+
+    /**
+     * Creates the elements embedded in the mets:amdSec. Currently the
+     * mets:rightsMD and the mets:digiprovMD sections are supported.
+     * 
+     * @param section
+     * @param amdSec
+     * @param flag
+     *            one of "rightsMD" or "addRightsMd"
+     * @throws JDOMException
+     */
+    private void addOther(Element section, AmdSec amdSec, String flag) throws JDOMException {
+        XPath rightsMdXP = XPath.newInstance("mets:" + flag);
+        rightsMdXP.addNamespace(IMetsElement.METS);
+
+        Object obj = rightsMdXP.selectSingleNode(section);
+        if (obj instanceof Element) {
+            String id = ((Element) obj).getAttributeValue("ID");
+            RightsMD rightsMd = new RightsMD(id);
+            amdSec.setRightsMD(rightsMd);
+
+            XPath mdWrapXP = XPath.newInstance("mets:mdWrap");
+            mdWrapXP.addNamespace(IMetsElement.METS);
+
+            obj = mdWrapXP.selectSingleNode(obj);
+            if (obj instanceof Element) {
+                XPath xmlDataXP = XPath.newInstance("mets:xmlData/*");
+                xmlDataXP.addNamespace(IMetsElement.METS);
+
+                String name = ((Element) obj).getAttributeValue("MDTYPE");
+                Element element = (Element) xmlDataXP.selectSingleNode(obj);
+                MdWrap mdWrap = new MdWrap(MdWrapSection.findTypeByName(name), (Element) element.clone());
+                mdWrap.setOtherMdType(((Element) obj).getAttributeValue("OTHERMDTYPE"));
+                rightsMd.setMdWrap(mdWrap);
+            }
         }
     }
 
