@@ -1,6 +1,7 @@
 package org.mycore.mets.model.struct;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Vector;
 
@@ -48,7 +49,7 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
         this.orderLabel = orderLabel;
         this.label = null;
         this.contentids = null;
-        this.filePointers = new HashMap<String, Fptr>();
+        this.filePointers = new LinkedHashMap<String, Fptr>();
     }
 
     /**
@@ -114,6 +115,17 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
     @Override
     public List<Fptr> getChildren() {
         return new Vector<Fptr>(this.filePointers.values());
+    }
+
+    /**
+     * Returns the {@link Fptr} with the given id, or null if there is no such
+     * Fprt.
+     * 
+     * @param id
+     * @return
+     */
+    public Fptr getFptr(String id) {
+        return this.filePointers.get(id);
     }
 
     /**

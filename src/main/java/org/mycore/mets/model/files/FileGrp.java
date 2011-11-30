@@ -20,6 +20,7 @@ package org.mycore.mets.model.files;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Vector;
 
@@ -55,7 +56,7 @@ public class FileGrp implements IMetsElement {
      */
     public FileGrp(String use) {
         this.use = use;
-        this.fMap = new HashMap<String, File>();
+        this.fMap = new LinkedHashMap<String, File>();
     }
 
     /**

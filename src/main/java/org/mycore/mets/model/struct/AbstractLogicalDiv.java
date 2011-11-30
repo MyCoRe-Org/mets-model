@@ -1,13 +1,18 @@
 package org.mycore.mets.model.struct;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Vector;
 
 import org.jdom.Element;
 
 /**
+ * Abstract base class for all kinds of Divs within a logical struct map.
+ * 
  * @author Matthias Eichner
+ * @author Silvio Hermann
  */
 public abstract class AbstractLogicalDiv extends AbstractDiv<LogicalSubDiv> {
 
@@ -17,12 +22,22 @@ public abstract class AbstractLogicalDiv extends AbstractDiv<LogicalSubDiv> {
 
     protected String label;
 
-    protected List<LogicalSubDiv> subDivList;
+    protected HashMap<String, LogicalSubDiv> subDivContainer;
 
     protected int order;
 
+    /**
+     * @param id
+     *            the id of the div
+     * @param type
+     *            the type attribute
+     * @param label
+     *            the label of the div
+     * @param order
+     *            the order of the div
+     */
     public AbstractLogicalDiv(String id, String type, String label, int order) {
-        this.subDivList = new ArrayList<LogicalSubDiv>();
+        this.subDivContainer = new LinkedHashMap<String, LogicalSubDiv>();
         this.setId(id);
         this.setType(type);
         this.setLabel(label);
@@ -30,32 +45,68 @@ public abstract class AbstractLogicalDiv extends AbstractDiv<LogicalSubDiv> {
     }
 
     @Override
-    public void add(LogicalSubDiv element) {
-        this.subDivList.add(element);
+    public void add(LogicalSubDiv lsd) {
+        if (lsd == null) {
+            return;
+        }
+        this.subDivContainer.put(lsd.getId(), lsd);
     }
 
     @Override
     public void remove(LogicalSubDiv element) {
-        this.subDivList.remove(element);
+        this.subDivContainer.remove(element);
+    }
+
+    /**
+     * @param id
+     */
+    public void remove(String id) {
+        this.subDivContainer.remove(id);
     }
 
     @Override
     public List<LogicalSubDiv> getChildren() {
-        return this.subDivList;
+        return new Vector<LogicalSubDiv>(subDivContainer.values());
     }
 
+    /**
+     * Returns a {@link LogicalSubDiv} with the given id.
+     * 
+     * @param id
+     * @return a {@link LogicalSubDiv} with the given id or null
+     */
+    public LogicalSubDiv getLogicalSubDiv(String id) {
+        return this.subDivContainer.get(id);
+    }
+
+    /**
+     * Sets the label attribute.
+     * 
+     * @param label
+     */
     public void setLabel(String label) {
         this.label = label;
     }
 
+    /**
+     * @return the label
+     */
     public String getLabel() {
         return label;
     }
 
+    /**
+     * Sets the order attribute.
+     * 
+     * @param order
+     */
     public void setOrder(int order) {
         this.order = order;
     }
 
+    /**
+     * @return
+     */
     public int getOrder() {
         return order;
     }
@@ -74,7 +125,7 @@ public abstract class AbstractLogicalDiv extends AbstractDiv<LogicalSubDiv> {
         if (this.getOrder() != -1) {
             div.setAttribute(XML_ORDER, String.valueOf(this.getOrder()));
         }
-        Iterator<LogicalSubDiv> sbDivIterator = this.subDivList.iterator();
+        Iterator<LogicalSubDiv> sbDivIterator = this.subDivContainer.values().iterator();
         while (sbDivIterator.hasNext()) {
             div.addContent(sbDivIterator.next().asElement());
         }
