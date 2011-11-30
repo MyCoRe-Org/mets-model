@@ -26,6 +26,8 @@ public abstract class AbstractLogicalDiv extends AbstractDiv<LogicalSubDiv> {
 
     protected int order;
 
+    private AbstractLogicalDiv parent;
+
     /**
      * @param id
      *            the id of the div
@@ -49,19 +51,39 @@ public abstract class AbstractLogicalDiv extends AbstractDiv<LogicalSubDiv> {
         if (lsd == null) {
             return;
         }
+        lsd.setParent(this);
         this.subDivContainer.put(lsd.getId(), lsd);
     }
 
     @Override
-    public void remove(LogicalSubDiv element) {
-        this.subDivContainer.remove(element);
+    public void remove(LogicalSubDiv divToDelete) {
+        for (LogicalSubDiv lsd : subDivContainer.values()) {
+            if (lsd == divToDelete) {
+                this.subDivContainer.remove(lsd);
+                lsd.setParent(null);
+            } else {
+                removeFromChildren(lsd.getChildren(), divToDelete);
+            }
+        }
+    }
+
+    private void removeFromChildren(List<LogicalSubDiv> children, LogicalSubDiv divToDelete) {
+        for (LogicalSubDiv lsd : children) {
+            if (lsd == divToDelete) {
+                lsd.getParent().remove(divToDelete);
+                lsd.setParent(null);
+            } else {
+                removeFromChildren(lsd.getChildren(), divToDelete);
+            }
+        }
     }
 
     /**
      * @param id
      */
     public void remove(String id) {
-        this.subDivContainer.remove(id);
+        LogicalSubDiv lsd = getLogicalSubDiv(id);
+        this.remove(lsd);
     }
 
     @Override
@@ -70,13 +92,48 @@ public abstract class AbstractLogicalDiv extends AbstractDiv<LogicalSubDiv> {
     }
 
     /**
+     * @param parentToSet
+     */
+    protected void setParent(AbstractLogicalDiv parentToSet) {
+        this.parent = parentToSet;
+    }
+
+    /**
+     * @return
+     */
+    public AbstractLogicalDiv getParent() {
+        return this.parent;
+    }
+
+    /**
      * Returns a {@link LogicalSubDiv} with the given id.
      * 
-     * @param id
+     * @param identifier
+     * @param deepSearch
+     *            if set to false only direct children will be considered,
+     *            otherwise the div tree will be traversed
      * @return a {@link LogicalSubDiv} with the given id or null
      */
-    public LogicalSubDiv getLogicalSubDiv(String id) {
-        return this.subDivContainer.get(id);
+    public LogicalSubDiv getLogicalSubDiv(String identifier) {
+        for (LogicalSubDiv lsd : subDivContainer.values()) {
+            if (lsd.getId().equals(identifier)) {
+                return lsd;
+            } else {
+                return lookupChildren(lsd.getChildren(), identifier);
+            }
+        }
+        return null;
+    }
+
+    private LogicalSubDiv lookupChildren(List<LogicalSubDiv> children, String identifier) {
+        for (LogicalSubDiv lsd : children) {
+            if (lsd.getId().equals(identifier)) {
+                return lsd;
+            } else {
+                return lookupChildren(lsd.getChildren(), identifier);
+            }
+        }
+        return null;
     }
 
     /**
