@@ -136,6 +136,24 @@ public class FileGrp implements IMetsElement {
         return fMap.get(id);
     }
 
+    /**
+     * Gets the {@link File} where the href attribute of the {@link File}s inner
+     * {@link FLocat} element equals the given parameter.
+     * 
+     * @param href
+     *            the href attribute
+     * @return
+     */
+    public File getFileByHref(String href) {
+        for (File f : this.fMap.values()) {
+            if (f.getFLocat().getHref().equals(href)) {
+                return f;
+            }
+        }
+
+        return null;
+    }
+
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + " USE=" + this.use;

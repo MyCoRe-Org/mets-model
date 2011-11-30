@@ -21,6 +21,8 @@ package org.mycore.mets.model.struct;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Vector;
 
 import org.jdom.Element;
 import org.mycore.mets.model.IMetsElement;
@@ -82,6 +84,54 @@ public class StructLink implements IMetsElement {
             return;
         }
         this.links.remove(from + to);
+    }
+
+    /**
+     * @param from
+     * @return all {@link SmLink} where the from attribute matches the value of
+     *         the parameter
+     */
+    public List<SmLink> getSmLinkByFrom(String from) {
+        Vector<SmLink> result = new Vector<SmLink>();
+        if (from == null || from.length() == 0) {
+            return result;
+        }
+
+        for (SmLink l : links.values()) {
+            if (l.getFrom().equals(from)) {
+                result.add(l);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * @param to
+     * @return all {@link SmLink} where the to attribute matches the value of
+     *         the parameter
+     */
+    public List<SmLink> getSmLinkByTo(String to) {
+        Vector<SmLink> result = new Vector<SmLink>();
+        if (to == null || to.length() == 0) {
+            return result;
+        }
+
+        for (SmLink l : links.values()) {
+            if (l.getTo().equals(to)) {
+                result.add(l);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * @return all {@link SmLink} within this {@link StructLink} as a
+     *         {@link List}
+     */
+    public List<SmLink> getSmLinks() {
+        return new Vector<SmLink>(links.values());
     }
 
     /*
