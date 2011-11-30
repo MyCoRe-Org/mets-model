@@ -1,7 +1,8 @@
 package org.mycore.mets.model.struct;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Vector;
 
 import org.jdom.Element;
 
@@ -23,7 +24,7 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
 
     private String orderLabel, label, contentids;
 
-    private Fptr fprt;
+    private HashMap<String, Fptr> filePointers;
 
     /**
      * @param id
@@ -47,6 +48,7 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
         this.orderLabel = orderLabel;
         this.label = null;
         this.contentids = null;
+        this.filePointers = new HashMap<String, Fptr>();
     }
 
     /**
@@ -76,53 +78,82 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
     }
 
     /**
-     * Adds a new file pointer. Only one is allowed.
+     * Adds a new file pointer.
+     * 
+     * @param fprt
+     *            the {@link Fptr} to add
      */
-
     @Override
     public void add(Fptr fprt) {
-        this.fprt = fprt;
+        if (fprt == null) {
+            return;
+        }
+        this.filePointers.put(fprt.getFileId(), fprt);
     }
 
     @Override
-    public void remove(Fptr element) {
-        if (this.fprt != null && this.fprt.equals(element)) {
-            this.fprt = null;
+    public void remove(Fptr fprt) {
+        if (fprt == null) {
+            return;
         }
+        this.filePointers.remove(fprt.getFileId());
     }
 
+    /**
+     * Removes a {@link Fptr} by its file id.
+     * 
+     * @param fileId
+     */
+    public void remove(String fileId) {
+        this.filePointers.remove(fileId);
+    }
+
+    /**
+     * @return all {@link Fptr} in a list
+     */
     @Override
     public List<Fptr> getChildren() {
-        ArrayList<Fptr> list = new ArrayList<Fptr>();
-        if (this.fprt != null)
-            list.add(fprt);
-        return list;
+        return new Vector<Fptr>(this.filePointers.values());
     }
 
-    public Fptr getFprt() {
-        return fprt;
-    }
-
+    /**
+     * @return
+     */
     public int getOrder() {
         return order;
     }
 
+    /**
+     * @param order
+     */
     public void setOrder(int order) {
         this.order = order;
     }
 
+    /**
+     * @return
+     */
     public String getOrderLabel() {
         return orderLabel;
     }
 
+    /**
+     * @param orderLabel
+     */
     public void setOrderLabel(String orderLabel) {
         this.orderLabel = orderLabel;
     }
 
+    /**
+     * @return
+     */
     public String getLabel() {
         return label;
     }
 
+    /**
+     * @param label
+     */
     public void setLabel(String label) {
         this.label = label;
     }
@@ -157,10 +188,11 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
         if (this.getContentids() != null && !this.getContentids().equals("")) {
             div.setAttribute(XML_CONTENTIDS, this.getContentids());
         }
-        if (this.fprt != null) {
-            div.addContent(this.fprt.asElement());
+
+        for (Fptr f : filePointers.values()) {
+            div.addContent(f.asElement());
         }
+
         return div;
     }
-
 }
