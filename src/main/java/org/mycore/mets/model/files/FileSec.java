@@ -18,6 +18,7 @@
  */
 package org.mycore.mets.model.files;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -26,37 +27,67 @@ import org.jdom.Element;
 import org.mycore.mets.model.IMetsElement;
 
 /**
+ * Implementation for the mets:fileSec element in a mets document.
+ * 
  * @author Silvio Hermann (shermann)
  */
 public class FileSec implements IMetsElement {
-    private List<FileGrp> fGroups;
+    private HashMap<String, FileGrp> fGroups;
 
-    /***/
+    /**
+     * 
+     */
     public FileSec() {
-        fGroups = new Vector<FileGrp>();
+        fGroups = new HashMap<String, FileGrp>();
     }
 
-    /***/
+    /**
+     * Adds a file group to the file section.
+     * 
+     * @param grp
+     *            the {@link FileGrp} to add
+     * @return
+     */
     public boolean addFileGrp(FileGrp grp) {
-        if (!fGroups.contains(grp)) {
-            fGroups.add(grp);
+        if (grp.getUse() != null && !fGroups.containsKey(grp.getUse())) {
+            fGroups.put(grp.getUse(), grp);
             return true;
         }
         return false;
     }
 
-    /***/
+    /**
+     * Removes the given file group from this file section. Please note: the USE
+     * attribute of the file group must not be null.
+     * 
+     * @param grp
+     *            the group to remove
+     */
     public boolean removeFileGrp(FileGrp grp) {
-        return this.fGroups.remove(grp);
+        return removeFileGrpByUse(grp.getUse());
     }
 
-    public Element asElement() {
-        Element fSec = new Element("fileSec", IMetsElement.METS);
-        Iterator<FileGrp> iterator = this.fGroups.iterator();
-        while (iterator.hasNext()) {
-            fSec.addContent(iterator.next().asElement());
+    /**
+     * Removes the given file group from this file section by its use attribute.
+     * 
+     * @param use
+     *            the use attribute
+     * @see {@link FileSec#removeFileGrp(FileGrp)}
+     */
+    public boolean removeFileGrpByUse(String use) {
+        if (use == null || use.length() == 0) {
+            return false;
         }
-        return fSec;
+
+        this.fGroups.remove(use);
+        return true;
+    }
+
+    /**
+     * @return all {@link FileGrp} owned by this file section
+     */
+    public List<FileGrp> getFileGroups() {
+        return new Vector<FileGrp>(fGroups.values());
     }
 
     /**
@@ -66,12 +97,29 @@ public class FileSec implements IMetsElement {
      * @return the {@link FileGrp} object with the given use attribute or null
      */
     public FileGrp getFileGroup(String use) {
-        for (FileGrp grp : this.fGroups) {
+        for (FileGrp grp : this.fGroups.values()) {
             if (grp.getUse().equals(use)) {
                 return grp;
             }
         }
 
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
+
+    /* (non-Javadoc)
+     * @see org.mycore.mets.model.IMetsElement#asElement()
+     */
+    public Element asElement() {
+        Element fSec = new Element("fileSec", IMetsElement.METS);
+        Iterator<FileGrp> iterator = this.fGroups.values().iterator();
+        while (iterator.hasNext()) {
+            fSec.addContent(iterator.next().asElement());
+        }
+        return fSec;
     }
 }

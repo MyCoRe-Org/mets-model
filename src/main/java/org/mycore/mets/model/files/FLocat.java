@@ -20,19 +20,38 @@ package org.mycore.mets.model.files;
 
 import org.jdom.Element;
 import org.mycore.mets.model.IMetsElement;
+import org.mycore.mets.model.struct.LOCTYPE;
 
 /**
- * @author Silvio Hermann (shermann)
+ * Implementation for the mets:FLocat element in a mets document.
  * 
+ * @author Silvio Hermann (shermann)
  */
 public class FLocat implements IMetsElement {
 
-    public static String LOCTYPE_URL = "URL";
+    public final static String LOCTYPE_URL = "URL";
 
-    private String type, href;
+    private String href;
 
-    public FLocat(String type, String href) {
-        this.type = type;
+    private LOCTYPE type;
+
+    /**
+     * @param loctype
+     * @param href
+     * @deprecated use {@link FLocat#FLocat(LOCTYPE, String)} instead
+     */
+    public FLocat(String loctype, String href) {
+        this.type = LOCTYPE.valueOf(loctype);
+        this.href = href;
+    }
+
+    /**
+     * @param loctype
+     *            the loctype
+     * @param href
+     */
+    public FLocat(LOCTYPE loctype, String href) {
+        this.type = loctype;
         this.href = href;
     }
 
@@ -54,18 +73,28 @@ public class FLocat implements IMetsElement {
     /**
      * @return the type
      */
-    public String getType() {
+    public LOCTYPE getType() {
         return type;
     }
 
     /**
-     * @param type
-     *            the type to set
+     * @param loctype
+     *            the loctype to set
+     * @deprecated use {@link FLocat#setType(LOCTYPE)}
      */
-    public void setType(String type) {
-        this.type = type;
+    public void setType(String loctype) {
+        this.type = LOCTYPE.valueOf(loctype);
     }
 
+    /**
+     * @param loctype
+     *            the {@link LOCTYPE} to set
+     */
+    public void setType(LOCTYPE loctype) {
+        this.type = loctype;
+    }
+
+    @Override
     public String toString() {
         return "loctype=" + this.getType() + ", href=" + this.href;
     }
@@ -77,7 +106,7 @@ public class FLocat implements IMetsElement {
      */
     public Element asElement() {
         Element fLoc = new Element("FLocat", IMetsElement.METS);
-        fLoc.setAttribute("LOCTYPE", this.getType());
+        fLoc.setAttribute("LOCTYPE", this.getType().toString());
         fLoc.setAttribute("href", this.getHref(), IMetsElement.XLINK);
         return fLoc;
     }
