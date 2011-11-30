@@ -18,31 +18,70 @@
  */
 package org.mycore.mets.model.struct;
 
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
+import java.util.LinkedHashMap;
 
 import org.jdom.Element;
 import org.mycore.mets.model.IMetsElement;
 
 /**
- * @author Silvio Hermann (shermann)
+ * Implementation for the mets:structLink element in a mets document.
  * 
+ * @author Silvio Hermann (shermann)
  */
 public class StructLink implements IMetsElement {
-    private List<SmLink> links;
 
-    /***/
+    private HashMap<String, SmLink> links;
+
+    /**
+     * Creates a new StructLink section.
+     */
     public StructLink() {
-        links = new Vector<SmLink>();
+        links = new LinkedHashMap<String, SmLink>();
     }
 
-    public boolean addSmLink(SmLink l) {
-        return this.links.add(l);
+    /**
+     * Adds a {@link SmLink} to this struct link section.
+     * 
+     * @param smLink
+     * @return true if the link could be added, false otherwise
+     */
+    public void addSmLink(SmLink smLink) {
+        String from = smLink.getFrom();
+        String to = smLink.getTo();
+
+        if (from == null || from.length() == 0 || to == null || to.length() == 0) {
+            return;
+        }
+
+        this.links.put(from + to, smLink);
     }
 
-    public boolean removeSmLink(SmLink l) {
-        return this.links.remove(l);
+    /**
+     * Removes a {@link SmLink} from this struct link section.
+     * 
+     * @param smLink
+     *            the {@link SmLink} to remove
+     * @return
+     */
+    public void removeSmLink(SmLink smLink) {
+        this.links.remove(smLink.getFrom() + smLink.getTo());
+    }
+
+    /**
+     * Removes the {@link StructLink} given by its from and to attribute.
+     * 
+     * @param from
+     *            the from attribute of the smlink (not null)
+     * @param to
+     *            the to attribute of the smlink (not null)
+     */
+    public void removeSmLink(String from, String to) {
+        if (from == null || from.length() == 0 || to == null || to.length() == 0) {
+            return;
+        }
+        this.links.remove(from + to);
     }
 
     /*
@@ -52,7 +91,8 @@ public class StructLink implements IMetsElement {
      */
     public Element asElement() {
         Element structLink = new Element("structLink", IMetsElement.METS);
-        Iterator<SmLink> iterator = this.links.iterator();
+
+        Iterator<SmLink> iterator = links.values().iterator();
         while (iterator.hasNext()) {
             structLink.addContent(iterator.next().asElement());
         }
