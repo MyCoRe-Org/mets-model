@@ -61,7 +61,7 @@ public abstract class MdWrapSection extends MdSection {
      * permitted.)
      * 
      * @param name
-     * @return {@link MDTYPE.OTHER} if no other matching MDTYPE could be found
+     * @return {@link MDTYPE#OTHER} if no other matching MDTYPE could be found
      */
     public static MDTYPE findTypeByName(String name) {
         Object o = MDTYPE.valueOf(name);

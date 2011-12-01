@@ -365,7 +365,7 @@ public class Mets {
                 if (locType == null || href == null) {
                     throw new IllegalArgumentException("LOCTYPE or xlink:href of a mets:FLocat must not be null");
                 }
-                FLocat fLoc = new FLocat(locType, href);
+                FLocat fLoc = new FLocat(LOCTYPE.valueOf(locType), href);
                 f.setFLocat(fLoc);
                 grp.addFile(f);
             }

@@ -20,17 +20,20 @@ package org.mycore.mets.misc;
 
 /**
  * @author Silvio Hermann (shermann)
- * 
  */
 public class LogicalIdProvider {
 
     private String prefix;
+
     private int counter;
+
     private int digits;
 
     /**
      * @param idPrefix
+     *            the prefix of the generated identifiers
      * @param digits
+     *            the amount of digits to use
      */
     public LogicalIdProvider(String idPrefix, int digits) {
         this.prefix = idPrefix;
@@ -39,14 +42,14 @@ public class LogicalIdProvider {
     }
 
     /**
-     * @return
+     * @return the prefix to be used for the generated logical identifiers
      */
     public String getPrefix() {
         return this.prefix;
     }
 
     /**
-     * @return
+     * @return the next identifier
      */
     public String getNextId() {
         StringBuilder id = new StringBuilder(this.prefix);
