@@ -79,11 +79,16 @@ public abstract class AbstractLogicalDiv extends AbstractDiv<LogicalSubDiv> {
     }
 
     /**
-     * @param id
+     * Removes the div from this logical div
+     * 
+     * @param identifier
+     *            the identifier
      */
-    public void remove(String id) {
-        LogicalSubDiv lsd = getLogicalSubDiv(id);
-        this.remove(lsd.getId());
+    public void remove(String identifier) {
+        if (identifier == null) {
+            return;
+        }
+        subDivContainer.remove(identifier);
     }
 
     @Override
