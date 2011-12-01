@@ -106,7 +106,7 @@ public abstract class AbstractLogicalDiv extends AbstractDiv<LogicalSubDiv> {
     }
 
     /**
-     * @return
+     * @return the parent of this div
      */
     public AbstractLogicalDiv getParent() {
         return this.parent;
@@ -116,9 +116,6 @@ public abstract class AbstractLogicalDiv extends AbstractDiv<LogicalSubDiv> {
      * Returns a {@link LogicalSubDiv} with the given id.
      * 
      * @param identifier
-     * @param deepSearch
-     *            if set to false only direct children will be considered,
-     *            otherwise the div tree will be traversed
      * @return a {@link LogicalSubDiv} with the given id or null
      */
     public LogicalSubDiv getLogicalSubDiv(String identifier) {
@@ -172,7 +169,7 @@ public abstract class AbstractLogicalDiv extends AbstractDiv<LogicalSubDiv> {
     }
 
     /**
-     * @return
+     * @return the value of the order attribute
      */
     public int getOrder() {
         return order;

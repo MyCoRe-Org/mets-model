@@ -41,7 +41,7 @@ public class MdWrap implements IMetsElement {
      * To wrap bin data.
      * 
      * @param mdtype
-     * @param binData
+     * @param bindata
      *            any arbitrary binary or textual form, PROVIDED that the
      *            metadata is Base64 encoded
      * @param mimetype

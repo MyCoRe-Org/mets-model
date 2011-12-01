@@ -122,14 +122,15 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
      * Fprt.
      * 
      * @param id
-     * @return
+     *            the id of the {@link Fptr}
+     * @return the {@link Fptr} with the given id
      */
     public Fptr getFptr(String id) {
         return this.filePointers.get(id);
     }
 
     /**
-     * @return
+     * @return the value of order attribute of this div
      */
     public int getOrder() {
         return order;
@@ -143,7 +144,7 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
     }
 
     /**
-     * @return
+     * @return the value of the orderlabel attribute
      */
     public String getOrderLabel() {
         return orderLabel;
@@ -157,7 +158,7 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
     }
 
     /**
-     * @return
+     * @return the label of this div
      */
     public String getLabel() {
         return label;

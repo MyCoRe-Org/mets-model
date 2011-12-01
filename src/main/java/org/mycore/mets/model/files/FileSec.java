@@ -47,7 +47,7 @@ public class FileSec implements IMetsElement {
      * 
      * @param grp
      *            the {@link FileGrp} to add
-     * @return
+     * @return true if the operation was successful, false otherwise
      */
     public boolean addFileGrp(FileGrp grp) {
         if (grp.getUse() != null && !fGroups.containsKey(grp.getUse())) {

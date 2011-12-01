@@ -47,7 +47,6 @@ public class StructLink implements IMetsElement {
      * Adds a {@link SmLink} to this struct link section.
      * 
      * @param smLink
-     * @return true if the link could be added, false otherwise
      */
     public void addSmLink(SmLink smLink) {
         String from = smLink.getFrom();
@@ -65,7 +64,6 @@ public class StructLink implements IMetsElement {
      * 
      * @param smLink
      *            the {@link SmLink} to remove
-     * @return
      */
     public void removeSmLink(SmLink smLink) {
         this.links.remove(smLink.getFrom() + smLink.getTo());

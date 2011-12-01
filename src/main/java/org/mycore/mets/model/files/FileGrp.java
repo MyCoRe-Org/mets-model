@@ -116,7 +116,7 @@ public class FileGrp implements IMetsElement {
     }
 
     /**
-     * Gets all the files owned by this file group as {@link List<File>}
+     * Gets all the files owned by this file group as {@link List}
      * 
      * @return a list of files
      */
