@@ -29,7 +29,7 @@ public class PhysicalDiv extends AbstractDiv<PhysicalSubDiv> {
 
     @Override
     public void remove(PhysicalSubDiv element) {
-        this.physicalSubDivContainer.remove(element);
+        this.physicalSubDivContainer.remove(element.getId());
     }
 
     /**

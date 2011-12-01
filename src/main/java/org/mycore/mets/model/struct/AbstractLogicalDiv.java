@@ -59,7 +59,7 @@ public abstract class AbstractLogicalDiv extends AbstractDiv<LogicalSubDiv> {
     public void remove(LogicalSubDiv divToDelete) {
         for (LogicalSubDiv lsd : subDivContainer.values()) {
             if (lsd == divToDelete) {
-                this.subDivContainer.remove(lsd);
+                this.subDivContainer.remove(lsd.getId());
                 lsd.setParent(null);
             } else {
                 removeFromChildren(lsd.getChildren(), divToDelete);
@@ -70,7 +70,7 @@ public abstract class AbstractLogicalDiv extends AbstractDiv<LogicalSubDiv> {
     private void removeFromChildren(List<LogicalSubDiv> children, LogicalSubDiv divToDelete) {
         for (LogicalSubDiv lsd : children) {
             if (lsd == divToDelete) {
-                lsd.getParent().remove(divToDelete);
+                lsd.getParent().remove(divToDelete.getId());
                 lsd.setParent(null);
             } else {
                 removeFromChildren(lsd.getChildren(), divToDelete);
@@ -83,7 +83,7 @@ public abstract class AbstractLogicalDiv extends AbstractDiv<LogicalSubDiv> {
      */
     public void remove(String id) {
         LogicalSubDiv lsd = getLogicalSubDiv(id);
-        this.remove(lsd);
+        this.remove(lsd.getId());
     }
 
     @Override

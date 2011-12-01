@@ -96,20 +96,23 @@ public class FileGrp implements IMetsElement {
      *            the file to remove
      */
     public void removeFile(File f) {
-        fMap.remove(f);
+        if (f == null) {
+            return;
+        }
+        fMap.remove(f.getId());
     }
 
     /**
      * Removes the file with the given id from the file group.
      * 
-     * @param id
+     * @param identifier
      *            the of of the file to be removed
      */
-    public void removeFileById(String id) {
-        if (id == null) {
+    public void removeFileById(String identifier) {
+        if (identifier == null) {
             return;
         }
-        removeFile(getFileById(id));
+        fMap.remove(identifier);
     }
 
     /**
@@ -124,16 +127,16 @@ public class FileGrp implements IMetsElement {
     /**
      * Retrieves the {@link File} by the given id.
      * 
-     * @param id
+     * @param identifier
      *            the id of the file to return
      * @return the {@link File} with the given id or null
      */
-    public File getFileById(String id) {
-        if (id == null || id.length() == 0) {
+    public File getFileById(String identifier) {
+        if (identifier == null || identifier.length() == 0) {
             return null;
         }
 
-        return fMap.get(id);
+        return fMap.get(identifier);
     }
 
     /**
@@ -142,7 +145,8 @@ public class FileGrp implements IMetsElement {
      * 
      * @param href
      *            the href attribute
-     * @return
+     * @return the with the given href attribute or null if there is no such
+     *         file
      */
     public File getFileByHref(String href) {
         for (File f : this.fMap.values()) {
@@ -159,11 +163,7 @@ public class FileGrp implements IMetsElement {
         return this.getClass().getSimpleName() + " USE=" + this.use;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.mycore.mets.model.IMetsElement#asElement()
-     */
+    @Override
     public Element asElement() {
         Element fileGrp = new Element("fileGrp", IMetsElement.METS);
         fileGrp.setAttribute("USE", this.getUse());
