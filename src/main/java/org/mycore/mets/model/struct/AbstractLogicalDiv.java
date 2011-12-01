@@ -57,10 +57,11 @@ public abstract class AbstractLogicalDiv extends AbstractDiv<LogicalSubDiv> {
 
     @Override
     public void remove(LogicalSubDiv divToDelete) {
-        for (LogicalSubDiv lsd : subDivContainer.values()) {
+        for (LogicalSubDiv lsd : subDivContainer.values().toArray(new LogicalSubDiv[0])) {
             if (lsd == divToDelete) {
                 this.subDivContainer.remove(lsd.getId());
                 lsd.setParent(null);
+                return;
             } else {
                 removeFromChildren(lsd.getChildren(), divToDelete);
             }
@@ -72,6 +73,7 @@ public abstract class AbstractLogicalDiv extends AbstractDiv<LogicalSubDiv> {
             if (lsd == divToDelete) {
                 lsd.getParent().remove(divToDelete.getId());
                 lsd.setParent(null);
+                return;
             } else {
                 removeFromChildren(lsd.getChildren(), divToDelete);
             }
@@ -124,7 +126,10 @@ public abstract class AbstractLogicalDiv extends AbstractDiv<LogicalSubDiv> {
             if (lsd.getId().equals(identifier)) {
                 return lsd;
             } else {
-                return lookupChildren(lsd.getChildren(), identifier);
+                LogicalSubDiv logicalSubDiv = lookupChildren(lsd.getChildren(), identifier);
+                if (logicalSubDiv != null) {
+                    return logicalSubDiv;
+                }
             }
         }
         return null;
@@ -135,7 +140,7 @@ public abstract class AbstractLogicalDiv extends AbstractDiv<LogicalSubDiv> {
             if (lsd.getId().equals(identifier)) {
                 return lsd;
             } else {
-                return lookupChildren(lsd.getChildren(), identifier);
+                lookupChildren(lsd.getChildren(), identifier);
             }
         }
         return null;
