@@ -163,6 +163,22 @@ public class FileGrp implements IMetsElement {
         return this.getClass().getSimpleName() + " USE=" + this.use;
     }
 
+    /**
+     * @param fileId
+     * @return
+     */
+    public boolean contains(String fileId) {
+        return fMap.containsKey(fileId);
+    }
+
+    /**
+     * @param file
+     * @return
+     */
+    public boolean contains(File file) {
+        return this.contains(file.getId());
+    }
+
     @Override
     public Element asElement() {
         Element fileGrp = new Element("fileGrp", IMetsElement.METS);
