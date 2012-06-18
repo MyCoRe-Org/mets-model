@@ -48,7 +48,7 @@ public class FileGrp implements IMetsElement {
 
     private String use;
 
-    private HashMap<String, File> fMap;
+    private HashMap<String, File> fMap, hrefMap;
 
     /**
      * @param use
@@ -57,6 +57,7 @@ public class FileGrp implements IMetsElement {
     public FileGrp(String use) {
         this.use = use;
         this.fMap = new LinkedHashMap<String, File>();
+        this.hrefMap = new LinkedHashMap<String, File>();
     }
 
     /**
@@ -87,6 +88,7 @@ public class FileGrp implements IMetsElement {
             throw new IllegalArgumentException("ID must not be null");
         }
         fMap.put(f.getId(), f);
+        hrefMap.put(f.getFLocat().getHref(), f);
     }
 
     /**
@@ -100,6 +102,7 @@ public class FileGrp implements IMetsElement {
             return;
         }
         fMap.remove(f.getId());
+        hrefMap.remove(f.getFLocat().getHref());
     }
 
     /**
@@ -112,7 +115,7 @@ public class FileGrp implements IMetsElement {
         if (identifier == null) {
             return;
         }
-        fMap.remove(identifier);
+        removeFile(fMap.get(identifier));
     }
 
     /**
@@ -149,13 +152,7 @@ public class FileGrp implements IMetsElement {
      *         file
      */
     public File getFileByHref(String href) {
-        for (File f : this.fMap.values()) {
-            if (f.getFLocat().getHref().equals(href)) {
-                return f;
-            }
-        }
-
-        return null;
+        return hrefMap.get(href);
     }
 
     @Override
@@ -164,11 +161,12 @@ public class FileGrp implements IMetsElement {
     }
 
     /**
-     * @param fileId
-     * @return
+     * @param href the href attribute value of the {@link FLocat}
+     * 
+     * @return true if the file is contained by this file group, false otherwise
      */
-    public boolean contains(String fileId) {
-        return fMap.containsKey(fileId);
+    public boolean contains(String href) {
+        return hrefMap.containsKey(href);
     }
 
     /**
@@ -176,7 +174,7 @@ public class FileGrp implements IMetsElement {
      * @return
      */
     public boolean contains(File file) {
-        return this.contains(file.getId());
+        return fMap.containsKey(file.getId());
     }
 
     @Override
