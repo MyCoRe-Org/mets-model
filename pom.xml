@@ -1,63 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <artifactId>mycore-parent</artifactId>
-        <groupId>org.mycore</groupId>
-        <version>11-SNAPSHOT</version>
-    </parent>
-    <properties>
-        <java.target.version>1.6</java.target.version>
-    </properties>
-    <groupId>org.mycore.mets</groupId>
-    <name>Mets Model</name>
-    <version>0.2-SNAPSHOT</version>
-    <artifactId>mets-model</artifactId>
-    <packaging>jar</packaging>
-    <scm>
-        <connection>scm:svn:http://server.mycore.de/svn/maven/mets-model/trunk</connection>
-        <developerConnection>scm:svn:https://server.mycore.de/svn/maven/mets-model/trunk</developerConnection>
-        <url>http://www.mycore.de/viewvc/viewvc.cgi/maven/mets-model/</url>
-    </scm>
-    <repositories>
-        <repository>
-            <id>MyCoRe HQ</id>
-            <url>http://artifactory.mycore.de/mycore-releases</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>MyCoRe HQ Snapshots</id>
-            <url>http://artifactory.mycore.de/mycore-snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>MyCoRe HQ</id>
-            <url>http://artifactory.mycore.de/mycore-releases</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-        <pluginRepository>
-            <id>MyCoRe HQ Snapshots</id>
-            <url>http://artifactory.mycore.de/mycore-snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
-    <build>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>mycore-parent</artifactId>
+    <groupId>org.mycore</groupId>
+    <version>12-SNAPSHOT</version>
+  </parent>
+  <properties>
+    <java.target.version>1.6</java.target.version>
+  </properties>
+  <groupId>org.mycore.mets</groupId>
+  <name>Mets Model</name>
+  <version>0.2-SNAPSHOT</version>
+  <artifactId>mets-model</artifactId>
+  <packaging>jar</packaging>
+  <scm>
+    <connection>scm:svn:http://server.mycore.de/svn/maven/mets-model/trunk</connection>
+    <developerConnection>scm:svn:https://server.mycore.de/svn/maven/mets-model/trunk</developerConnection>
+    <url>http://www.mycore.de/viewvc/viewvc.cgi/maven/mets-model/</url>
+  </scm>
+  <repositories>
+    <repository>
+      <id>MyCoRe HQ</id>
+      <url>http://artifactory.mycore.de/mycore-releases</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>MyCoRe HQ Snapshots</id>
+      <url>http://artifactory.mycore.de/mycore-snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>MyCoRe HQ</id>
+      <url>http://artifactory.mycore.de/mycore-releases</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>MyCoRe HQ Snapshots</id>
+      <url>http://artifactory.mycore.de/mycore-snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
+  <build>
     <plugins>
       <plugin>
         <artifactId>maven-source-plugin</artifactId>
@@ -73,19 +74,19 @@
         </executions>
       </plugin>
     </plugins>
-    </build>
-    <dependencies>
-        <dependency>
-            <groupId>org.jdom</groupId>
-            <artifactId>jdom</artifactId>
-            <version>1.1.1.1</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.6</version>
-        </dependency>
-    </dependencies>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.jdom</groupId>
+      <artifactId>jdom</artifactId>
+      <version>1.1.1.1</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.6</version>
+    </dependency>
+  </dependencies>
 </project>
