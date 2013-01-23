@@ -18,7 +18,7 @@
  */
 package org.mycore.mets.model.files;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.mycore.mets.model.IMetsElement;
 import org.mycore.mets.model.struct.LOCTYPE;
 

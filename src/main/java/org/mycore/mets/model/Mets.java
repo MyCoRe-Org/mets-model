@@ -31,11 +31,13 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import org.apache.log4j.Logger;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.transform.JDOMSource;
-import org.jdom.xpath.XPath;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.filter.Filters;
+import org.jdom2.transform.JDOMSource;
+import org.jdom2.xpath.XPathExpression;
+import org.jdom2.xpath.XPathFactory;
 import org.mycore.mets.model.files.FLocat;
 import org.mycore.mets.model.files.File;
 import org.mycore.mets.model.files.FileGrp;
@@ -64,6 +66,8 @@ import org.xml.sax.SAXException;
  * @author Silvio Hermann (shermann)
  */
 public class Mets {
+
+    private static final XPathFactory XPATH_FACTORY = XPathFactory.instance();
 
     private static final Logger LOGGER;
 
@@ -125,33 +129,27 @@ public class Mets {
         createStuctLinks(source);
     }
 
-    @SuppressWarnings("unchecked")
     private void createDmdSec(Document source) throws JDOMException {
-        XPath xp = XPath.newInstance("mets:mets/mets:dmdSec");
-        xp.addNamespace(IMetsElement.METS);
+        XPathExpression<Element> xp = getXpathExpression("mets:mets/mets:dmdSec");
 
-        for (Element section : (List<Element>) xp.selectNodes(source)) {
+        for (Element section : xp.evaluate(source)) {
             DmdSec dmdSec = new DmdSec(section.getAttributeValue("ID"));
             dmdsecs.put(dmdSec.getId(), dmdSec);
 
             // handle mdWrap
-            xp = XPath.newInstance("mets:mdWrap");
-            xp.addNamespace(IMetsElement.METS);
+            xp = getXpathExpression("mets:mdWrap");
 
-            for (Element wrap : (List<Element>) xp.selectNodes(section)) {
-                XPath xmlDataXP = XPath.newInstance("mets:xmlData/*");
-                xmlDataXP.addNamespace(IMetsElement.METS);
-                Element element = (Element) xmlDataXP.selectSingleNode(wrap);
-
+            for (Element wrap : xp.evaluate(section)) {
+                XPathExpression<Element> xmlDataXP = getXpathExpression("mets:xmlData/*");
+                Element element = xmlDataXP.evaluateFirst(wrap);
                 MdWrap mdWrap = new MdWrap(MdWrapSection.findTypeByName(wrap.getAttributeValue("MDTYPE")), (Element) element.clone());
                 dmdSec.setMdWrap(mdWrap);
             }
 
             // handle mdRef
-            xp = XPath.newInstance("mets:mdRef");
-            xp.addNamespace(IMetsElement.METS);
+            xp = getXpathExpression("mets:mdRef");
 
-            for (Element refElem : (List<Element>) xp.selectNodes(section)) {
+            for (Element refElem : xp.evaluate(section)) {
                 LOCTYPE loctype = LOCTYPE.valueOf(refElem.getAttributeValue("LOCTYPE"));
                 String mimetype = refElem.getAttributeValue("MIMETYPE");
                 MDTYPE mdtype = MdWrapSection.findTypeByName(refElem.getAttributeValue("MDTYPE"));
@@ -162,14 +160,10 @@ public class Mets {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private void createAmdSec(Document source) throws JDOMException {
-        XPath xp = XPath.newInstance("mets:mets/mets:amdSec");
-        xp.addNamespace(IMetsElement.METS);
+        XPathExpression<Element> xp = getXpathExpression("mets:mets/mets:amdSec");
 
-        List<Element> allSections = xp.selectNodes(source);
-
-        for (Element section : allSections) {
+        for (Element section : xp.evaluate(source)) {
             AmdSec amdSec = new AmdSec(section.getAttributeValue("ID"));
             amdsecs.put(amdSec.getId(), amdSec);
 
@@ -189,27 +183,23 @@ public class Mets {
      * @throws JDOMException
      */
     private void addOther(Element section, AmdSec amdSec, String flag) throws JDOMException {
-        XPath rightsMdXP = XPath.newInstance("mets:" + flag);
-        rightsMdXP.addNamespace(IMetsElement.METS);
+        XPathExpression<Element> rightsMdXP = getXpathExpression("mets:" + flag);
 
-        Object obj = rightsMdXP.selectSingleNode(section);
-        if (obj instanceof Element) {
-            String id = ((Element) obj).getAttributeValue("ID");
+        Element flagElement = rightsMdXP.evaluateFirst(section);
+        if (flagElement != null) {
+            String id = flagElement.getAttributeValue("ID");
             RightsMD rightsMd = new RightsMD(id);
             amdSec.setRightsMD(rightsMd);
 
-            XPath mdWrapXP = XPath.newInstance("mets:mdWrap");
-            mdWrapXP.addNamespace(IMetsElement.METS);
+            XPathExpression<Element> mdWrapXP = getXpathExpression("mets:mdWrap");
 
-            obj = mdWrapXP.selectSingleNode(obj);
-            if (obj instanceof Element) {
-                XPath xmlDataXP = XPath.newInstance("mets:xmlData/*");
-                xmlDataXP.addNamespace(IMetsElement.METS);
-
-                String name = ((Element) obj).getAttributeValue("MDTYPE");
-                Element element = (Element) xmlDataXP.selectSingleNode(obj);
+            flagElement = mdWrapXP.evaluateFirst(flagElement);
+            if (flagElement instanceof Element) {
+                String name = flagElement.getAttributeValue("MDTYPE");
+                XPathExpression<Element> xmlDataXP = getXpathExpression("mets:xmlData/*");
+                Element element = xmlDataXP.evaluateFirst(flagElement);
                 MdWrap mdWrap = new MdWrap(MdWrapSection.findTypeByName(name), (Element) element.clone());
-                mdWrap.setOtherMdType(((Element) obj).getAttributeValue("OTHERMDTYPE"));
+                mdWrap.setOtherMdType(flagElement.getAttributeValue("OTHERMDTYPE"));
                 rightsMd.setMdWrap(mdWrap);
             }
         }
@@ -220,21 +210,18 @@ public class Mets {
      * 
      * @param source
      */
-    @SuppressWarnings("unchecked")
     private void createLogicalStructMap(Document source) throws JDOMException {
-        XPath xp = XPath.newInstance("mets:mets/mets:structMap[@TYPE='LOGICAL']/mets:div");
-        xp.addNamespace(IMetsElement.METS);
+        XPathExpression<Element> xp = getXpathExpression("mets:mets/mets:structMap[@TYPE='LOGICAL']/mets:div");
 
-        Element logDivContainerElem = (Element) xp.selectSingleNode(source);
+        Element logDivContainerElem = xp.evaluateFirst(source);
 
-        LogicalDiv logDivContainer = new LogicalDiv(logDivContainerElem.getAttributeValue("ID"),
-                logDivContainerElem.getAttributeValue("TYPE"), logDivContainerElem.getAttributeValue("LABEL"),
-                Integer.valueOf(logDivContainerElem.getAttributeValue("ORDER")), logDivContainerElem.getAttributeValue("ADMID"),
-                logDivContainerElem.getAttributeValue("DMDID"));
+        LogicalDiv logDivContainer = new LogicalDiv(logDivContainerElem.getAttributeValue("ID"), logDivContainerElem.getAttributeValue("TYPE"),
+            logDivContainerElem.getAttributeValue("LABEL"), Integer.valueOf(logDivContainerElem.getAttributeValue("ORDER")),
+            logDivContainerElem.getAttributeValue("ADMID"), logDivContainerElem.getAttributeValue("DMDID"));
 
         for (Element logSubDiv : (List<Element>) logDivContainerElem.getChildren()) {
-            LogicalSubDiv lsd = new LogicalSubDiv(logSubDiv.getAttributeValue("ID"), logSubDiv.getAttributeValue("TYPE"),
-                    logSubDiv.getAttributeValue("LABEL"), Integer.valueOf(logSubDiv.getAttributeValue("ORDER")));
+            LogicalSubDiv lsd = new LogicalSubDiv(logSubDiv.getAttributeValue("ID"), logSubDiv.getAttributeValue("TYPE"), logSubDiv.getAttributeValue("LABEL"),
+                Integer.valueOf(logSubDiv.getAttributeValue("ORDER")));
             logDivContainer.add(lsd);
 
             processLogicalSubDivChildren((List<Element>) logSubDiv.getChildren(), lsd);
@@ -248,11 +235,10 @@ public class Mets {
      * @param children
      * @param parent
      */
-    @SuppressWarnings("unchecked")
     private void processLogicalSubDivChildren(List<Element> children, LogicalSubDiv parent) {
         for (Element logSubDiv : children) {
-            LogicalSubDiv lsd = new LogicalSubDiv(logSubDiv.getAttributeValue("ID"), logSubDiv.getAttributeValue("TYPE"),
-                    logSubDiv.getAttributeValue("LABEL"), Integer.valueOf(logSubDiv.getAttributeValue("ORDER")));
+            LogicalSubDiv lsd = new LogicalSubDiv(logSubDiv.getAttributeValue("ID"), logSubDiv.getAttributeValue("TYPE"), logSubDiv.getAttributeValue("LABEL"),
+                Integer.valueOf(logSubDiv.getAttributeValue("ORDER")));
             parent.add(lsd);
 
             processLogicalSubDivChildren((List<Element>) logSubDiv.getChildren(), lsd);
@@ -264,12 +250,10 @@ public class Mets {
      * 
      * @param source
      */
-    @SuppressWarnings("unchecked")
     private void createPhysicalStructMap(Document source) throws JDOMException {
-        XPath xp = XPath.newInstance("mets:mets/mets:structMap[@TYPE='PHYSICAL']/mets:div");
-        xp.addNamespace(IMetsElement.METS);
+        XPathExpression<Element> xp = getXpathExpression("mets:mets/mets:structMap[@TYPE='PHYSICAL']/mets:div");
 
-        Element physDivElem = (Element) xp.selectSingleNode(source);
+        Element physDivElem = xp.evaluateFirst(source);
         String id = physDivElem.getAttributeValue("ID");
         String type = physDivElem.getAttributeValue("TYPE");
 
@@ -281,8 +265,8 @@ public class Mets {
         structMap.setDivContainer(physDivContainer);
 
         for (Element subDiv : (List<Element>) physDivElem.getChildren()) {
-            PhysicalSubDiv psd = new PhysicalSubDiv(subDiv.getAttributeValue("ID"), subDiv.getAttributeValue("TYPE"),
-                    Integer.parseInt(subDiv.getAttributeValue("ORDER")));
+            PhysicalSubDiv psd = new PhysicalSubDiv(subDiv.getAttributeValue("ID"), subDiv.getAttributeValue("TYPE"), Integer.parseInt(subDiv
+                .getAttributeValue("ORDER")));
 
             String orderLabel = subDiv.getAttributeValue("ORDERLABEL");
             if (orderLabel != null) {
@@ -294,10 +278,9 @@ public class Mets {
                 psd.setContentids(contentIDs);
             }
 
-            xp = XPath.newInstance("./mets:fptr");
-            xp.addNamespace(IMetsElement.METS);
+            xp = getXpathExpression("./mets:fptr");
 
-            for (Element fptrElem : (List<Element>) xp.selectNodes(subDiv)) {
+            for (Element fptrElem : xp.evaluate(subDiv)) {
                 Fptr fptr = new Fptr(fptrElem.getAttributeValue("FILEID"));
                 psd.add(fptr);
             }
@@ -310,12 +293,10 @@ public class Mets {
      * 
      * @param source
      */
-    @SuppressWarnings("unchecked")
     private void createStuctLinks(Document source) throws JDOMException {
-        XPath smLinksXP = XPath.newInstance("mets:mets/mets:structLink/mets:smLink");
-        smLinksXP.addNamespace(IMetsElement.METS);
+        XPathExpression<Element> smLinksXP = getXpathExpression("mets:mets/mets:structLink/mets:smLink");
 
-        for (Element smLink : (List<Element>) smLinksXP.selectNodes(source)) {
+        for (Element smLink : smLinksXP.evaluate(source)) {
             String from = smLink.getAttributeValue("from", IMetsElement.XLINK);
             String to = smLink.getAttributeValue("to", IMetsElement.XLINK);
             if (from == null || to == null) {
@@ -326,20 +307,20 @@ public class Mets {
         }
     }
 
+    private static XPathExpression<Element> getXpathExpression(String xpath) {
+        return XPATH_FACTORY.compile(xpath, Filters.element(), null, IMetsElement.METS);
+    }
+
     /**
      * Creates the file section from the given source document.
      * 
      * @param source
      * @throws JDOMException
      */
-    @SuppressWarnings("unchecked")
     private void createFileSec(Document source) throws JDOMException {
-        XPath grpXPath = XPath.newInstance("mets:mets/mets:fileSec/mets:fileGrp");
-        grpXPath.addNamespace(IMetsElement.METS);
+        XPathExpression<Element> grpXPath = getXpathExpression("mets:mets/mets:fileSec/mets:fileGrp");
 
-        List<Element> fGrpList = grpXPath.selectNodes(source);
-
-        for (Element aFileGroup : fGrpList) {
+        for (Element aFileGroup : grpXPath.evaluate(source)) {
             // create a fileGrp object
             String useAttribute = aFileGroup.getAttributeValue("USE");
             if (useAttribute == null) {
@@ -348,10 +329,9 @@ public class Mets {
             FileGrp grp = new FileGrp(useAttribute);
 
             // get the files to add to the file grp object
-            XPath filesXP = XPath.newInstance("./mets:file");
-            filesXP.addNamespace(IMetsElement.METS);
+            XPathExpression<Element> filesXP = getXpathExpression("./mets:file");
 
-            for (Element aFile : (List<Element>) filesXP.selectNodes(aFileGroup)) {
+            for (Element aFile : filesXP.evaluate(aFileGroup)) {
                 String id = aFile.getAttributeValue("ID");
                 String mimeType = aFile.getAttributeValue("MIMETYPE");
                 if (id == null || mimeType == null) {

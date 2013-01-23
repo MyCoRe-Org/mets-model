@@ -1,6 +1,6 @@
 package org.mycore.mets.model.struct;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 
 /**
  * @author Matthias Eichner

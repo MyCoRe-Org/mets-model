@@ -18,8 +18,8 @@
  */
 package org.mycore.mets.model;
 
-import org.jdom.Element;
-import org.jdom.Namespace;
+import org.jdom2.Element;
+import org.jdom2.Namespace;
 
 /**
  * @author Silvio Hermann (shermann)
@@ -42,7 +42,7 @@ public interface IMetsElement {
     public static final String SCHEMA_LOC_METS = METS.getURI() + " http://www.loc.gov/standards/mets/mets.xsd";
 
     /**
-     * Creates an {@link org.jdom.Element} of the IMetsElement.
+     * Creates an {@link org.jdom2.Element} of the IMetsElement.
      */
     public Element asElement();
 }

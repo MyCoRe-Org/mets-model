@@ -1,6 +1,6 @@
 package org.mycore.mets.model.struct;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.mycore.mets.model.IMetsElement;
 
 public abstract class AbstractDiv<T extends IMetsElement> implements IDiv<T> {

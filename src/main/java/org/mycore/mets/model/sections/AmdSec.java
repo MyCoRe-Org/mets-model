@@ -18,7 +18,7 @@
  */
 package org.mycore.mets.model.sections;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.mycore.mets.model.IMetsElement;
 
 /**
