@@ -11,13 +11,13 @@
   </properties>
   <groupId>org.mycore.mets</groupId>
   <name>Mets Model</name>
-  <version>0.3-SNAPSHOT</version>
+  <version>0.3</version>
   <artifactId>mets-model</artifactId>
   <packaging>jar</packaging>
   <scm>
-    <connection>scm:svn:http://server.mycore.de/svn/maven/mets-model/trunk</connection>
-    <developerConnection>scm:svn:https://server.mycore.de/svn/maven/mets-model/trunk</developerConnection>
-    <url>http://www.mycore.de/viewvc/viewvc.cgi/maven/mets-model/</url>
+    <connection>scm:svn:http://server.mycore.de/svn/maven/mets-model/tags/mets-model-0.3</connection>
+    <developerConnection>scm:svn:https://server.mycore.de/svn/maven/mets-model/tags/mets-model-0.3</developerConnection>
+    <url>http://www.mycore.de/viewvc/viewvc.cgi/maven/mets-model/tags/mets-model-0.3</url>
   </scm>
   <repositories>
     <repository>
