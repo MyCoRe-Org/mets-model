@@ -81,7 +81,8 @@ public class Mets {
         LOGGER = Logger.getLogger(Mets.class);
         SCHEMA_FACTORY = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         try {
-            SCHEMA = SCHEMA_FACTORY.newSchema(new StreamSource(Mets.class.getResourceAsStream("mets.xsd")));
+            LOGGER.info("Loading mets.xsd");
+            SCHEMA = SCHEMA_FACTORY.newSchema(new StreamSource(Mets.class.getResourceAsStream("/META-INF/resources/mets.xsd")));
             VALIDATOR = SCHEMA.newValidator();
         } catch (Exception ex) {
             LOGGER.error("Error initializing mets validator", ex);
