@@ -76,11 +76,12 @@ public class Mets {
     private static Schema SCHEMA;
 
     private static Validator VALIDATOR;
+
     static {
         LOGGER = Logger.getLogger(Mets.class);
         SCHEMA_FACTORY = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         try {
-            SCHEMA = SCHEMA_FACTORY.newSchema(new StreamSource("http://www.loc.gov/standards/mets/mets.xsd"));
+            SCHEMA = SCHEMA_FACTORY.newSchema(new StreamSource(Mets.class.getResourceAsStream("mets.xsd")));
             VALIDATOR = SCHEMA.newValidator();
         } catch (Exception ex) {
             LOGGER.error("Error initializing mets validator", ex);
@@ -216,12 +217,12 @@ public class Mets {
         Element logDivContainerElem = xp.evaluateFirst(source);
 
         LogicalDiv logDivContainer = new LogicalDiv(logDivContainerElem.getAttributeValue("ID"), logDivContainerElem.getAttributeValue("TYPE"),
-            logDivContainerElem.getAttributeValue("LABEL"), Integer.valueOf(logDivContainerElem.getAttributeValue("ORDER")),
-            logDivContainerElem.getAttributeValue("ADMID"), logDivContainerElem.getAttributeValue("DMDID"));
+                logDivContainerElem.getAttributeValue("LABEL"), Integer.valueOf(logDivContainerElem.getAttributeValue("ORDER")),
+                logDivContainerElem.getAttributeValue("ADMID"), logDivContainerElem.getAttributeValue("DMDID"));
 
         for (Element logSubDiv : (List<Element>) logDivContainerElem.getChildren()) {
             LogicalSubDiv lsd = new LogicalSubDiv(logSubDiv.getAttributeValue("ID"), logSubDiv.getAttributeValue("TYPE"), logSubDiv.getAttributeValue("LABEL"),
-                Integer.valueOf(logSubDiv.getAttributeValue("ORDER")));
+                    Integer.valueOf(logSubDiv.getAttributeValue("ORDER")));
             logDivContainer.add(lsd);
 
             processLogicalSubDivChildren((List<Element>) logSubDiv.getChildren(), lsd);
@@ -238,7 +239,7 @@ public class Mets {
     private void processLogicalSubDivChildren(List<Element> children, LogicalSubDiv parent) {
         for (Element logSubDiv : children) {
             LogicalSubDiv lsd = new LogicalSubDiv(logSubDiv.getAttributeValue("ID"), logSubDiv.getAttributeValue("TYPE"), logSubDiv.getAttributeValue("LABEL"),
-                Integer.valueOf(logSubDiv.getAttributeValue("ORDER")));
+                    Integer.valueOf(logSubDiv.getAttributeValue("ORDER")));
             parent.add(lsd);
 
             processLogicalSubDivChildren((List<Element>) logSubDiv.getChildren(), lsd);
@@ -266,7 +267,7 @@ public class Mets {
 
         for (Element subDiv : (List<Element>) physDivElem.getChildren()) {
             PhysicalSubDiv psd = new PhysicalSubDiv(subDiv.getAttributeValue("ID"), subDiv.getAttributeValue("TYPE"), Integer.parseInt(subDiv
-                .getAttributeValue("ORDER")));
+                    .getAttributeValue("ORDER")));
 
             String orderLabel = subDiv.getAttributeValue("ORDERLABEL");
             if (orderLabel != null) {
