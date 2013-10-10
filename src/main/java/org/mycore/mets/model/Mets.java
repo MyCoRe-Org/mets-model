@@ -19,18 +19,23 @@
 package org.mycore.mets.model;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.xml.XMLConstants;
+import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import org.apache.log4j.Logger;
+import org.apache.xerces.util.XMLCatalogResolver;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -60,6 +65,7 @@ import org.mycore.mets.model.struct.PhysicalStructMap;
 import org.mycore.mets.model.struct.PhysicalSubDiv;
 import org.mycore.mets.model.struct.SmLink;
 import org.mycore.mets.model.struct.StructLink;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
@@ -80,13 +86,39 @@ public class Mets {
     static {
         LOGGER = Logger.getLogger(Mets.class);
         SCHEMA_FACTORY = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        XMLCatalogResolver catalogResolver = getCatalogResolver();
+        SCHEMA_FACTORY.setResourceResolver(catalogResolver);
         try {
-            LOGGER.info("Loading mets.xsd");
-            SCHEMA = SCHEMA_FACTORY.newSchema(new StreamSource(Mets.class.getResourceAsStream("/META-INF/resources/mets.xsd")));
+            Source metsSchemaSource = getMetsSchema(catalogResolver);
+            LOGGER.info("Loading METS XML Schema from: " + metsSchemaSource.getSystemId());
+            SCHEMA = SCHEMA_FACTORY.newSchema(metsSchemaSource);
             VALIDATOR = SCHEMA.newValidator();
         } catch (Exception ex) {
             LOGGER.error("Error initializing mets validator", ex);
         }
+    }
+
+    private static Source getMetsSchema(XMLCatalogResolver catalogResolver) throws SAXException, IOException {
+        InputSource resolvedSchema = catalogResolver.resolveEntity(null, "http://www.loc.gov/standards/mets/mets.xsd");
+        StreamSource metsSchemaSource = new StreamSource(resolvedSchema.getSystemId());
+        return metsSchemaSource;
+    }
+
+    private static XMLCatalogResolver getCatalogResolver() {
+        Enumeration<URL> systemResources;
+        try {
+            systemResources = Mets.class.getClassLoader().getResources("catalog.xml");
+        } catch (IOException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+        Vector<String> catalogURIs = new Vector<>();
+        while (systemResources.hasMoreElements()) {
+            URL catalogURL = systemResources.nextElement();
+            LOGGER.info("Using XML catalog: " + catalogURL);
+            catalogURIs.add(catalogURL.toString());
+        }
+        String[] catalogs = catalogURIs.toArray(new String[catalogURIs.size()]);
+        return new XMLCatalogResolver(catalogs);
     }
 
     private Map<String, DmdSec> dmdsecs;
@@ -144,7 +176,8 @@ public class Mets {
             for (Element wrap : xp.evaluate(section)) {
                 XPathExpression<Element> xmlDataXP = getXpathExpression("mets:xmlData/*");
                 Element element = xmlDataXP.evaluateFirst(wrap);
-                MdWrap mdWrap = new MdWrap(MdWrapSection.findTypeByName(wrap.getAttributeValue("MDTYPE")), (Element) element.clone());
+                MdWrap mdWrap = new MdWrap(MdWrapSection.findTypeByName(wrap.getAttributeValue("MDTYPE")),
+                    (Element) element.clone());
                 dmdSec.setMdWrap(mdWrap);
             }
 
@@ -217,13 +250,15 @@ public class Mets {
 
         Element logDivContainerElem = xp.evaluateFirst(source);
 
-        LogicalDiv logDivContainer = new LogicalDiv(logDivContainerElem.getAttributeValue("ID"), logDivContainerElem.getAttributeValue("TYPE"),
-                logDivContainerElem.getAttributeValue("LABEL"), Integer.valueOf(logDivContainerElem.getAttributeValue("ORDER")),
-                logDivContainerElem.getAttributeValue("ADMID"), logDivContainerElem.getAttributeValue("DMDID"));
+        LogicalDiv logDivContainer = new LogicalDiv(logDivContainerElem.getAttributeValue("ID"),
+            logDivContainerElem.getAttributeValue("TYPE"), logDivContainerElem.getAttributeValue("LABEL"),
+            Integer.valueOf(logDivContainerElem.getAttributeValue("ORDER")),
+            logDivContainerElem.getAttributeValue("ADMID"), logDivContainerElem.getAttributeValue("DMDID"));
 
         for (Element logSubDiv : (List<Element>) logDivContainerElem.getChildren()) {
-            LogicalSubDiv lsd = new LogicalSubDiv(logSubDiv.getAttributeValue("ID"), logSubDiv.getAttributeValue("TYPE"), logSubDiv.getAttributeValue("LABEL"),
-                    Integer.valueOf(logSubDiv.getAttributeValue("ORDER")));
+            LogicalSubDiv lsd = new LogicalSubDiv(logSubDiv.getAttributeValue("ID"),
+                logSubDiv.getAttributeValue("TYPE"), logSubDiv.getAttributeValue("LABEL"), Integer.valueOf(logSubDiv
+                    .getAttributeValue("ORDER")));
             logDivContainer.add(lsd);
 
             processLogicalSubDivChildren((List<Element>) logSubDiv.getChildren(), lsd);
@@ -239,8 +274,9 @@ public class Mets {
      */
     private void processLogicalSubDivChildren(List<Element> children, LogicalSubDiv parent) {
         for (Element logSubDiv : children) {
-            LogicalSubDiv lsd = new LogicalSubDiv(logSubDiv.getAttributeValue("ID"), logSubDiv.getAttributeValue("TYPE"), logSubDiv.getAttributeValue("LABEL"),
-                    Integer.valueOf(logSubDiv.getAttributeValue("ORDER")));
+            LogicalSubDiv lsd = new LogicalSubDiv(logSubDiv.getAttributeValue("ID"),
+                logSubDiv.getAttributeValue("TYPE"), logSubDiv.getAttributeValue("LABEL"), Integer.valueOf(logSubDiv
+                    .getAttributeValue("ORDER")));
             parent.add(lsd);
 
             processLogicalSubDivChildren((List<Element>) logSubDiv.getChildren(), lsd);
@@ -267,8 +303,8 @@ public class Mets {
         structMap.setDivContainer(physDivContainer);
 
         for (Element subDiv : (List<Element>) physDivElem.getChildren()) {
-            PhysicalSubDiv psd = new PhysicalSubDiv(subDiv.getAttributeValue("ID"), subDiv.getAttributeValue("TYPE"), Integer.parseInt(subDiv
-                    .getAttributeValue("ORDER")));
+            PhysicalSubDiv psd = new PhysicalSubDiv(subDiv.getAttributeValue("ID"), subDiv.getAttributeValue("TYPE"),
+                Integer.parseInt(subDiv.getAttributeValue("ORDER")));
 
             String orderLabel = subDiv.getAttributeValue("ORDERLABEL");
             if (orderLabel != null) {

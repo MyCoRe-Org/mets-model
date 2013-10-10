@@ -5,10 +5,10 @@
   <parent>
     <artifactId>mycore-parent</artifactId>
     <groupId>org.mycore</groupId>
-    <version>13</version>
+    <version>17-SNAPSHOT</version>
   </parent>
   <properties>
-    <java.target.version>1.6</java.target.version>
+    <java.target.version>1.7</java.target.version>
   </properties>
   <groupId>org.mycore.mets</groupId>
   <name>Mets Model</name>
@@ -74,24 +74,28 @@
         </executions>
       </plugin>
     </plugins>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-    </resources>
   </build>
   <dependencies>
     <dependency>
       <groupId>org.jdom</groupId>
       <artifactId>jdom2</artifactId>
       <version>2.0.5</version>
-      <type>jar</type>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>1.2.17</version>
+    </dependency>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>2.11.0</version>
+    </dependency>
+    <dependency>
+      <groupId>xml-resolver</groupId>
+      <artifactId>xml-resolver</artifactId>
+      <version>1.2</version>
+      <scope>runtime</scope>
     </dependency>
   </dependencies>
 
