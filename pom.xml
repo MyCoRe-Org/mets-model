@@ -4,20 +4,20 @@
   <parent>
     <artifactId>mycore-parent</artifactId>
     <groupId>org.mycore</groupId>
-    <version>17</version>
+    <version>18-SNAPSHOT</version>
   </parent>
   <properties>
     <java.target.version>1.7</java.target.version>
   </properties>
   <groupId>org.mycore.mets</groupId>
   <name>Mets Model</name>
-  <version>0.4</version>
+  <version>0.5-SNAPSHOT</version>
   <artifactId>mets-model</artifactId>
   <packaging>jar</packaging>
   <scm>
-    <connection>scm:svn:http://server.mycore.de/svn/maven/mets-model/tags/mets-model-0.4</connection>
-    <developerConnection>scm:svn:https://server.mycore.de/svn/maven/mets-model/tags/mets-model-0.4</developerConnection>
-    <url>http://www.mycore.de/viewvc/viewvc.cgi/maven/mets-model/tags/mets-model-0.4</url>
+    <connection>scm:svn:http://server.mycore.de/svn/maven/mets-model/trunk</connection>
+    <developerConnection>scm:svn:https://server.mycore.de/svn/maven/mets-model/trunk</developerConnection>
+    <url>http://www.mycore.de/viewvc/viewvc.cgi/maven/mets-model/</url>
   </scm>
   <repositories>
     <repository>
