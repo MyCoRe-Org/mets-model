@@ -73,29 +73,28 @@ import org.xml.sax.SAXException;
  */
 public class Mets {
 
+    // thread-safe
     private static final XPathFactory XPATH_FACTORY = XPathFactory.instance();
 
-    private static final Logger LOGGER;
+    // thread-safe
+    private static final Logger LOGGER = Logger.getLogger(Mets.class);
 
-    private static final SchemaFactory SCHEMA_FACTORY;
-
+    // thread-safe
     private static Schema SCHEMA;
 
-    private static Validator VALIDATOR;
-
     static {
-        LOGGER = Logger.getLogger(Mets.class);
-        SCHEMA_FACTORY = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         XMLCatalogResolver catalogResolver = getCatalogResolver();
-        SCHEMA_FACTORY.setResourceResolver(catalogResolver);
-        try {
-            Source metsSchemaSource = getMetsSchema(catalogResolver);
-            LOGGER.info("Loading METS XML Schema from: " + metsSchemaSource.getSystemId());
-            SCHEMA = SCHEMA_FACTORY.newSchema(metsSchemaSource);
-            VALIDATOR = SCHEMA.newValidator();
-        } catch (Exception ex) {
-            LOGGER.error("Error initializing mets validator", ex);
-        }
+        schemaFactory.setResourceResolver(catalogResolver);
+            Source metsSchemaSource;
+            try {
+                metsSchemaSource = getMetsSchema(catalogResolver);
+                LOGGER.info("Loading METS XML Schema from: " + metsSchemaSource.getSystemId());
+                SCHEMA = schemaFactory.newSchema(metsSchemaSource);
+            } catch (SAXException | IOException e) {
+                LOGGER.error("Could not load METS XML Schema.");
+                e.printStackTrace();
+            }
     }
 
     private static Source getMetsSchema(XMLCatalogResolver catalogResolver) throws SAXException, IOException {
@@ -561,20 +560,16 @@ public class Mets {
      * @return true if the document is a valid mets document false otherwise
      */
     final public static boolean isValid(Document doc) {
+        Validator validator = SCHEMA.newValidator();
         try {
-            if (VALIDATOR == null) {
-                LOGGER.warn("Validator has not been initialized. Returning 'false' as default value");
-                return false;
-            }
-            VALIDATOR.validate(new JDOMSource(doc));
+            validator.validate(new JDOMSource(doc));
+            return true;
         } catch (SAXException saxEx) {
             LOGGER.error("Error parsing and validating mets document", saxEx);
-            return false;
         } catch (IOException ioEx) {
             LOGGER.error("Error reading input stream", ioEx);
-            return false;
         }
-        return true;
+        return false;
     }
 
     /**
