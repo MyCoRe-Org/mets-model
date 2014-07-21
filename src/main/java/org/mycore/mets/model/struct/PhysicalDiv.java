@@ -41,6 +41,10 @@ public class PhysicalDiv extends AbstractDiv<PhysicalSubDiv> {
     public void remove(String id) {
         this.physicalSubDivContainer.remove(id);
     }
+    
+    public PhysicalSubDiv get(String id) {
+        return this.physicalSubDivContainer.get(id);
+    }
 
     @Override
     public List<PhysicalSubDiv> getChildren() {
