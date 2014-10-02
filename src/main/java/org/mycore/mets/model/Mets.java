@@ -272,13 +272,16 @@ public class Mets {
      * @param parent
      */
     private void processLogicalSubDivChildren(List<Element> children, LogicalSubDiv parent) {
-        for (Element logSubDiv : children) {
-            LogicalSubDiv lsd = new LogicalSubDiv(logSubDiv.getAttributeValue("ID"),
-                logSubDiv.getAttributeValue("TYPE"), logSubDiv.getAttributeValue("LABEL"), Integer.valueOf(logSubDiv
+        for (Element child : children) {
+            if(!child.getName().equals("div")) {
+                return;
+            }
+            LogicalSubDiv lsd = new LogicalSubDiv(child.getAttributeValue("ID"),
+                child.getAttributeValue("TYPE"), child.getAttributeValue("LABEL"), Integer.valueOf(child
                     .getAttributeValue("ORDER")));
             parent.add(lsd);
 
-            processLogicalSubDivChildren((List<Element>) logSubDiv.getChildren(), lsd);
+            processLogicalSubDivChildren((List<Element>) child.getChildren(), lsd);
         }
     }
 
