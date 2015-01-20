@@ -18,6 +18,9 @@
  */
 package org.mycore.mets.model.struct;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jdom2.Element;
 import org.mycore.mets.model.IMetsElement;
 
@@ -28,8 +31,15 @@ public class Fptr implements IMetsElement {
 
     private String fileId;
 
+    private List<Seq> seqList;
+
+    public Fptr() {
+        this(null);
+    }
+
     public Fptr(String fileId) {
         this.fileId = fileId;
+        this.seqList = new ArrayList<Seq>();
     }
 
     /**
@@ -47,6 +57,13 @@ public class Fptr implements IMetsElement {
         this.fileId = fileId;
     }
 
+    /**
+     * @return the modifiable sequence list.
+     */
+    public List<Seq> getSeqList() {
+        return seqList;
+    }
+
     @Override
     public String toString() {
         return this.fileId;
@@ -59,7 +76,12 @@ public class Fptr implements IMetsElement {
      */
     public Element asElement() {
         Element fptr = new Element("fptr", IMetsElement.METS);
-        fptr.setAttribute("FILEID", this.getFileId());
+        if (this.getFileId() != null) {
+            fptr.setAttribute("FILEID", this.getFileId());
+        }
+        for (Seq seq : seqList) {
+            fptr.addContent(seq.asElement());
+        }
         return fptr;
     }
 }

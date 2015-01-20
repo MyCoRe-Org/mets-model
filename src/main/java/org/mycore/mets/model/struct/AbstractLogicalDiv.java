@@ -1,5 +1,6 @@
 package org.mycore.mets.model.struct;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -24,6 +25,8 @@ public abstract class AbstractLogicalDiv extends AbstractDiv<LogicalSubDiv> {
 
     protected HashMap<String, LogicalSubDiv> subDivContainer;
 
+    protected List<Fptr> fptrList;
+
     protected int order;
 
     private AbstractLogicalDiv parent;
@@ -40,6 +43,7 @@ public abstract class AbstractLogicalDiv extends AbstractDiv<LogicalSubDiv> {
      */
     public AbstractLogicalDiv(String id, String type, String label, int order) {
         this.subDivContainer = new LinkedHashMap<String, LogicalSubDiv>();
+        this.fptrList = new ArrayList<Fptr>();
         this.setId(id);
         this.setType(type);
         this.setLabel(label);
@@ -110,6 +114,15 @@ public abstract class AbstractLogicalDiv extends AbstractDiv<LogicalSubDiv> {
      */
     public AbstractLogicalDiv getParent() {
         return this.parent;
+    }
+
+    /**
+     * Returns a modifiable list of file pointers.
+     * 
+     * @return
+     */
+    public List<Fptr> getFptrList() {
+        return fptrList;
     }
 
     /**
@@ -192,6 +205,9 @@ public abstract class AbstractLogicalDiv extends AbstractDiv<LogicalSubDiv> {
         Iterator<LogicalSubDiv> sbDivIterator = this.subDivContainer.values().iterator();
         while (sbDivIterator.hasNext()) {
             div.addContent(sbDivIterator.next().asElement());
+        }
+        for (Fptr fptr : getFptrList()) {
+            div.addContent(fptr.asElement());
         }
         return div;
     }

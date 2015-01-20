@@ -13,6 +13,10 @@ public class PhysicalDiv extends AbstractDiv<PhysicalSubDiv> {
 
     private HashMap<String, PhysicalSubDiv> physicalSubDivContainer;
 
+    public PhysicalDiv() {
+        this(null, TYPE_PHYS_SEQ);
+    }
+
     public PhysicalDiv(String id, String type) {
         this.id = id;
         this.type = type;
@@ -41,7 +45,7 @@ public class PhysicalDiv extends AbstractDiv<PhysicalSubDiv> {
     public void remove(String id) {
         this.physicalSubDivContainer.remove(id);
     }
-    
+
     public PhysicalSubDiv get(String id) {
         return this.physicalSubDivContainer.get(id);
     }
