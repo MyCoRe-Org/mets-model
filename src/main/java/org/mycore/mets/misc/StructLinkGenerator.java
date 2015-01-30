@@ -1,8 +1,11 @@
 package org.mycore.mets.misc;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.mycore.mets.model.Mets;
 import org.mycore.mets.model.struct.AbstractLogicalDiv;
@@ -36,13 +39,61 @@ public class StructLinkGenerator {
         HashMap<String, String> fileIdRef = getFileIdRef(psm);
         List<AbstractLogicalDiv> logicalDivs = getLogicalDivs(lsm.getDivContainer());
 
+        List<String> missingPhysicalRefs = new ArrayList<String>(fileIdRef.values());
+        Map<String, String> invertSmLinkMap = new HashMap<String, String>();
+
+        // go through all logical divs
         StructLink structLink = mets.getStructLink();
         for (AbstractLogicalDiv div : logicalDivs) {
             String fileId = findFirstFileId(div);
             String physicalId = fileIdRef.get(fileId);
+            missingPhysicalRefs.remove(physicalId);
             String logicalId = div.getId();
             structLink.addSmLink(new SmLink(logicalId, physicalId));
+            invertSmLinkMap.put(physicalId, logicalId);
         }
+
+        // add missing physical divs
+        List<String> orderedPhysicals = getOrderedPhysicals(psm);
+        for (String physicalId : missingPhysicalRefs) {
+            String previousPhyiscalId = physicalId;
+            String logicalId = null;
+            while (logicalId == null) {
+                int index = orderedPhysicals.indexOf(previousPhyiscalId) - 1;
+                if (index <= -1) {
+                    throw new RuntimeException("unable to find referenced logical id for phyiscal id " + physicalId);
+                }
+                previousPhyiscalId = orderedPhysicals.get(index);
+                if (missingPhysicalRefs.contains(previousPhyiscalId)) {
+                    continue;
+                }
+                logicalId = invertSmLinkMap.get(previousPhyiscalId);
+            }
+            structLink.addSmLink(new SmLink(logicalId, physicalId));
+        }
+        // TODO: sort the struct links by logical or physical id (call addSmLink later)
+    }
+
+    /**
+     * Returns a list of all physical id's ordered by ORDER.
+     * 
+     * @return list
+     */
+    protected List<String> getOrderedPhysicals(PhysicalStructMap psm) {
+        List<PhysicalSubDiv> orderedList = new ArrayList<PhysicalSubDiv>();
+        PhysicalDiv divContainer = psm.getDivContainer();
+        orderedList.addAll(divContainer.getChildren());
+        Collections.sort(orderedList, new Comparator<PhysicalSubDiv>() {
+            @Override
+            public int compare(PhysicalSubDiv p1, PhysicalSubDiv p2) {
+                return Integer.compare(p1.getOrder(), p2.getOrder());
+            }
+        });
+        List<String> idList = new ArrayList<String>();
+        for (PhysicalSubDiv div : orderedList) {
+            idList.add(div.getId());
+        }
+        return idList;
     }
 
     /**
