@@ -4,7 +4,7 @@
   <parent>
     <artifactId>mycore-parent</artifactId>
     <groupId>org.mycore</groupId>
-    <version>23</version>
+    <version>24</version>
   </parent>
   <properties>
     <java.target.version>1.7</java.target.version>
