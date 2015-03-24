@@ -13,6 +13,8 @@ public class LogicalDiv extends AbstractLogicalDiv {
 
     protected String dmdId, amdId;
 
+    private Mtpr mtpr;
+
     public LogicalDiv(String id, String type, String label) {
         this(id, type, label, -1, null, null);
     }
@@ -43,6 +45,14 @@ public class LogicalDiv extends AbstractLogicalDiv {
         return dmdId;
     }
 
+    public void setMtpr(Mtpr mtpr) {
+        this.mtpr = mtpr;
+    }
+
+    public Mtpr getMtpr() {
+        return this.mtpr;
+    }
+
     @Override
     public Element asElement() {
         Element div = super.asElement();
@@ -51,6 +61,9 @@ public class LogicalDiv extends AbstractLogicalDiv {
         }
         if (this.getDmdId() != null && !this.getDmdId().equals("")) {
             div.setAttribute(XML_DMDID, this.getDmdId());
+        }
+        if (mtpr != null) {
+            div.addContent(mtpr.asElement());
         }
         return div;
     }
