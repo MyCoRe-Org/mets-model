@@ -34,7 +34,8 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.xerces.util.XMLCatalogResolver;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -77,7 +78,7 @@ public class Mets {
     private static final XPathFactory XPATH_FACTORY = XPathFactory.instance();
 
     // thread-safe
-    private static final Logger LOGGER = Logger.getLogger(Mets.class);
+    private static final Logger LOGGER = LogManager.getLogger(Mets.class);
 
     // thread-safe
     private static Schema SCHEMA;
