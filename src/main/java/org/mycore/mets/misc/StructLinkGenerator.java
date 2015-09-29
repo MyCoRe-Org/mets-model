@@ -11,6 +11,7 @@ import org.mycore.mets.model.Mets;
 import org.mycore.mets.model.struct.AbstractLogicalDiv;
 import org.mycore.mets.model.struct.Area;
 import org.mycore.mets.model.struct.Fptr;
+import org.mycore.mets.model.struct.LogicalDiv;
 import org.mycore.mets.model.struct.LogicalStructMap;
 import org.mycore.mets.model.struct.PhysicalDiv;
 import org.mycore.mets.model.struct.PhysicalStructMap;
@@ -37,8 +38,9 @@ public class StructLinkGenerator {
         PhysicalStructMap psm = (PhysicalStructMap) mets.getStructMap(PhysicalStructMap.TYPE);
         LogicalStructMap lsm = (LogicalStructMap) mets.getStructMap(LogicalStructMap.TYPE);
         HashMap<String, String> fileIdRef = getFileIdRef(psm);
-        List<AbstractLogicalDiv> logicalDivs = getLogicalDivs(lsm.getDivContainer());
-
+        LogicalDiv logicalRootDiv = lsm.getDivContainer();
+        List<AbstractLogicalDiv> logicalDivs = getLogicalDivs(logicalRootDiv);
+        
         List<String> missingPhysicalRefs = new ArrayList<String>(fileIdRef.values());
         Map<String, String> invertSmLinkMap = new HashMap<String, String>();
 
@@ -61,13 +63,15 @@ public class StructLinkGenerator {
             while (logicalId == null) {
                 int index = orderedPhysicals.indexOf(previousPhyiscalId) - 1;
                 if (index <= -1) {
-                    throw new RuntimeException("unable to find referenced logical id for phyiscal id " + physicalId);
+                    // no previous physical div -> add it to root logical div
+                    logicalId = logicalRootDiv.getId();
+                } else {
+                    previousPhyiscalId = orderedPhysicals.get(index);
+                    if (missingPhysicalRefs.contains(previousPhyiscalId)) {
+                        continue;
+                    }
+                    logicalId = invertSmLinkMap.get(previousPhyiscalId);
                 }
-                previousPhyiscalId = orderedPhysicals.get(index);
-                if (missingPhysicalRefs.contains(previousPhyiscalId)) {
-                    continue;
-                }
-                logicalId = invertSmLinkMap.get(previousPhyiscalId);
             }
             structLink.addSmLink(new SmLink(logicalId, physicalId));
         }
