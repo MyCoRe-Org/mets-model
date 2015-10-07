@@ -57,7 +57,6 @@ import org.mycore.mets.model.struct.IStructMap;
 import org.mycore.mets.model.struct.LOCTYPE;
 import org.mycore.mets.model.struct.LogicalDiv;
 import org.mycore.mets.model.struct.LogicalStructMap;
-import org.mycore.mets.model.struct.LogicalSubDiv;
 import org.mycore.mets.model.struct.MDTYPE;
 import org.mycore.mets.model.struct.MdRef;
 import org.mycore.mets.model.struct.MdWrap;
@@ -256,7 +255,7 @@ public class Mets {
             logDivContainerElem.getAttributeValue("ADMID"), logDivContainerElem.getAttributeValue("DMDID"));
 
         for (Element logSubDiv : (List<Element>) logDivContainerElem.getChildren()) {
-            LogicalSubDiv lsd = new LogicalSubDiv(logSubDiv.getAttributeValue("ID"),
+            LogicalDiv lsd = new LogicalDiv(logSubDiv.getAttributeValue("ID"),
                 logSubDiv.getAttributeValue("TYPE"), logSubDiv.getAttributeValue("LABEL"), Integer.valueOf(logSubDiv
                     .getAttributeValue("ORDER")));
             logDivContainer.add(lsd);
@@ -272,12 +271,12 @@ public class Mets {
      * @param children
      * @param parent
      */
-    private void processLogicalSubDivChildren(List<Element> children, LogicalSubDiv parent) {
+    private void processLogicalSubDivChildren(List<Element> children, LogicalDiv parent) {
         for (Element child : children) {
             if(!child.getName().equals("div")) {
                 return;
             }
-            LogicalSubDiv lsd = new LogicalSubDiv(child.getAttributeValue("ID"),
+            LogicalDiv lsd = new LogicalDiv(child.getAttributeValue("ID"),
                 child.getAttributeValue("TYPE"), child.getAttributeValue("LABEL"), Integer.valueOf(child
                     .getAttributeValue("ORDER")));
             parent.add(lsd);

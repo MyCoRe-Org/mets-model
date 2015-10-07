@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.mycore.mets.model.Mets;
-import org.mycore.mets.model.struct.AbstractLogicalDiv;
 import org.mycore.mets.model.struct.Area;
 import org.mycore.mets.model.struct.Fptr;
 import org.mycore.mets.model.struct.LogicalDiv;
@@ -39,14 +38,14 @@ public class StructLinkGenerator {
         LogicalStructMap lsm = (LogicalStructMap) mets.getStructMap(LogicalStructMap.TYPE);
         HashMap<String, String> fileIdRef = getFileIdRef(psm);
         LogicalDiv logicalRootDiv = lsm.getDivContainer();
-        List<AbstractLogicalDiv> logicalDivs = getLogicalDivs(logicalRootDiv);
+        List<LogicalDiv> logicalDivs = getLogicalDivs(logicalRootDiv);
         
         List<String> missingPhysicalRefs = new ArrayList<String>(fileIdRef.values());
         Map<String, String> invertSmLinkMap = new HashMap<String, String>();
 
         // go through all logical divs
         StructLink structLink = mets.getStructLink();
-        for (AbstractLogicalDiv div : logicalDivs) {
+        for (LogicalDiv div : logicalDivs) {
             String fileId = findFirstFileId(div);
             String physicalId = fileIdRef.get(fileId);
             missingPhysicalRefs.remove(physicalId);
@@ -130,10 +129,10 @@ public class StructLinkGenerator {
      * @param div the div to start
      * @return list of divs
      */
-    protected List<AbstractLogicalDiv> getLogicalDivs(AbstractLogicalDiv div) {
-        List<AbstractLogicalDiv> divs = new ArrayList<AbstractLogicalDiv>();
+    protected List<LogicalDiv> getLogicalDivs(LogicalDiv div) {
+        List<LogicalDiv> divs = new ArrayList<LogicalDiv>();
         divs.add(div);
-        for (AbstractLogicalDiv subDiv : div.getChildren()) {
+        for (LogicalDiv subDiv : div.getChildren()) {
             divs.addAll(getLogicalDivs(subDiv));
         }
         return divs;
@@ -145,10 +144,10 @@ public class StructLinkGenerator {
      * @param div
      * @return
      */
-    protected String findFirstFileId(AbstractLogicalDiv div) {
+    protected String findFirstFileId(LogicalDiv div) {
         String fileId = getFileIdFromArea(div);
         if (fileId == null) {
-            for (AbstractLogicalDiv subDiv : div.getChildren()) {
+            for (LogicalDiv subDiv : div.getChildren()) {
                 fileId = findFirstFileId(subDiv);
                 if (fileId != null) {
                     break;
@@ -165,7 +164,7 @@ public class StructLinkGenerator {
      * @param div the div to get the first file id from
      * @return file id or null
      */
-    protected String getFileIdFromArea(AbstractLogicalDiv div) {
+    protected String getFileIdFromArea(LogicalDiv div) {
         for (Fptr fptr : div.getFptrList()) {
             for (Seq seq : fptr.getSeqList()) {
                 for (Area area : seq.getAreaList()) {
