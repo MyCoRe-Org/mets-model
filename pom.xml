@@ -7,7 +7,7 @@
     <version>27-SNAPSHOT</version>
   </parent>
   <properties>
-    <java.target.version>1.8</java.target.version>
+    <java.target.version>1.7</java.target.version>
   </properties>
   <groupId>org.mycore.mets</groupId>
   <name>Mets Model</name>
