@@ -31,7 +31,7 @@ public class StructLinkGenerator {
     /**
      * Creates the struct link section of the given {@link Mets} object. 
      * 
-     * @param mets
+     * @param mets where to add the struct link section
      */
     public void generate(Mets mets) {
         PhysicalStructMap psm = (PhysicalStructMap) mets.getStructMap(PhysicalStructMap.TYPE);
@@ -39,7 +39,7 @@ public class StructLinkGenerator {
         HashMap<String, String> fileIdRef = getFileIdRef(psm);
         LogicalDiv logicalRootDiv = lsm.getDivContainer();
         List<LogicalDiv> logicalDivs = getLogicalDivs(logicalRootDiv);
-        
+
         List<String> missingPhysicalRefs = new ArrayList<String>(fileIdRef.values());
         Map<String, String> invertSmLinkMap = new HashMap<String, String>();
 
@@ -80,7 +80,7 @@ public class StructLinkGenerator {
     /**
      * Returns a list of all physical id's ordered by ORDER.
      * 
-     * @return list
+     * @return list list of physical id's
      */
     protected List<String> getOrderedPhysicals(PhysicalStructMap psm) {
         List<PhysicalSubDiv> orderedList = new ArrayList<PhysicalSubDiv>();
@@ -104,11 +104,13 @@ public class StructLinkGenerator {
      * to exactly one physical id. Its possible (and likely) that two file ids
      * have the same physical id.</p>
      *
+     * <ul>
      * <li>key: fileid</li>
      * <li>value: physical id</li>
+     * </ul>
      * 
-     * @param psm
-     * @return
+     * @param psm the physical struct map where to get the file id references
+     * @return map of file id references
      */
     protected HashMap<String, String> getFileIdRef(PhysicalStructMap psm) {
         HashMap<String, String> map = new HashMap<String, String>();
