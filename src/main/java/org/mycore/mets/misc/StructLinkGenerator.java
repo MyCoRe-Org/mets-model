@@ -141,8 +141,10 @@ public class StructLinkGenerator {
     /**
      * Finds the first corresponding file id for the given div.
      * 
-     * @param div
-     * @return
+     * @param div the div where the file id is looked for (runs recursive
+     * through the child nodes)
+     * 
+     * @return id of the first file which is referenced within the div
      */
     protected String findFirstFileId(LogicalDiv div) {
         String fileId = getFileIdFromArea(div);
@@ -158,7 +160,7 @@ public class StructLinkGenerator {
     }
 
     /**
-     * Returns the first file id found in the fptr -> seq -> area section
+     * Returns the first file id found in the fptr -&gt; seq -&gt; area section
      * of the div. No sub div's are searched!
      * 
      * @param div the div to get the first file id from
