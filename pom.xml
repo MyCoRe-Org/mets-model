@@ -4,14 +4,14 @@
   <parent>
     <artifactId>mycore-parent</artifactId>
     <groupId>org.mycore</groupId>
-    <version>28-SNAPSHOT</version>
+    <version>27-SNAPSHOT</version>
   </parent>
   <properties>
     <java.target.version>1.7</java.target.version>
   </properties>
   <groupId>org.mycore.mets</groupId>
   <name>Mets Model</name>
-  <version>0.9-SNAPSHOT</version>
+  <version>0.8-SNAPSHOT</version>
   <artifactId>mets-model</artifactId>
   <packaging>jar</packaging>
   <issueManagement>
