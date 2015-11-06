@@ -145,8 +145,6 @@ public class Mets {
 
     /**
      * Creates a {@link Mets} object from the given {@link Document} object.
-     * 
-     * @param source
      */
     public Mets(Document source) throws Exception {
         this();
@@ -441,9 +439,6 @@ public class Mets {
         amdsecs.remove(id);
     }
 
-    /**
-     * @param type
-     */
     public IStructMap getStructMap(String type) {
         return this.structMaps.get(type);
     }
@@ -521,9 +516,7 @@ public class Mets {
     }
 
     /**
-     * Returns the Mets Object as {@link Document}. <br/>
-     * 
-     * @return {@link Document}
+     * Returns the Mets Object as {@link Document}.
      */
     public Document asDocument() {
         Document doc = new Document();

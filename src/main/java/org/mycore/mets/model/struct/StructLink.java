@@ -45,8 +45,6 @@ public class StructLink implements IMetsElement {
 
     /**
      * Adds a {@link SmLink} to this struct link section.
-     * 
-     * @param smLink
      */
     public void addSmLink(SmLink smLink) {
         String from = smLink.getFrom();
@@ -85,7 +83,6 @@ public class StructLink implements IMetsElement {
     }
 
     /**
-     * @param from
      * @return all {@link SmLink} where the from attribute matches the value of
      *         the parameter
      */
@@ -105,7 +102,6 @@ public class StructLink implements IMetsElement {
     }
 
     /**
-     * @param to
      * @return all {@link SmLink} where the to attribute matches the value of
      *         the parameter
      */

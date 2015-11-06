@@ -169,10 +169,6 @@ public class FileGrp implements IMetsElement {
         return hrefMap.containsKey(href);
     }
 
-    /**
-     * @param file
-     * @return
-     */
     public boolean contains(File file) {
         return fMap.containsKey(file.getId());
     }

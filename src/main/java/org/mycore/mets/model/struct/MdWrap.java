@@ -25,12 +25,6 @@ public class MdWrap implements IMetsElement {
 
     private String othermdtype;
 
-    /**
-     * To wrap xml data.
-     * 
-     * @param mdtype
-     * @param metadata
-     */
     public MdWrap(MDTYPE mdtype, Element metadata) {
         this.mdtype = mdtype;
         this.mimetype = MIMETYPE_XML;
@@ -40,11 +34,9 @@ public class MdWrap implements IMetsElement {
     /**
      * To wrap bin data.
      * 
-     * @param mdtype
      * @param bindata
      *            any arbitrary binary or textual form, PROVIDED that the
      *            metadata is Base64 encoded
-     * @param mimetype
      */
     public MdWrap(MDTYPE mdtype, String bindata, String mimetype) {
         this.mdtype = mdtype;
@@ -106,7 +98,7 @@ public class MdWrap implements IMetsElement {
 
     /**
      * Sets the OTHERMDTYPE attribute. As a side effect: if a non null argument
-     * is passed the {@link MdWrap#mdtype} will be set to {@link MDTYPE#OTHER}.
+     * is passed the {@link #setMdtype(MDTYPE)} will be set to {@link MDTYPE#OTHER}.
      * 
      * @param otherMdType
      *            the OTHERMDTYPE attribute to set

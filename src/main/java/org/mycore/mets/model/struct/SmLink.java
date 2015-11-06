@@ -34,10 +34,6 @@ public class SmLink implements IMetsElement {
 
     private String from, to;
 
-    /**
-     * @param from
-     * @param to
-     */
     public SmLink(String from, String to) {
         this.from = from;
         this.to = to;

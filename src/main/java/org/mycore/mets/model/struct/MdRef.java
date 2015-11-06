@@ -18,12 +18,6 @@ public class MdRef implements IMetsElement {
 
     private String href;
 
-    /**
-     * @param loctype
-     * @param mimetype
-     * @param mdtype
-     * @param value
-     */
     public MdRef(LOCTYPE loctype, String mimetype, MDTYPE mdtype, String value) {
         this.loctype = loctype;
         this.mimetype = mimetype;
@@ -31,13 +25,6 @@ public class MdRef implements IMetsElement {
         this.value = value;
     }
 
-    /**
-     * @param href
-     * @param loctype
-     * @param mimetype
-     * @param mdtype
-     * @param value
-     */
     public MdRef(String href, LOCTYPE loctype, String mimetype, MDTYPE mdtype, String value) {
         this(loctype, mimetype, mdtype, value);
         this.href = href;

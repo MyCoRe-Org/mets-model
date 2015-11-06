@@ -29,9 +29,6 @@ public abstract class MdSection implements IMetsElement {
     /***/
     private String id;
 
-    /**
-     * @param id
-     */
     public MdSection(String id) {
         if (id == null || id.length() == 0) {
             throw new IllegalArgumentException("The id of the " + this.getClass().getSimpleName()

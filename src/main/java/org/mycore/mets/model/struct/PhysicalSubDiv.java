@@ -27,21 +27,10 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
 
     private HashMap<String, Fptr> filePointers;
 
-    /**
-     * @param id
-     * @param type
-     * @param order
-     */
     public PhysicalSubDiv(String id, String type, int order) {
         this(id, type, order, null);
     }
 
-    /**
-     * @param id
-     * @param type
-     * @param order
-     * @param orderLabel
-     */
     public PhysicalSubDiv(String id, String type, int order, String orderLabel) {
         this.id = id;
         this.type = type;
@@ -52,26 +41,11 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
         this.filePointers = new LinkedHashMap<String, Fptr>();
     }
 
-    /**
-     * @param id
-     * @param type
-     * @param order
-     * @param orderLabel
-     * @param label
-     */
     public PhysicalSubDiv(String id, String type, int order, String orderLabel, String label) {
         this(id, type, order, orderLabel);
         this.label = label;
     }
 
-    /**
-     * @param id
-     * @param type
-     * @param order
-     * @param orderLabel
-     * @param label
-     * @param contentids
-     */
     public PhysicalSubDiv(String id, String type, int order, String orderLabel, String label, String contentids) {
         this(id, type, order, orderLabel);
         this.label = label;
@@ -102,8 +76,6 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
 
     /**
      * Removes a {@link Fptr} by its file id.
-     * 
-     * @param fileId
      */
     public void remove(String fileId) {
         this.filePointers.remove(fileId);
@@ -136,9 +108,6 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
         return order;
     }
 
-    /**
-     * @param order
-     */
     public void setOrder(int order) {
         this.order = order;
     }
@@ -150,9 +119,6 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
         return orderLabel;
     }
 
-    /**
-     * @param orderLabel
-     */
     public void setOrderLabel(String orderLabel) {
         this.orderLabel = orderLabel;
     }
@@ -164,9 +130,6 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
         return label;
     }
 
-    /**
-     * @param label
-     */
     public void setLabel(String label) {
         this.label = label;
     }
