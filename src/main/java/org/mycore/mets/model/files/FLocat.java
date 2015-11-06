@@ -36,8 +36,6 @@ public class FLocat implements IMetsElement {
     private LOCTYPE type;
 
     /**
-     * @param loctype
-     * @param href
      * @deprecated use {@link FLocat#FLocat(LOCTYPE, String)} instead
      */
     public FLocat(String loctype, String href) {
@@ -48,7 +46,6 @@ public class FLocat implements IMetsElement {
     /**
      * @param loctype
      *            the loctype
-     * @param href
      */
     public FLocat(LOCTYPE loctype, String href) {
         this.type = loctype;

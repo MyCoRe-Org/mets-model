@@ -73,7 +73,7 @@ public class FileSec implements IMetsElement {
      * 
      * @param use
      *            the use attribute
-     * @see {@link FileSec#removeFileGrp(FileGrp)}
+     * @see FileSec#removeFileGrp(FileGrp)
      */
     public boolean removeFileGrpByUse(String use) {
         if (use == null || use.length() == 0) {

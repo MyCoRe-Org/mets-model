@@ -116,9 +116,6 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
         return new Vector<LogicalDiv>(subDivContainer.values());
     }
 
-    /**
-     * @param parentToSet
-     */
     protected void setParent(LogicalDiv parentToSet) {
         this.parent = parentToSet;
     }
@@ -132,8 +129,6 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
 
     /**
      * Returns a modifiable list of file pointers.
-     * 
-     * @return
      */
     public List<Fptr> getFptrList() {
         return fptrList;
@@ -141,8 +136,6 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
 
     /**
      * Returns a {@link LogicalDiv} with the given id.
-     * 
-     * @param identifier
      * @return a {@link LogicalDiv} with the given id or null
      */
     public LogicalDiv getLogicalSubDiv(String identifier) {
@@ -172,8 +165,6 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
 
     /**
      * Sets the label attribute.
-     * 
-     * @param label
      */
     public void setLabel(String label) {
         this.label = label;
@@ -188,8 +179,6 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
 
     /**
      * Sets the order attribute.
-     * 
-     * @param order
      */
     public void setOrder(int order) {
         this.order = order;
