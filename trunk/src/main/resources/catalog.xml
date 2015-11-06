@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+
+  <system systemId="http://www.loc.gov/standards/mets/mets.xsd" uri="xsd/mets.xsd" />
+  <system systemId="http://www.loc.gov/standards/xlink/xlink.xsd" uri="xsd/xlink-loc.xsd" />
+
+</catalog>
