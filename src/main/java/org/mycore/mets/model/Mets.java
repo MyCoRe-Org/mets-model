@@ -427,6 +427,13 @@ public class Mets {
     }
 
     /**
+     * Removes all dmd sections from the mets document.
+     */
+    public void clearDmdSecs() {
+        dmdsecs.clear();
+    }
+
+    /**
      * Adds the section to the mets document
      * 
      * @param section
@@ -447,6 +454,13 @@ public class Mets {
     public void removeAmdSec(AmdSec section) {
         String id = section.getId();
         amdsecs.remove(id);
+    }
+
+    /**
+     * Removes all amd sections from the mets document.
+     */
+    public void clearAmdSec() {
+        amdsecs.clear();
     }
 
     public IStructMap getStructMap(String type) {
