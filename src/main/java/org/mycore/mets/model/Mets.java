@@ -147,20 +147,20 @@ public class Mets {
      * Creates a {@link Mets} object from the given {@link Document} object.
      */
     public Mets(Document source) throws Exception {
-        this();
         if (!Mets.isValid(source)) {
             throw new IllegalArgumentException("The given document is not a valid mets document");
         }
-
-        createDmdSec(source);
-        createAmdSec(source);
-        createFileSec(source);
-        createLogicalStructMap(source);
-        createPhysicalStructMap(source);
-        createStuctLinks(source);
+        this.dmdsecs = createDmdSec(source);
+        this.amdsecs = createAmdSec(source);
+        this.fileSec = createFileSec(source);
+        this.structMaps = new HashMap<String, IStructMap>();
+        this.structMaps.put(LogicalStructMap.TYPE, createLogicalStructMap(source));
+        this.structMaps.put(PhysicalStructMap.TYPE, createPhysicalStructMap(source));
+        this.structLink = createStuctLinks(source);
     }
 
-    private void createDmdSec(Document source) throws JDOMException {
+    public static Map<String, DmdSec> createDmdSec(Document source) throws JDOMException {
+        Map<String, DmdSec> dmdsecs = new HashMap<>();
         XPathExpression<Element> xp = getXpathExpression("mets:mets/mets:dmdSec");
 
         for (Element section : xp.evaluate(source)) {
@@ -190,9 +190,11 @@ public class Mets {
                 dmdSec.setMdRef(mdRef);
             }
         }
+        return dmdsecs;
     }
 
-    private void createAmdSec(Document source) throws JDOMException {
+    public static Map<String, AmdSec> createAmdSec(Document source) throws JDOMException {
+        Map<String, AmdSec> amdsecs = new HashMap<>();
         XPathExpression<Element> xp = getXpathExpression("mets:mets/mets:amdSec");
 
         for (Element section : xp.evaluate(source)) {
@@ -202,6 +204,7 @@ public class Mets {
             addOther(section, amdSec, "rightsMD");
             addOther(section, amdSec, "digiprovMD");
         }
+        return amdsecs;
     }
 
     /**
@@ -214,7 +217,7 @@ public class Mets {
      *            one of "rightsMD" or "addRightsMd"
      * @throws JDOMException
      */
-    private void addOther(Element section, AmdSec amdSec, String flag) throws JDOMException {
+    private static void addOther(Element section, AmdSec amdSec, String flag) throws JDOMException {
         XPathExpression<Element> rightsMdXP = getXpathExpression("mets:" + flag);
 
         Element flagElement = rightsMdXP.evaluateFirst(section);
@@ -242,7 +245,8 @@ public class Mets {
      * 
      * @param source
      */
-    private void createLogicalStructMap(Document source) throws JDOMException {
+    public static LogicalStructMap createLogicalStructMap(Document source) throws JDOMException {
+        LogicalStructMap logicalStructMap = new LogicalStructMap();
         XPathExpression<Element> xp = getXpathExpression("mets:mets/mets:structMap[@TYPE='LOGICAL']/mets:div");
 
         Element logDivContainerElem = xp.evaluateFirst(source);
@@ -262,14 +266,15 @@ public class Mets {
         }
 
         // add the div container to the struct map
-        ((LogicalStructMap) getStructMap(LogicalStructMap.TYPE)).setDivContainer(logDivContainer);
+        logicalStructMap.setDivContainer(logDivContainer);
+        return logicalStructMap;
     }
 
     /**
      * @param children
      * @param parent
      */
-    private void processLogicalSubDivChildren(List<Element> children, LogicalDiv parent) {
+    private static void processLogicalSubDivChildren(List<Element> children, LogicalDiv parent) {
         for (Element child : children) {
             if(!child.getName().equals("div")) {
                 return;
@@ -288,7 +293,8 @@ public class Mets {
      * 
      * @param source
      */
-    private void createPhysicalStructMap(Document source) throws JDOMException {
+    public static PhysicalStructMap createPhysicalStructMap(Document source) throws JDOMException {
+        PhysicalStructMap structMap = new PhysicalStructMap();
         XPathExpression<Element> xp = getXpathExpression("mets:mets/mets:structMap[@TYPE='PHYSICAL']/mets:div");
 
         Element physDivElem = xp.evaluateFirst(source);
@@ -298,7 +304,6 @@ public class Mets {
         if (id == null || type == null) {
             throw new IllegalArgumentException("ID and TYPE attribute of mets:div must not be null");
         }
-        PhysicalStructMap structMap = (PhysicalStructMap) this.getStructMap(PhysicalStructMap.TYPE);
         PhysicalDiv physDivContainer = new PhysicalDiv(id, type);
         structMap.setDivContainer(physDivContainer);
 
@@ -324,6 +329,7 @@ public class Mets {
             }
             physDivContainer.add(psd);
         }
+        return structMap;
     }
 
     /**
@@ -331,7 +337,8 @@ public class Mets {
      * 
      * @param source
      */
-    private void createStuctLinks(Document source) throws JDOMException {
+    public static StructLink createStuctLinks(Document source) throws JDOMException {
+        StructLink structLink = new StructLink();
         XPathExpression<Element> smLinksXP = getXpathExpression("mets:mets/mets:structLink/mets:smLink");
 
         for (Element smLink : smLinksXP.evaluate(source)) {
@@ -341,8 +348,9 @@ public class Mets {
                 throw new IllegalArgumentException("xlink:from and xlink:to must not be null in mets:smLink element");
             }
             SmLink l = new SmLink(from, to);
-            this.structLink.addSmLink(l);
+            structLink.addSmLink(l);
         }
+        return structLink;
     }
 
     private static XPathExpression<Element> getXpathExpression(String xpath) {
@@ -355,7 +363,8 @@ public class Mets {
      * @param source
      * @throws JDOMException
      */
-    private void createFileSec(Document source) throws JDOMException {
+    public static FileSec createFileSec(Document source) throws JDOMException {
+        FileSec fileSec = new FileSec();
         XPathExpression<Element> grpXPath = getXpathExpression("mets:mets/mets:fileSec/mets:fileGrp");
 
         for (Element aFileGroup : grpXPath.evaluate(source)) {
@@ -389,8 +398,9 @@ public class Mets {
             }
 
             //add the new created file group to the file section
-            this.fileSec.addFileGrp(grp);
+            fileSec.addFileGrp(grp);
         }
+        return fileSec;
     }
 
     /**
