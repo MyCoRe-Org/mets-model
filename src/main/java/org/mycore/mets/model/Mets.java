@@ -250,10 +250,11 @@ public class Mets {
 
         Element logDivContainerElem = xp.evaluateFirst(source);
 
+        String order = logDivContainerElem.getAttributeValue("ORDER");
         LogicalDiv logDivContainer = new LogicalDiv(logDivContainerElem.getAttributeValue("ID"),
             logDivContainerElem.getAttributeValue("TYPE"), logDivContainerElem.getAttributeValue("LABEL"),
-            Integer.valueOf(logDivContainerElem.getAttributeValue("ORDER")),
-            logDivContainerElem.getAttributeValue("ADMID"), logDivContainerElem.getAttributeValue("DMDID"));
+            order != null ? Integer.valueOf(order) : null, logDivContainerElem.getAttributeValue("ADMID"),
+            logDivContainerElem.getAttributeValue("DMDID"));
 
         for (Element logSubDiv : (List<Element>) logDivContainerElem.getChildren()) {
             LogicalDiv lsd = new LogicalDiv(logSubDiv.getAttributeValue("ID"),

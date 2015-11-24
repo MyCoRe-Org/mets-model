@@ -28,7 +28,7 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
 
     protected List<Fptr> fptrList;
 
-    protected int order;
+    protected Integer order;
 
     private LogicalDiv parent;
 
@@ -46,7 +46,7 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
      * @param order
      *            the order of the div
      */
-    public LogicalDiv(String id, String type, String label, int order) {
+    public LogicalDiv(String id, String type, String label, Integer order) {
         this.subDivContainer = new LinkedHashMap<String, LogicalDiv>();
         this.fptrList = new ArrayList<Fptr>();
         this.setId(id);
@@ -59,7 +59,7 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
         this(id, type, label, -1, null, null);
     }
 
-    public LogicalDiv(String id, String type, String label, int order, String amdId, String dmdId) {
+    public LogicalDiv(String id, String type, String label, Integer order, String amdId, String dmdId) {
         this(id, type, label, order);
         this.setAmdId(amdId);
         this.setDmdId(dmdId);
@@ -180,14 +180,14 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
     /**
      * Sets the order attribute.
      */
-    public void setOrder(int order) {
+    public void setOrder(Integer order) {
         this.order = order;
     }
 
     /**
      * @return the value of the order attribute
      */
-    public int getOrder() {
+    public Integer getOrder() {
         return order;
     }
 
@@ -226,7 +226,7 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
         if (this.getLabel() != null && !this.getLabel().equals("")) {
             div.setAttribute(XML_LABEL, this.getLabel());
         }
-        if (this.getOrder() != -1) {
+        if (this.getOrder() != null && this.getOrder() != -1) {
             div.setAttribute(XML_ORDER, String.valueOf(this.getOrder()));
         }
         Iterator<LogicalDiv> sbDivIterator = this.subDivContainer.values().iterator();
