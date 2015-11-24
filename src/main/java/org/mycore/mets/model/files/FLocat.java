@@ -36,16 +36,10 @@ public class FLocat implements IMetsElement {
     private LOCTYPE type;
 
     /**
-     * @deprecated use {@link FLocat#FLocat(LOCTYPE, String)} instead
-     */
-    public FLocat(String loctype, String href) {
-        this.type = LOCTYPE.valueOf(loctype);
-        this.href = href;
-    }
-
-    /**
      * @param loctype
      *            the loctype
+     * @param href
+     *            the href
      */
     public FLocat(LOCTYPE loctype, String href) {
         this.type = loctype;

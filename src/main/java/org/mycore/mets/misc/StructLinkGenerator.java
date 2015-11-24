@@ -80,6 +80,7 @@ public class StructLinkGenerator {
     /**
      * Returns a list of all physical id's ordered by ORDER.
      * 
+     * @param psm the pyhsical struct map
      * @return list list of physical id's
      */
     protected List<String> getOrderedPhysicals(PhysicalStructMap psm) {
