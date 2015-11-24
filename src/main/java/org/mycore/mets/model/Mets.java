@@ -39,7 +39,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.xerces.util.XMLCatalogResolver;
 import org.jdom2.Document;
 import org.jdom2.Element;
-import org.jdom2.JDOMException;
 import org.jdom2.filter.Filters;
 import org.jdom2.transform.JDOMSource;
 import org.jdom2.xpath.XPathExpression;
@@ -130,9 +129,6 @@ public class Mets {
 
     private FileSec fileSec;
 
-    /**
-     * 
-     */
     public Mets() {
         this.dmdsecs = new HashMap<String, DmdSec>();
         this.amdsecs = new HashMap<String, AmdSec>();
@@ -145,6 +141,8 @@ public class Mets {
 
     /**
      * Creates a {@link Mets} object from the given {@link Document} object.
+     * 
+     * @param source the source document
      */
     public Mets(Document source) {
         if (!Mets.isValid(source)) {

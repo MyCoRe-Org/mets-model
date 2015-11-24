@@ -140,7 +140,7 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
      * Returns a {@link LogicalDiv} with the given id. This checks
      * all descendants.
      * 
-     * @param identifier @ID attribute to find  
+     * @param identifier ID attribute to find  
      * @return a {@link LogicalDiv} with the given id or null
      */
     public LogicalDiv getLogicalSubDiv(String identifier) {
