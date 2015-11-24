@@ -76,6 +76,8 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
 
     /**
      * Removes a {@link Fptr} by its file id.
+     * 
+     * @param fileId file identifier to remove
      */
     public void remove(String fileId) {
         this.filePointers.remove(fileId);

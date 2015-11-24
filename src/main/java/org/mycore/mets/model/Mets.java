@@ -242,7 +242,8 @@ public class Mets {
     /**
      * Creates the mets:structMap TYPE="LOGICAL".
      * 
-     * @param source
+     * @param source the source document
+     * @return a new created logical struct map based on the source
      */
     public static LogicalStructMap createLogicalStructMap(Document source) {
         LogicalStructMap logicalStructMap = new LogicalStructMap();
@@ -291,7 +292,8 @@ public class Mets {
     /**
      * Creates the mets:structMap TYPE="PHYSICAL".
      * 
-     * @param source
+     * @param source the source document
+     * @return a new created physical struct map based on the given source
      */
     public static PhysicalStructMap createPhysicalStructMap(Document source) {
         PhysicalStructMap structMap = new PhysicalStructMap();
@@ -335,7 +337,8 @@ public class Mets {
     /**
      * Creates the mets:structLink section from the given source.
      * 
-     * @param source
+     * @param source the source document
+     * @return a new created struct link based on the given source
      */
     public static StructLink createStuctLinks(Document source) {
         StructLink structLink = new StructLink();
@@ -360,8 +363,8 @@ public class Mets {
     /**
      * Creates the file section from the given source document.
      * 
-     * @param source
-     * @throws JDOMException
+     * @param source the source document
+     * @return a new created file section based on the given source
      */
     public static FileSec createFileSec(Document source) {
         FileSec fileSec = new FileSec();
@@ -420,10 +423,13 @@ public class Mets {
         return true;
     }
 
-    /** Removes the given MdSection from the Mets document */
+    /**
+     * Removes the given MdSection from the Mets document
+     * 
+     * @param section the section to remove
+     */
     public void removeDmdSec(DmdSec section) {
-        String id = section.getId();
-        dmdsecs.remove(id);
+        dmdsecs.remove(section.getId());
     }
 
     /**
@@ -450,10 +456,13 @@ public class Mets {
         return true;
     }
 
-    /** Removes the given MdSection from the Mets document */
+    /**
+     * Removes the given MdSection from the Mets document
+     * 
+     * @param section the section to remove
+     */
     public void removeAmdSec(AmdSec section) {
-        String id = section.getId();
-        amdsecs.remove(id);
+        amdsecs.remove(section.getId());
     }
 
     /**
@@ -541,6 +550,8 @@ public class Mets {
 
     /**
      * Returns the Mets Object as {@link Document}.
+     * 
+     * @return the mets object as jdom document
      */
     public Document asDocument() {
         Document doc = new Document();
@@ -548,6 +559,11 @@ public class Mets {
         return doc;
     }
 
+    /**
+     * Returns the Mets Object as {@link Element}
+     * 
+     * @return the mets object as jdom element
+     */
     public Element asElement() {
         Element mets = new Element("mets", IMetsElement.METS);
         mets.addNamespaceDeclaration(IMetsElement.XSI);

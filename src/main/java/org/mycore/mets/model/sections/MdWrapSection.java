@@ -60,6 +60,8 @@ public abstract class MdWrapSection extends MdSection {
      * constant in this type. (Extraneous whitespace characters are not
      * permitted.)
      * 
+     * @param name
+     *              name of the mdtype
      * @return {@link MDTYPE#OTHER} if no other matching MDTYPE could be found
      */
     public static MDTYPE findTypeByName(String name) {

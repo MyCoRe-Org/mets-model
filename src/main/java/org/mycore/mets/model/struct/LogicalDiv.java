@@ -129,13 +129,18 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
 
     /**
      * Returns a modifiable list of file pointers.
+     * 
+     * @return list of file pointers
      */
     public List<Fptr> getFptrList() {
         return fptrList;
     }
 
     /**
-     * Returns a {@link LogicalDiv} with the given id.
+     * Returns a {@link LogicalDiv} with the given id. This checks
+     * all descendants.
+     * 
+     * @param identifier @ID attribute to find  
      * @return a {@link LogicalDiv} with the given id or null
      */
     public LogicalDiv getLogicalSubDiv(String identifier) {
@@ -165,6 +170,8 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
 
     /**
      * Sets the label attribute.
+     * 
+     * @param label label to set
      */
     public void setLabel(String label) {
         this.label = label;
@@ -179,6 +186,8 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
 
     /**
      * Sets the order attribute.
+     * 
+     * @param order order to set
      */
     public void setOrder(Integer order) {
         this.order = order;

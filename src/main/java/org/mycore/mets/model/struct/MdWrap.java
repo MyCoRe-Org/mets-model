@@ -34,9 +34,13 @@ public class MdWrap implements IMetsElement {
     /**
      * To wrap bin data.
      * 
+     * @param mdtype
+     *            the mdtype
      * @param bindata
      *            any arbitrary binary or textual form, PROVIDED that the
      *            metadata is Base64 encoded
+     * @param mimetype
+     *            the mimetype
      */
     public MdWrap(MDTYPE mdtype, String bindata, String mimetype) {
         this.mdtype = mdtype;

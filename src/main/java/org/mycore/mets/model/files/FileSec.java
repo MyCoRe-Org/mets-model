@@ -63,6 +63,7 @@ public class FileSec implements IMetsElement {
      * 
      * @param grp
      *            the group to remove
+     * @return true if the file group was removed successfully
      */
     public boolean removeFileGrp(FileGrp grp) {
         return removeFileGrpByUse(grp.getUse());
@@ -74,14 +75,13 @@ public class FileSec implements IMetsElement {
      * @param use
      *            the use attribute
      * @see FileSec#removeFileGrp(FileGrp)
+     * @return true if the file group was removed successfully
      */
     public boolean removeFileGrpByUse(String use) {
         if (use == null || use.length() == 0) {
             return false;
         }
-
-        this.fGroups.remove(use);
-        return true;
+        return this.fGroups.remove(use) != null;
     }
 
     /**
