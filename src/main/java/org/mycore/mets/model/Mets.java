@@ -146,7 +146,7 @@ public class Mets {
     /**
      * Creates a {@link Mets} object from the given {@link Document} object.
      */
-    public Mets(Document source) throws Exception {
+    public Mets(Document source) {
         if (!Mets.isValid(source)) {
             throw new IllegalArgumentException("The given document is not a valid mets document");
         }
@@ -159,7 +159,7 @@ public class Mets {
         this.structLink = createStuctLinks(source);
     }
 
-    public static Map<String, DmdSec> createDmdSec(Document source) throws JDOMException {
+    public static Map<String, DmdSec> createDmdSec(Document source) {
         Map<String, DmdSec> dmdsecs = new HashMap<>();
         XPathExpression<Element> xp = getXpathExpression("mets:mets/mets:dmdSec");
 
@@ -193,7 +193,7 @@ public class Mets {
         return dmdsecs;
     }
 
-    public static Map<String, AmdSec> createAmdSec(Document source) throws JDOMException {
+    public static Map<String, AmdSec> createAmdSec(Document source) {
         Map<String, AmdSec> amdsecs = new HashMap<>();
         XPathExpression<Element> xp = getXpathExpression("mets:mets/mets:amdSec");
 
@@ -215,9 +215,8 @@ public class Mets {
      * @param amdSec
      * @param flag
      *            one of "rightsMD" or "addRightsMd"
-     * @throws JDOMException
      */
-    private static void addOther(Element section, AmdSec amdSec, String flag) throws JDOMException {
+    private static void addOther(Element section, AmdSec amdSec, String flag) {
         XPathExpression<Element> rightsMdXP = getXpathExpression("mets:" + flag);
 
         Element flagElement = rightsMdXP.evaluateFirst(section);
@@ -245,7 +244,7 @@ public class Mets {
      * 
      * @param source
      */
-    public static LogicalStructMap createLogicalStructMap(Document source) throws JDOMException {
+    public static LogicalStructMap createLogicalStructMap(Document source) {
         LogicalStructMap logicalStructMap = new LogicalStructMap();
         XPathExpression<Element> xp = getXpathExpression("mets:mets/mets:structMap[@TYPE='LOGICAL']/mets:div");
 
@@ -293,7 +292,7 @@ public class Mets {
      * 
      * @param source
      */
-    public static PhysicalStructMap createPhysicalStructMap(Document source) throws JDOMException {
+    public static PhysicalStructMap createPhysicalStructMap(Document source) {
         PhysicalStructMap structMap = new PhysicalStructMap();
         XPathExpression<Element> xp = getXpathExpression("mets:mets/mets:structMap[@TYPE='PHYSICAL']/mets:div");
 
@@ -337,7 +336,7 @@ public class Mets {
      * 
      * @param source
      */
-    public static StructLink createStuctLinks(Document source) throws JDOMException {
+    public static StructLink createStuctLinks(Document source) {
         StructLink structLink = new StructLink();
         XPathExpression<Element> smLinksXP = getXpathExpression("mets:mets/mets:structLink/mets:smLink");
 
@@ -363,7 +362,7 @@ public class Mets {
      * @param source
      * @throws JDOMException
      */
-    public static FileSec createFileSec(Document source) throws JDOMException {
+    public static FileSec createFileSec(Document source) {
         FileSec fileSec = new FileSec();
         XPathExpression<Element> grpXPath = getXpathExpression("mets:mets/mets:fileSec/mets:fileGrp");
 
