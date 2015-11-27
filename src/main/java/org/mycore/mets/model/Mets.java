@@ -51,6 +51,7 @@ import org.mycore.mets.model.sections.AmdSec;
 import org.mycore.mets.model.sections.DmdSec;
 import org.mycore.mets.model.sections.MdWrapSection;
 import org.mycore.mets.model.sections.RightsMD;
+import org.mycore.mets.model.struct.Area;
 import org.mycore.mets.model.struct.Fptr;
 import org.mycore.mets.model.struct.IStructMap;
 import org.mycore.mets.model.struct.LOCTYPE;
@@ -62,6 +63,7 @@ import org.mycore.mets.model.struct.MdWrap;
 import org.mycore.mets.model.struct.PhysicalDiv;
 import org.mycore.mets.model.struct.PhysicalStructMap;
 import org.mycore.mets.model.struct.PhysicalSubDiv;
+import org.mycore.mets.model.struct.Seq;
 import org.mycore.mets.model.struct.SmLink;
 import org.mycore.mets.model.struct.StructLink;
 import org.xml.sax.InputSource;
@@ -141,7 +143,7 @@ public class Mets {
 
     /**
      * Creates a {@link Mets} object from the given {@link Document} object.
-     * 
+     *
      * @param source the source document
      */
     public Mets(Document source) {
@@ -208,7 +210,7 @@ public class Mets {
     /**
      * Creates the elements embedded in the mets:amdSec. Currently the
      * mets:rightsMD and the mets:digiprovMD sections are supported.
-     * 
+     *
      * @param section
      * @param amdSec
      * @param flag
@@ -239,7 +241,7 @@ public class Mets {
 
     /**
      * Creates the mets:structMap TYPE="LOGICAL".
-     * 
+     *
      * @param source the source document
      * @return a new created logical struct map based on the source
      */
@@ -261,7 +263,7 @@ public class Mets {
                     .getAttributeValue("ORDER")));
             logDivContainer.add(lsd);
 
-            processLogicalSubDivChildren((List<Element>) logSubDiv.getChildren(), lsd);
+            processLogicalChildren((List<Element>) logSubDiv.getChildren(), lsd);
         }
 
         // add the div container to the struct map
@@ -273,23 +275,58 @@ public class Mets {
      * @param children
      * @param parent
      */
-    private static void processLogicalSubDivChildren(List<Element> children, LogicalDiv parent) {
+    private static void processLogicalChildren(List<Element> children, LogicalDiv parent) {
         for (Element child : children) {
-            if(!child.getName().equals("div")) {
-                return;
-            }
-            LogicalDiv lsd = new LogicalDiv(child.getAttributeValue("ID"),
-                child.getAttributeValue("TYPE"), child.getAttributeValue("LABEL"), Integer.valueOf(child
-                    .getAttributeValue("ORDER")));
-            parent.add(lsd);
+            switch (child.getName()) {
+                case "fptr":
+                    Fptr fptr = processFPTR(child);
+                    parent.getFptrList().add(fptr);
+                    break;
+                case "div":
+                    LogicalDiv lsd = new LogicalDiv(child.getAttributeValue("ID"),
+                            child.getAttributeValue("TYPE"),
+                            child.getAttributeValue("LABEL"),
+                            Integer.valueOf(child.getAttributeValue("ORDER")));
+                    parent.add(lsd);
 
-            processLogicalSubDivChildren((List<Element>) child.getChildren(), lsd);
+                    processLogicalChildren((List<Element>) child.getChildren(), lsd);
+                    break;
+                default:
+                    return;
+            }
         }
+    }
+
+    private static Fptr processFPTR(Element child) {
+        Fptr fptr = new Fptr();
+
+        String fileid = child.getAttributeValue("FILEID");
+        if (fileid != null) {
+            fptr.setFileId(fileid);
+        }
+
+        Element seq = child.getChild("seq", IMetsElement.METS);
+        if (seq != null) {
+            Seq newSEQ = new Seq();
+            fptr.getSeqList().add(newSEQ);
+
+            List<Element> seqAreaChildren = seq.getChildren("area", IMetsElement.METS);
+            for (Element area : seqAreaChildren) {
+                String fileId = area.getAttributeValue("FILEID");
+                String betype = area.getAttributeValue("BETYPE");
+                String begin = area.getAttributeValue("BEGIN");
+                String end = area.getAttributeValue("END");
+                if (fileId != null && betype != null && begin != null && end != null) {
+                    newSEQ.getAreaList().add(new Area(fileId, betype, begin, end));
+                } // TODO: handle this
+            }
+        }
+        return fptr;
     }
 
     /**
      * Creates the mets:structMap TYPE="PHYSICAL".
-     * 
+     *
      * @param source the source document
      * @return a new created physical struct map based on the given source
      */
@@ -334,7 +371,7 @@ public class Mets {
 
     /**
      * Creates the mets:structLink section from the given source.
-     * 
+     *
      * @param source the source document
      * @return a new created struct link based on the given source
      */
@@ -360,7 +397,7 @@ public class Mets {
 
     /**
      * Creates the file section from the given source document.
-     * 
+     *
      * @param source the source document
      * @return a new created file section based on the given source
      */
@@ -406,7 +443,7 @@ public class Mets {
 
     /**
      * Adds the section to the mets document
-     * 
+     *
      * @param section
      *            the section to add
      * @return <code>true</code> if the section was added successfully,
@@ -423,7 +460,7 @@ public class Mets {
 
     /**
      * Removes the given MdSection from the Mets document
-     * 
+     *
      * @param section the section to remove
      */
     public void removeDmdSec(DmdSec section) {
@@ -439,7 +476,7 @@ public class Mets {
 
     /**
      * Adds the section to the mets document
-     * 
+     *
      * @param section
      *            the section to add
      * @return <code>true</code> if the section was added successfully,
@@ -456,7 +493,7 @@ public class Mets {
 
     /**
      * Removes the given MdSection from the Mets document
-     * 
+     *
      * @param section the section to remove
      */
     public void removeAmdSec(AmdSec section) {
@@ -548,7 +585,7 @@ public class Mets {
 
     /**
      * Returns the Mets Object as {@link Document}.
-     * 
+     *
      * @return the mets object as jdom document
      */
     public Document asDocument() {
@@ -559,7 +596,7 @@ public class Mets {
 
     /**
      * Returns the Mets Object as {@link Element}
-     * 
+     *
      * @return the mets object as jdom element
      */
     public Element asElement() {
