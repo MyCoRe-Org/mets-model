@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.mycore.mets.model.Mets;
 import org.mycore.mets.model.struct.Area;
@@ -40,18 +42,30 @@ public class StructLinkGenerator {
         LogicalDiv logicalRootDiv = lsm.getDivContainer();
         List<LogicalDiv> logicalDivs = getLogicalDivs(logicalRootDiv);
 
-        List<String> missingPhysicalRefs = new ArrayList<String>(fileIdRef.values());
+        Set<String> missingPhysicalRefs = new HashSet<String>(fileIdRef.values());
         Map<String, String> invertSmLinkMap = new HashMap<String, String>();
 
         // go through all logical divs
         StructLink structLink = mets.getStructLink();
         for (LogicalDiv div : logicalDivs) {
-            String fileId = findFirstFileId(div);
-            String physicalId = fileIdRef.get(fileId);
-            missingPhysicalRefs.remove(physicalId);
-            String logicalId = div.getId();
-            structLink.addSmLink(new SmLink(logicalId, physicalId));
-            invertSmLinkMap.put(physicalId, logicalId);
+            // get all FILEID's of mets:area
+            List<String> fileIds = getFileIdsFromArea(div);
+            if (fileIds.isEmpty()) {
+                String firstFileId = findFirstFileId(div);
+                if (firstFileId == null) {
+                    throw new RuntimeException("Unable to create struct link section because " + div.getId()
+                        + " cannot be linked with any physical structure.");
+                }
+                fileIds.add(firstFileId);
+            }
+            // run through FILEID's and link them with the logical div
+            for(String fileId : fileIds) {
+                String physicalId = fileIdRef.get(fileId);
+                missingPhysicalRefs.remove(physicalId);
+                String logicalId = div.getId();
+                structLink.addSmLink(new SmLink(logicalId, physicalId));
+                invertSmLinkMap.put(physicalId, logicalId);
+            }
         }
 
         // add missing physical divs
@@ -150,7 +164,8 @@ public class StructLinkGenerator {
      * @return id of the first file which is referenced within the div
      */
     protected String findFirstFileId(LogicalDiv div) {
-        String fileId = getFileIdFromArea(div);
+        List<String> fileIds = getFileIdsFromArea(div);
+        String fileId = fileIds.isEmpty() ? null : fileIds.get(0);
         if (fileId == null) {
             for (LogicalDiv subDiv : div.getChildren()) {
                 fileId = findFirstFileId(subDiv);
@@ -169,15 +184,16 @@ public class StructLinkGenerator {
      * @param div the div to get the first file id from
      * @return file id or null
      */
-    protected String getFileIdFromArea(LogicalDiv div) {
+    protected List<String> getFileIdsFromArea(LogicalDiv div) {
+        List<String> fileIds = new ArrayList<>();
         for (Fptr fptr : div.getFptrList()) {
             for (Seq seq : fptr.getSeqList()) {
                 for (Area area : seq.getAreaList()) {
-                    return area.getFileId();
+                    fileIds.add(area.getFileId());
                 }
             }
         }
-        return null;
+        return fileIds;
     }
 
 }
