@@ -56,7 +56,7 @@ public class StructLink implements IMetsElement {
             return;
         }
 
-        this.links.put(from + to, smLink);
+        this.links.put(getKey(from, to), smLink);
     }
 
     /**
@@ -66,7 +66,7 @@ public class StructLink implements IMetsElement {
      *            the {@link SmLink} to remove
      */
     public void removeSmLink(SmLink smLink) {
-        this.links.remove(smLink.getFrom() + smLink.getTo());
+        this.links.remove(getKey(smLink.getFrom(), smLink.getTo()));
     }
 
     /**
@@ -81,7 +81,22 @@ public class StructLink implements IMetsElement {
         if (from == null || from.length() == 0 || to == null || to.length() == 0) {
             return;
         }
-        this.links.remove(from + to);
+        this.links.remove(getKey(from, to));
+    }
+
+    /**
+     * Returns the smlink key of the {@link #links} hashmap.
+     * 
+     * @param from
+     *            the from attribute of the smlink (not null)
+     * @param to
+     *            the to attribute of the smlink (not null)
+     * @return a generated key of the from and to values
+     */
+    protected String getKey(String from, String to) {
+        StringBuilder key = new StringBuilder();
+        key.append(from).append("#").append(to);
+        return key.toString();
     }
 
     /**
