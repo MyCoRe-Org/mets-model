@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import org.jdom2.Element;
@@ -161,4 +162,30 @@ public class StructLink implements IMetsElement {
         }
         return structLink;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        StructLink other = (StructLink) obj;
+        if(other.links.size() != this.links.size()) {
+            return false;
+        }
+        Set<String> otherKeySet = other.links.keySet();
+        Set<String> thisKeySet = this.links.keySet();
+        for(String key : otherKeySet) {
+            if(!thisKeySet.contains(key)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

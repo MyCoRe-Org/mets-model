@@ -26,16 +26,18 @@ import org.mycore.mets.model.struct.StructLink;
  * physical struct map are set.
  * 
  * @author Matthias Eichner
- *
  */
 public class StructLinkGenerator {
 
     /**
-     * Creates the struct link section of the given {@link Mets} object. 
+     * Creates the struct link section of the given {@link Mets} object. This does just
+     * create the struct link and does not add it to the mets object itself. Do this
+     * by calling {@link Mets#setStructLink(StructLink)}.
      * 
-     * @param mets where to add the struct link section
+     * @param mets the mets object for which you want to create a struct link
+     * @return the new generated struct link
      */
-    public void generate(Mets mets) {
+    public StructLink generate(Mets mets) {
         PhysicalStructMap psm = (PhysicalStructMap) mets.getStructMap(PhysicalStructMap.TYPE);
         LogicalStructMap lsm = (LogicalStructMap) mets.getStructMap(LogicalStructMap.TYPE);
         HashMap<String, String> fileIdRef = getFileIdRef(psm);
@@ -46,7 +48,7 @@ public class StructLinkGenerator {
         Map<String, String> invertSmLinkMap = new HashMap<String, String>();
 
         // go through all logical divs
-        StructLink structLink = mets.getStructLink();
+        StructLink structLink = new StructLink();
         for (LogicalDiv div : logicalDivs) {
             // get all FILEID's of mets:area
             List<String> fileIds = getFileIdsFromArea(div);
@@ -59,7 +61,7 @@ public class StructLinkGenerator {
                 fileIds.add(firstFileId);
             }
             // run through FILEID's and link them with the logical div
-            for(String fileId : fileIds) {
+            for (String fileId : fileIds) {
                 String physicalId = fileIdRef.get(fileId);
                 missingPhysicalRefs.remove(physicalId);
                 String logicalId = div.getId();
@@ -88,7 +90,7 @@ public class StructLinkGenerator {
             }
             structLink.addSmLink(new SmLink(logicalId, physicalId));
         }
-        // TODO: sort the struct links by logical or physical id (call addSmLink later)
+        return structLink;
     }
 
     /**
