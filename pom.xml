@@ -4,14 +4,14 @@
   <parent>
     <artifactId>mycore-parent</artifactId>
     <groupId>org.mycore</groupId>
-    <version>28-SNAPSHOT</version>
+    <version>28</version>
   </parent>
   <properties>
     <java.target.version>1.8</java.target.version>
   </properties>
   <groupId>org.mycore.mets</groupId>
   <name>Mets Model</name>
-  <version>0.9-SNAPSHOT</version>
+  <version>0.9</version>
   <artifactId>mets-model</artifactId>
   <packaging>jar</packaging>
   <issueManagement>
@@ -19,9 +19,9 @@
     <url>https://mycore.atlassian.net/browse/METSMODEL</url>
   </issueManagement>
   <scm>
-    <connection>scm:svn:http://server.mycore.de/svn/maven/mets-model/trunk</connection>
-    <developerConnection>scm:svn:https://server.mycore.de/svn/maven/mets-model/trunk</developerConnection>
-    <url>http://www.mycore.de/viewvc/viewvc.cgi/maven/mets-model/</url>
+    <connection>scm:svn:http://server.mycore.de/svn/maven/mets-model/tags/mets-model-0.9</connection>
+    <developerConnection>scm:svn:https://server.mycore.de/svn/maven/mets-model/tags/mets-model-0.9</developerConnection>
+    <url>http://www.mycore.de/viewvc/viewvc.cgi/maven/mets-model/tags/mets-model-0.9</url>
   </scm>
   <repositories>
     <repository>
