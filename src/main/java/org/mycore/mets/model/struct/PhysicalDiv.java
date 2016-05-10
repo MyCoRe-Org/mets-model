@@ -50,6 +50,23 @@ public class PhysicalDiv extends AbstractDiv<PhysicalSubDiv> {
         return this.physicalSubDivContainer.get(id);
     }
 
+    /**
+     * Returns the first {@link PhysicalSubDiv} which contains the given FILEID.
+     * If no div can be found, null is returned.
+     * 
+     * @param fileId the file id
+     * @return list of physical sub div'S
+     */
+    public PhysicalSubDiv byFileId(String fileId) {
+        return this.physicalSubDivContainer.values().stream()
+            .filter(subDiv -> {
+                return subDiv.getChildren().stream()
+                    .filter(fptr -> {
+                       return fptr.getFileId().equals(fileId); 
+                    }).findAny().isPresent();
+            }).findFirst().orElse(null);
+    }
+
     @Override
     public List<PhysicalSubDiv> getChildren() {
         return new Vector<PhysicalSubDiv>(physicalSubDivContainer.values());
