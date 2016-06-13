@@ -55,8 +55,13 @@ public class StructLinkGenerator {
             if (fileIds.isEmpty()) {
                 String firstFileId = findFirstFileId(div);
                 if (firstFileId == null) {
-                    throw new RuntimeException("Unable to create struct link section because " + div.getId()
-                        + " cannot be linked with any physical structure.");
+                    StringBuffer errorMessage = new StringBuffer("Unable to create struct link section because ");
+                    errorMessage.append(div.getId());
+                    if(div.getLabel() != null && !div.getLabel().equals("")) {
+                        errorMessage.append(" (").append(div.getLabel()).append(")");
+                    }
+                    errorMessage.append(" cannot be linked with any physical structure.");
+                    throw new RuntimeException(errorMessage.toString());
                 }
                 fileIds.add(firstFileId);
             }
