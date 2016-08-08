@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.mycore.mets.model.Mets;
 import org.mycore.mets.model.struct.Area;
 import org.mycore.mets.model.struct.Fptr;
@@ -29,6 +31,32 @@ import org.mycore.mets.model.struct.StructLink;
  */
 public class StructLinkGenerator {
 
+    static Logger LOGGER = LogManager.getLogger(StructLinkGenerator.class);
+
+    protected boolean failEasy = true;
+
+    /**
+     * Should the struct link generation fail if one logical div
+     * couldn't be linked explicit with one physical div. If set to
+     * true, an exception is thrown when the linking fails. If set
+     * to false, the logical div will be linked with the last valid
+     * physical div or the root div.
+     * 
+     * @param failEasy true or false
+     */
+    public void setFailEasy(boolean failEasy) {
+        this.failEasy = failEasy;
+    }
+
+    /**
+     * {@link #setFailEasy(boolean)}
+     * 
+     * @return true or false
+     */
+    public boolean isFailEasy() {
+        return this.failEasy;
+    }
+
     /**
      * Creates the struct link section of the given {@link Mets} object. This does just
      * create the struct link and does not add it to the mets object itself. Do this
@@ -48,25 +76,46 @@ public class StructLinkGenerator {
         Map<String, String> invertSmLinkMap = new HashMap<String, String>();
 
         // go through all logical divs
+        String lastFileId = null;
         StructLink structLink = new StructLink();
         for (LogicalDiv div : logicalDivs) {
-            // get all FILEID's of mets:area
-            List<String> fileIds = getFileIdsFromArea(div);
+            List<String> fileIds = findFileIds(div);
             if (fileIds.isEmpty()) {
-                String firstFileId = findFirstFileId(div);
-                if (firstFileId == null) {
-                    StringBuffer errorMessage = new StringBuffer("Unable to create struct link section because ");
-                    errorMessage.append(div.getId());
-                    if(div.getLabel() != null && !div.getLabel().equals("")) {
-                        errorMessage.append(" (").append(div.getLabel()).append(")");
-                    }
-                    errorMessage.append(" cannot be linked with any physical structure.");
-                    throw new RuntimeException(errorMessage.toString());
+                StringBuffer error = new StringBuffer(div.getId());
+                if (div.getLabel() != null && !div.getLabel().equals("")) {
+                    error.append(" (").append(div.getLabel()).append(")");
                 }
-                fileIds.add(firstFileId);
+                // we fail if we cannot get the correct FILEID
+                if (this.failEasy) {
+                    throw new RuntimeException("Unable to create struct link section because " + error.toString()
+                        + " cannot be linked with any physical structure.");
+                }
+                // we do not fail -> try to get the FILEID in some other way
+                LOGGER.warn("Unable to link logical div " + error.toString()
+                    + " because it cannot be linked with any physical structure.");
+                if (lastFileId != null) {
+                    // get the last file id
+                    fileIds.add(lastFileId);
+                } else {
+                    // link with the first physical div
+                    List<PhysicalSubDiv> children = psm.getDivContainer().getChildren();
+                    if (!children.isEmpty()) {
+                        PhysicalSubDiv physicalDiv = children.get(0);
+                        String physicalId = physicalDiv.getId();
+                        String logicalId = div.getId();
+                        missingPhysicalRefs.remove(physicalId);
+                        structLink.addSmLink(new SmLink(logicalId, physicalId));
+                        invertSmLinkMap.put(physicalId, logicalId);
+                    } else {
+                        throw new RuntimeException("Unable to create struct link section because " + error.toString()
+                            + " cannot be linked with any physical structure. Also there are no physical <mets:div> elements.");
+                    }
+                }
             }
+
             // run through FILEID's and link them with the logical div
             for (String fileId : fileIds) {
+                lastFileId = fileId;
                 String physicalId = fileIdRef.get(fileId);
                 missingPhysicalRefs.remove(physicalId);
                 String logicalId = div.getId();
@@ -96,6 +145,24 @@ public class StructLinkGenerator {
             structLink.addSmLink(new SmLink(logicalId, physicalId));
         }
         return structLink;
+    }
+
+    /**
+     * Returns a list of file ids which are linked with the given logical div.
+     * 
+     * @param div the logical div
+     * @return a list of FILEID's which represent a physical file
+     */
+    private List<String> findFileIds(LogicalDiv div) {
+        List<String> fileIds = getFileIdsFromArea(div);
+        if (fileIds.isEmpty()) {
+            String firstFileId = findFirstFileId(div);
+            if (firstFileId == null) {
+                return fileIds;
+            }
+            fileIds.add(firstFileId);
+        }
+        return fileIds;
     }
 
     /**
