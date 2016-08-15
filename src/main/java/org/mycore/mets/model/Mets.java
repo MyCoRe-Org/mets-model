@@ -253,14 +253,12 @@ public class Mets {
 
         String order = logDivContainerElem.getAttributeValue("ORDER");
         LogicalDiv logDivContainer = new LogicalDiv(logDivContainerElem.getAttributeValue("ID"),
-            logDivContainerElem.getAttributeValue("TYPE"), logDivContainerElem.getAttributeValue("LABEL"),
-            order != null ? Integer.valueOf(order) : null, logDivContainerElem.getAttributeValue("ADMID"),
+                logDivContainerElem.getAttributeValue("TYPE"), logDivContainerElem.getAttributeValue("LABEL"), logDivContainerElem.getAttributeValue("ADMID"),
             logDivContainerElem.getAttributeValue("DMDID"));
 
         for (Element logSubDiv : (List<Element>) logDivContainerElem.getChildren()) {
             LogicalDiv lsd = new LogicalDiv(logSubDiv.getAttributeValue("ID"),
-                logSubDiv.getAttributeValue("TYPE"), logSubDiv.getAttributeValue("LABEL"), Integer.valueOf(logSubDiv
-                    .getAttributeValue("ORDER")));
+                    logSubDiv.getAttributeValue("TYPE"), logSubDiv.getAttributeValue("LABEL"));
             logDivContainer.add(lsd);
 
             processLogicalChildren((List<Element>) logSubDiv.getChildren(), lsd);
@@ -285,8 +283,7 @@ public class Mets {
                 case "div":
                     LogicalDiv lsd = new LogicalDiv(child.getAttributeValue("ID"),
                             child.getAttributeValue("TYPE"),
-                            child.getAttributeValue("LABEL"),
-                            Integer.valueOf(child.getAttributeValue("ORDER")));
+                            child.getAttributeValue("LABEL"));
                     parent.add(lsd);
 
                     processLogicalChildren((List<Element>) child.getChildren(), lsd);
@@ -345,8 +342,7 @@ public class Mets {
         structMap.setDivContainer(physDivContainer);
 
         for (Element subDiv : (List<Element>) physDivElem.getChildren()) {
-            PhysicalSubDiv psd = new PhysicalSubDiv(subDiv.getAttributeValue("ID"), subDiv.getAttributeValue("TYPE"),
-                Integer.parseInt(subDiv.getAttributeValue("ORDER")));
+            PhysicalSubDiv psd = new PhysicalSubDiv(subDiv.getAttributeValue("ID"), subDiv.getAttributeValue("TYPE"));
 
             String orderLabel = subDiv.getAttributeValue("ORDERLABEL");
             if (orderLabel != null) {

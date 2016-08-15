@@ -9,46 +9,32 @@ import org.jdom2.Element;
 
 public class PhysicalSubDiv extends AbstractDiv<Fptr> {
 
-    public static final String XML_ORDER = "ORDER";
-
     public static final String XML_ORDERLABEL = "ORDERLABEL";
 
     public static final String XML_CONTENTIDS = "CONTENTIDS";
-
-    public static final String XML_LABEL = "LABEL";
 
     public static final String TYPE_PAGE = "page";
 
     public static final String ID_PREFIX = "phys_";
 
-    private int order;
-
-    private String orderLabel, label, contentids;
+    private String orderLabel, contentids;
 
     private HashMap<String, Fptr> filePointers;
 
-    public PhysicalSubDiv(String id, String type, int order) {
-        this(id, type, order, null);
+    public PhysicalSubDiv(String id, String type) {
+        this(id, type, null);
     }
 
-    public PhysicalSubDiv(String id, String type, int order, String orderLabel) {
+    public PhysicalSubDiv(String id, String type, String orderLabel) {
         this.id = id;
         this.type = type;
-        this.order = order;
         this.orderLabel = orderLabel;
-        this.label = null;
         this.contentids = null;
         this.filePointers = new LinkedHashMap<String, Fptr>();
     }
 
-    public PhysicalSubDiv(String id, String type, int order, String orderLabel, String label) {
-        this(id, type, order, orderLabel);
-        this.label = label;
-    }
-
-    public PhysicalSubDiv(String id, String type, int order, String orderLabel, String label, String contentids) {
-        this(id, type, order, orderLabel);
-        this.label = label;
+    public PhysicalSubDiv(String id, String type, String orderLabel,  String contentids) {
+        this(id, type, orderLabel);
         this.contentids = contentids;
     }
 
@@ -104,17 +90,6 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
     }
 
     /**
-     * @return the value of order attribute of this div
-     */
-    public int getOrder() {
-        return order;
-    }
-
-    public void setOrder(int order) {
-        this.order = order;
-    }
-
-    /**
      * @return the value of the orderlabel attribute
      */
     public String getOrderLabel() {
@@ -123,17 +98,6 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
 
     public void setOrderLabel(String orderLabel) {
         this.orderLabel = orderLabel;
-    }
-
-    /**
-     * @return the label of this div
-     */
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
     }
 
     /**
@@ -154,15 +118,11 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
     @Override
     public Element asElement() {
         Element div = super.asElement();
-        if (this.getOrder() != -1) {
-            div.setAttribute(XML_ORDER, String.valueOf(this.getOrder()));
-        }
+
         if (this.getOrderLabel() != null && !this.getOrderLabel().equals("")) {
             div.setAttribute(XML_ORDERLABEL, this.getOrderLabel());
         }
-        if (this.getLabel() != null && !this.getLabel().equals("")) {
-            div.setAttribute(XML_LABEL, this.getLabel());
-        }
+
         if (this.getContentids() != null && !this.getContentids().equals("")) {
             div.setAttribute(XML_CONTENTIDS, this.getContentids());
         }

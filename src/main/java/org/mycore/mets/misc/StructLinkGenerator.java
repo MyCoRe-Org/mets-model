@@ -1,17 +1,17 @@
 package org.mycore.mets.misc;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mycore.mets.model.Mets;
+import org.mycore.mets.model.struct.AbstractDiv;
 import org.mycore.mets.model.struct.Area;
 import org.mycore.mets.model.struct.Fptr;
 import org.mycore.mets.model.struct.LogicalDiv;
@@ -125,7 +125,12 @@ public class StructLinkGenerator {
         }
 
         // add missing physical divs
-        List<String> orderedPhysicals = getOrderedPhysicals(psm);
+        List<String> orderedPhysicals = psm.getDivContainer()
+                .getChildren()
+                .stream()
+                .map(AbstractDiv::getId)
+                .collect(Collectors.toList());
+
         for (String physicalId : missingPhysicalRefs) {
             String previousPhyiscalId = physicalId;
             String logicalId = null;
@@ -165,28 +170,6 @@ public class StructLinkGenerator {
         return fileIds;
     }
 
-    /**
-     * Returns a list of all physical id's ordered by ORDER.
-     * 
-     * @param psm the pyhsical struct map
-     * @return list list of physical id's
-     */
-    protected List<String> getOrderedPhysicals(PhysicalStructMap psm) {
-        List<PhysicalSubDiv> orderedList = new ArrayList<PhysicalSubDiv>();
-        PhysicalDiv divContainer = psm.getDivContainer();
-        orderedList.addAll(divContainer.getChildren());
-        Collections.sort(orderedList, new Comparator<PhysicalSubDiv>() {
-            @Override
-            public int compare(PhysicalSubDiv p1, PhysicalSubDiv p2) {
-                return Integer.compare(p1.getOrder(), p2.getOrder());
-            }
-        });
-        List<String> idList = new ArrayList<String>();
-        for (PhysicalSubDiv div : orderedList) {
-            idList.add(div.getId());
-        }
-        return idList;
-    }
 
     /**
      * <p>Returns a map containing all file id references. Each file id is bound
