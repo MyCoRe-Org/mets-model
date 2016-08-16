@@ -3,6 +3,7 @@ package org.mycore.mets.model.struct;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Vector;
 
 import org.jdom2.Element;
@@ -16,6 +17,8 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
     public static final String TYPE_PAGE = "page";
 
     public static final String ID_PREFIX = "phys_";
+
+    private PhysicalDiv parent;
 
     private String orderLabel, contentids;
 
@@ -33,7 +36,7 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
         this.filePointers = new LinkedHashMap<String, Fptr>();
     }
 
-    public PhysicalSubDiv(String id, String type, String orderLabel,  String contentids) {
+    public PhysicalSubDiv(String id, String type, String orderLabel, String contentids) {
         this(id, type, orderLabel);
         this.contentids = contentids;
     }
@@ -113,6 +116,36 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
      */
     public String getContentids() {
         return contentids;
+    }
+
+    /**
+     * Sets the parent for this div.
+     * 
+     * @param parent the parent
+     */
+    public void setParent(PhysicalDiv parent) {
+        this.parent = parent;
+    }
+
+    /**
+     * Gets the parent of this div
+     * 
+     * @return the parent div
+     */
+    public PhysicalDiv getParent() {
+        return parent;
+    }
+
+    /**
+     * Returns the index position of this div in its parent.
+     * 
+     * @return the index position
+     */
+    public Optional<Integer> getPositionInParent() {
+        if (this.parent == null) {
+            return Optional.empty();
+        }
+        return Optional.of(this.parent.getChildren().indexOf(this));
     }
 
     @Override

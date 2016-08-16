@@ -28,6 +28,7 @@ public class PhysicalDiv extends AbstractDiv<PhysicalSubDiv> {
         if (element == null) {
             return;
         }
+        element.setParent(this);
         this.physicalSubDivContainer.put(element.getId(), element);
     }
 

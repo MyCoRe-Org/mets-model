@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Vector;
 
 import org.jdom2.Element;
@@ -107,6 +108,18 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
 
     protected void setParent(LogicalDiv parentToSet) {
         this.parent = parentToSet;
+    }
+
+    /**
+     * Returns the index position of this div in its parent.
+     * 
+     * @return the index position
+     */
+    public Optional<Integer> getPositionInParent() {
+        if(this.parent == null) {
+            return Optional.empty();
+        }
+        return Optional.of(this.parent.getChildren().indexOf(this));
     }
 
     /**
