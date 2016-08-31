@@ -506,6 +506,14 @@ public class Mets {
         return this.structMaps.get(type);
     }
 
+    public PhysicalStructMap getPhysicalStructMap() {
+        return (PhysicalStructMap) this.structMaps.get(PhysicalStructMap.TYPE);
+    }
+
+    public LogicalStructMap getLogicalStructMap() {
+        return (LogicalStructMap) this.structMaps.get(LogicalStructMap.TYPE);
+    }
+
     public void addStructMap(IStructMap structMap) {
         this.structMaps.put(structMap.getType(), structMap);
     }

@@ -171,6 +171,21 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
     }
 
     /**
+     * Returns a list of all descendant div's. Be aware that there
+     * is no specific order.
+     * 
+     * @return list of descendants
+     */
+    public List<LogicalDiv> getDescendants() {
+        List<LogicalDiv> descendants = new ArrayList<>();
+        for(LogicalDiv subDiv : subDivContainer.values()) {
+            descendants.add(subDiv);
+            descendants.addAll(subDiv.getDescendants());
+        }
+        return descendants;
+    }
+
+    /**
      * Sets the label attribute.
      * 
      * @param label label to set
