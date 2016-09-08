@@ -87,8 +87,8 @@ public class MetsHdr implements IMetsElement {
     }
 
     /**
-     * Contains the ID attribute values of the <techMD>, <sourceMD>,
-     * <rightsMD> and/or <digiprovMD> elements within the <amdSec> of the METS document
+     * Contains the ID attribute values of the &lt;techMD&gt;, &lt;sourceMD&gt;,
+     * &lt;rightsMD&gt; and/or &lt;digiprovMD&gt; elements within the &lt;amdSec&gt; of the METS document
      * that contain administrative metadata pertaining to the METS document itself. For
      * more information on using METS IDREFS and IDREF type attributes for internal
      * linking, see Chapter 4 of the METS Primer.
@@ -100,8 +100,8 @@ public class MetsHdr implements IMetsElement {
     }
 
     /**
-     * Contains the ID attribute values of the <techMD>, <sourceMD>,
-     * <rightsMD> and/or <digiprovMD> elements within the <amdSec> of the METS document
+     * Contains the ID attribute values of the &lt;techMD&gt;, &lt;sourceMD&gt;,
+     * &lt;rightsMD&gt; and/or &lt;digiprovMD&gt; elements within the &lt;amdSec&gt; of the METS document
      * that contain administrative metadata pertaining to the METS document itself. For
      * more information on using METS IDREFS and IDREF type attributes for internal
      * linking, see Chapter 4 of the METS Primer.
