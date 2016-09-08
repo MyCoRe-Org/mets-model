@@ -47,6 +47,7 @@ import org.mycore.mets.model.files.FLocat;
 import org.mycore.mets.model.files.File;
 import org.mycore.mets.model.files.FileGrp;
 import org.mycore.mets.model.files.FileSec;
+import org.mycore.mets.model.header.MetsHdr;
 import org.mycore.mets.model.sections.AmdSec;
 import org.mycore.mets.model.sections.DmdSec;
 import org.mycore.mets.model.sections.MdWrapSection;
@@ -131,6 +132,8 @@ public class Mets {
 
     private FileSec fileSec;
 
+    private MetsHdr metsHdr;
+
     public Mets() {
         this.dmdsecs = new HashMap<String, DmdSec>();
         this.amdsecs = new HashMap<String, AmdSec>();
@@ -139,6 +142,7 @@ public class Mets {
         this.structMaps.put(PhysicalStructMap.TYPE, new PhysicalStructMap());
         this.fileSec = new FileSec();
         this.structLink = new StructLink();
+        this.metsHdr = null;
     }
 
     /**
@@ -437,6 +441,26 @@ public class Mets {
     }
 
     /**
+     * Sets the header for this document.
+     * 
+     * @param metsHdr
+     *            the mets header
+     */
+    public void setMetsHdr(MetsHdr metsHdr) {
+        this.metsHdr = metsHdr;
+    }
+
+    /**
+     * Returns the header for this mets document.
+     * Can return null if no header is specified.
+     * 
+     * @return the mets header or null
+     */
+    public MetsHdr getMetsHdr() {
+        return metsHdr;
+    }
+
+    /**
      * Adds the section to the mets document
      *
      * @param section
@@ -607,6 +631,9 @@ public class Mets {
         mets.addNamespaceDeclaration(IMetsElement.XSI);
         mets.setAttribute("schemaLocation", IMetsElement.SCHEMA_LOC_METS, IMetsElement.XSI);
 
+        if(this.metsHdr != null) {
+            mets.addContent(this.metsHdr.asElement());
+        }
         Iterator<DmdSec> dmdSecIt = this.dmdsecs.values().iterator();
         while (dmdSecIt.hasNext()) {
             mets.addContent(dmdSecIt.next().asElement());
