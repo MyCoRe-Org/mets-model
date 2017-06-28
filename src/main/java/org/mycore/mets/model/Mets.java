@@ -313,12 +313,13 @@ public class Mets {
             List<Element> seqAreaChildren = seq.getChildren("area", IMetsElement.METS);
             for (Element area : seqAreaChildren) {
                 String fileId = area.getAttributeValue("FILEID");
+                if(fileId == null) {
+                    throw new IllegalArgumentException("FILEID attribute value of mets:area must not be null");
+                }
                 String betype = area.getAttributeValue("BETYPE");
                 String begin = area.getAttributeValue("BEGIN");
                 String end = area.getAttributeValue("END");
-                if (fileId != null && betype != null && begin != null && end != null) {
-                    newSEQ.getAreaList().add(new Area(fileId, betype, begin, end));
-                } // TODO: handle this
+                newSEQ.getAreaList().add(new Area(fileId, betype, begin, end));
             }
         }
         return fptr;
