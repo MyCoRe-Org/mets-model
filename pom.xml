@@ -2,121 +2,61 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>mycore-parent</artifactId>
     <groupId>org.mycore</groupId>
-    <version>31-SNAPSHOT</version>
+    <artifactId>mycore-parent</artifactId>
+    <version>33-SNAPSHOT</version>
   </parent>
+  <groupId>org.mycore.mets</groupId>
+  <artifactId>mets-model</artifactId>
+  <version>0.11-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>Mets Model</name>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/MyCoRe-Org/mets-model/issues</url>
+  </issueManagement>
+  <scm>
+    <connection>scm:git:https://github.com/MyCoRe-Org/selenium-utils.git</connection>
+    <developerConnection>scm:git:https://github.com/MyCoRe-Org/selenium-utils.git</developerConnection>
+    <url>https://github.com/MyCoRe-Org/selenium-utils</url>
+    <tag>HEAD</tag>
+  </scm>
   <properties>
     <java.target.version>1.8</java.target.version>
   </properties>
-  <groupId>org.mycore.mets</groupId>
-  <name>Mets Model</name>
-  <version>0.11-SNAPSHOT</version>
-  <artifactId>mets-model</artifactId>
-  <packaging>jar</packaging>
-  <issueManagement>
-    <system>JIRA</system>
-    <url>https://mycore.atlassian.net/browse/METSMODEL</url>
-  </issueManagement>
-  <scm>
-    <connection>scm:svn:http://server.mycore.de/svn/maven/mets-model/trunk</connection>
-    <developerConnection>scm:svn:https://server.mycore.de/svn/maven/mets-model/trunk</developerConnection>
-    <url>http://www.mycore.de/viewvc/viewvc.cgi/maven/mets-model/</url>
-  </scm>
   <repositories>
     <repository>
-      <id>central</id>
-      <name>Central Repository</name>
-      <url>https://repo.maven.apache.org/maven2</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>MyCoRe HQ</id>
-      <url>http://artifactory.mycore.de/mycore-releases</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>MyCoRe HQ Snapshots</id>
-      <url>http://artifactory.mycore.de/mycore-snapshots</url>
       <releases>
         <enabled>false</enabled>
       </releases>
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
     </repository>
   </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>central</id>
-      <name>Central Repository</name>
-      <url>https://repo.maven.apache.org/maven2</url>
-      <releases>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>MyCoRe HQ</id>
-      <url>http://artifactory.mycore.de/mycore-releases</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>MyCoRe HQ Snapshots</id>
-      <url>http://artifactory.mycore.de/mycore-snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-source-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>jar-no-fork</goal>
-              <goal>test-jar-no-fork</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
   <dependencies>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>2.10.0</version>
+    </dependency>
     <dependency>
       <groupId>org.jdom</groupId>
       <artifactId>jdom2</artifactId>
       <version>2.0.6</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
-      <version>2.7</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
-      <version>2.7</version>
-    </dependency>
-    <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
       <version>2.11.0</version>
+      <exclusions>
+        <exclusion>
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>xml-resolver</groupId>
@@ -125,5 +65,4 @@
       <scope>runtime</scope>
     </dependency>
   </dependencies>
-
 </project>
