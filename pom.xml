@@ -16,9 +16,9 @@
     <url>https://github.com/MyCoRe-Org/mets-model/issues</url>
   </issueManagement>
   <scm>
-    <connection>scm:git:https://github.com/MyCoRe-Org/selenium-utils.git</connection>
-    <developerConnection>scm:git:https://github.com/MyCoRe-Org/selenium-utils.git</developerConnection>
-    <url>https://github.com/MyCoRe-Org/selenium-utils</url>
+    <connection>scm:git:https://github.com/MyCoRe-Org/mets-model.git</connection>
+    <developerConnection>scm:git:https://github.com/MyCoRe-Org/mets-model.git</developerConnection>
+    <url>https://github.com/MyCoRe-Org/mets-model</url>
     <tag>HEAD</tag>
   </scm>
   <properties>
