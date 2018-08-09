@@ -2,7 +2,6 @@ package org.mycore.mets.model.struct;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +18,8 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
 
     public final static String XML_DMDID = "DMDID";
 
+    public final static String XML_ORDER = "ORDER";
+
     public final static String XML_LABEL = "LABEL";
 
     protected String label;
@@ -26,6 +27,8 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
     protected HashMap<String, LogicalDiv> subDivContainer;
 
     protected List<Fptr> fptrList;
+
+    protected Integer order;
 
     private LogicalDiv parent;
 
@@ -42,14 +45,15 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
      *            the label of the div
      */
     public LogicalDiv(String id, String type, String label) {
-        this.subDivContainer = new LinkedHashMap<String, LogicalDiv>();
-        this.fptrList = new ArrayList<Fptr>();
+        this.subDivContainer = new LinkedHashMap<>();
+        this.fptrList = new ArrayList<>();
         this.setId(id);
         this.setType(type);
         this.setLabel(label);
+        this.setOrder(null);
     }
 
-    public LogicalDiv(String id, String type, String label,  String amdId, String dmdId) {
+    public LogicalDiv(String id, String type, String label, String amdId, String dmdId) {
         this(id, type, label);
         this.setAmdId(amdId);
         this.setDmdId(dmdId);
@@ -103,7 +107,7 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
     }
 
     public List<LogicalDiv> getChildren() {
-        return new Vector<LogicalDiv>(subDivContainer.values());
+        return new Vector<>(subDivContainer.values());
     }
 
     protected void setParent(LogicalDiv parentToSet) {
@@ -116,7 +120,7 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
      * @return the index position
      */
     public Optional<Integer> getPositionInParent() {
-        if(this.parent == null) {
+        if (this.parent == null) {
             return Optional.empty();
         }
         return Optional.of(this.parent.getChildren().indexOf(this));
@@ -148,7 +152,7 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
     public LogicalDiv getLogicalSubDiv(String identifier) {
         for (LogicalDiv child : subDivContainer.values()) {
             if (child.getId().equals(identifier)) {
-                return  child;
+                return child;
             } else {
                 LogicalDiv logicalSubDiv = lookupChildren(child.getChildren(), identifier);
                 if (logicalSubDiv != null) {
@@ -178,7 +182,7 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
      */
     public List<LogicalDiv> getDescendants() {
         List<LogicalDiv> descendants = new ArrayList<>();
-        for(LogicalDiv subDiv : subDivContainer.values()) {
+        for (LogicalDiv subDiv : subDivContainer.values()) {
             descendants.add(subDiv);
             descendants.addAll(subDiv.getDescendants());
         }
@@ -199,6 +203,24 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
      */
     public String getLabel() {
         return label;
+    }
+
+    /**
+     * Sets the order attribute.
+     *
+     * @param order order to set
+     */
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
+
+    /**
+     * Returns the order attribute.
+     *
+     * @return the value of the order attribute
+     */
+    public Integer getOrder() {
+        return order;
     }
 
     @Override
@@ -236,10 +258,11 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
         if (this.getLabel() != null && !this.getLabel().equals("")) {
             div.setAttribute(XML_LABEL, this.getLabel());
         }
-
-        Iterator<LogicalDiv> sbDivIterator = this.subDivContainer.values().iterator();
-        while (sbDivIterator.hasNext()) {
-            div.addContent(sbDivIterator.next().asElement());
+        if (this.getOrder() != null && this.getOrder() != -1) {
+            div.setAttribute(XML_ORDER, String.valueOf(this.getOrder()));
+        }
+        for (LogicalDiv logicalDiv : this.subDivContainer.values()) {
+            div.addContent(logicalDiv.asElement());
         }
         for (Fptr fptr : getFptrList()) {
             div.addContent(fptr.asElement());
@@ -255,4 +278,5 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
         }
         return div;
     }
+
 }
