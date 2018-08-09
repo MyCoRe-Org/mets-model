@@ -10,6 +10,8 @@ import org.jdom2.Element;
 
 public class PhysicalSubDiv extends AbstractDiv<Fptr> {
 
+    public static final String XML_ORDER = "ORDER";
+
     public static final String XML_ORDERLABEL = "ORDERLABEL";
 
     public static final String XML_CONTENTIDS = "CONTENTIDS";
@@ -19,6 +21,8 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
     public static final String ID_PREFIX = "phys_";
 
     private PhysicalDiv parent;
+
+    private Integer order;
 
     private String orderLabel, contentids;
 
@@ -33,7 +37,8 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
         this.type = type;
         this.orderLabel = orderLabel;
         this.contentids = null;
-        this.filePointers = new LinkedHashMap<String, Fptr>();
+        this.order = null;
+        this.filePointers = new LinkedHashMap<>();
     }
 
     public PhysicalSubDiv(String id, String type, String orderLabel, String contentids) {
@@ -77,7 +82,7 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
      */
     @Override
     public List<Fptr> getChildren() {
-        return new Vector<Fptr>(this.filePointers.values());
+        return new Vector<>(this.filePointers.values());
     }
 
     /**
@@ -90,6 +95,24 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
      */
     public Fptr getFptr(String id) {
         return this.filePointers.get(id);
+    }
+
+    /**
+     * Sets the order attribute.
+     *
+     * @param order order to set
+     */
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
+
+    /**
+     * Returns the order attribute.
+     *
+     * @return the value of the order attribute
+     */
+    public Integer getOrder() {
+        return order;
     }
 
     /**
@@ -151,6 +174,10 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
     @Override
     public Element asElement() {
         Element div = super.asElement();
+
+        if (this.getOrder() != null && this.getOrder() != -1) {
+            div.setAttribute(XML_ORDER, String.valueOf(this.getOrder()));
+        }
 
         if (this.getOrderLabel() != null && !this.getOrderLabel().equals("")) {
             div.setAttribute(XML_ORDERLABEL, this.getOrderLabel());
