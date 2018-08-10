@@ -10,7 +10,7 @@ import org.mycore.mets.model.IMetsElement;
  * @author silvio
  *
  */
-public class Mtpr implements IMetsElement {
+public class Mptr implements IMetsElement {
 
     /**
      * the href attribute of this element
@@ -22,7 +22,7 @@ public class Mtpr implements IMetsElement {
      */
     private LOCTYPE loctype;
 
-    public Mtpr(String href, LOCTYPE loc) {
+    public Mptr(String href, LOCTYPE loc) {
         this.href = href;
         this.loctype = loc;
     }

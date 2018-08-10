@@ -34,7 +34,7 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
 
     protected String dmdId, amdId;
 
-    private Mtpr mtpr;
+    private Mptr mptr;
 
     /**
      * @param id
@@ -244,12 +244,12 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
         return dmdId;
     }
 
-    public void setMtpr(Mtpr mtpr) {
-        this.mtpr = mtpr;
+    public void setMptr(Mptr mptr) {
+        this.mptr = mptr;
     }
 
-    public Mtpr getMtpr() {
-        return this.mtpr;
+    public Mptr getMptr() {
+        return this.mptr;
     }
 
     @Override
@@ -261,20 +261,20 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
         if (this.getOrder() != null && this.getOrder() != -1) {
             div.setAttribute(XML_ORDER, String.valueOf(this.getOrder()));
         }
-        for (LogicalDiv logicalDiv : this.subDivContainer.values()) {
-            div.addContent(logicalDiv.asElement());
-        }
-        for (Fptr fptr : getFptrList()) {
-            div.addContent(fptr.asElement());
-        }
         if (this.getAmdId() != null && !this.getAmdId().equals("")) {
             div.setAttribute(XML_AMDID, this.getAmdId());
         }
         if (this.getDmdId() != null && !this.getDmdId().equals("")) {
             div.setAttribute(XML_DMDID, this.getDmdId());
         }
-        if (mtpr != null) {
-            div.addContent(mtpr.asElement());
+        if (this.mptr != null) {
+            div.addContent(this.mptr.asElement());
+        }
+        for (LogicalDiv logicalDiv : this.subDivContainer.values()) {
+            div.addContent(logicalDiv.asElement());
+        }
+        for (Fptr fptr : getFptrList()) {
+            div.addContent(fptr.asElement());
         }
         return div;
     }
