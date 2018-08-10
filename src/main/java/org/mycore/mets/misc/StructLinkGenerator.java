@@ -8,30 +8,22 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.mycore.mets.model.Mets;
 import org.mycore.mets.model.struct.AbstractDiv;
-import org.mycore.mets.model.struct.Area;
 import org.mycore.mets.model.struct.Fptr;
 import org.mycore.mets.model.struct.LogicalDiv;
 import org.mycore.mets.model.struct.LogicalStructMap;
 import org.mycore.mets.model.struct.PhysicalDiv;
 import org.mycore.mets.model.struct.PhysicalStructMap;
 import org.mycore.mets.model.struct.PhysicalSubDiv;
-import org.mycore.mets.model.struct.Seq;
 import org.mycore.mets.model.struct.SmLink;
 import org.mycore.mets.model.struct.StructLink;
 
 /**
- * Generates the struct link section automatically. Its required that the logical and the
- * physical struct map are set.
+ * Generates a struct link object.
  * 
  * @author Matthias Eichner
  */
-public class StructLinkGenerator {
-
-    static Logger LOGGER = LogManager.getLogger(StructLinkGenerator.class);
+public abstract class StructLinkGenerator {
 
     protected boolean failEasy = true;
 
@@ -44,8 +36,9 @@ public class StructLinkGenerator {
      * 
      * @param failEasy true or false
      */
-    public void setFailEasy(boolean failEasy) {
+    public StructLinkGenerator setFailEasy(boolean failEasy) {
         this.failEasy = failEasy;
+        return this;
     }
 
     /**
@@ -58,47 +51,43 @@ public class StructLinkGenerator {
     }
 
     /**
-     * Creates the struct link section of the given {@link Mets} object. This does just
-     * create the struct link and does not add it to the mets object itself. Do this
-     * by calling {@link Mets#setStructLink(StructLink)}.
+     * Creates the struct link section of the given {@link PhysicalStructMap} and {@link LogicalStructMap}object.
      * 
-     * @param mets the mets object for which you want to create a struct link
+     * @param physicalStructMap the physical part of the mets
+     * @param logicalStructMap the logical part part of the mets
      * @return the new generated struct link
      */
-    public StructLink generate(Mets mets) {
-        PhysicalStructMap psm = (PhysicalStructMap) mets.getStructMap(PhysicalStructMap.TYPE);
-        LogicalStructMap lsm = (LogicalStructMap) mets.getStructMap(LogicalStructMap.TYPE);
-        HashMap<String, String> fileIdRef = getFileIdRef(psm);
-        LogicalDiv logicalRootDiv = lsm.getDivContainer();
+    public StructLink generate(PhysicalStructMap physicalStructMap, LogicalStructMap logicalStructMap) {
+        HashMap<String, String> fileIdRef = getFileIdRef(physicalStructMap);
+        LogicalDiv logicalRootDiv = logicalStructMap.getDivContainer();
         List<LogicalDiv> logicalDivs = getLogicalDivs(logicalRootDiv);
 
-        Set<String> missingPhysicalRefs = new HashSet<String>(fileIdRef.values());
-        Map<String, String> invertSmLinkMap = new HashMap<String, String>();
+        Set<String> missingPhysicalRefs = new HashSet<>(fileIdRef.values());
+        Map<String, String> invertSmLinkMap = new HashMap<>();
 
         // go through all logical divs
         String lastFileId = null;
         StructLink structLink = new StructLink();
         for (LogicalDiv div : logicalDivs) {
-            List<String> fileIds = findFileIds(div);
+            Set<String> fileIds = getFileIds(div);
             if (fileIds.isEmpty()) {
-                StringBuffer error = new StringBuffer(div.getId());
+                StringBuilder error = new StringBuilder(div.getId());
                 if (div.getLabel() != null && !div.getLabel().equals("")) {
                     error.append(" (").append(div.getLabel()).append(")");
                 }
                 // we fail if we cannot get the correct FILEID
                 if (this.failEasy) {
-                    throw new RuntimeException("Unable to create struct link section because " + error.toString()
-                        + " cannot be linked with any physical structure.");
+                    throw new StructLinkGenerationException(
+                        "Unable to create struct link section because " + error.toString()
+                            + " cannot be linked with any physical structure.");
                 }
                 // we do not fail -> try to get the FILEID in some other way
-                LOGGER.warn("Unable to link logical div " + error.toString()
-                    + " because it cannot be linked with any physical structure.");
                 if (lastFileId != null) {
                     // get the last file id
                     fileIds.add(lastFileId);
                 } else {
                     // link with the first physical div
-                    List<PhysicalSubDiv> children = psm.getDivContainer().getChildren();
+                    List<PhysicalSubDiv> children = physicalStructMap.getDivContainer().getChildren();
                     if (!children.isEmpty()) {
                         PhysicalSubDiv physicalDiv = children.get(0);
                         String physicalId = physicalDiv.getId();
@@ -107,7 +96,8 @@ public class StructLinkGenerator {
                         structLink.addSmLink(new SmLink(logicalId, physicalId));
                         invertSmLinkMap.put(physicalId, logicalId);
                     } else {
-                        throw new RuntimeException("Unable to create struct link section because " + error.toString()
+                        throw new StructLinkGenerationException("Unable to create struct link section because "
+                            + error.toString()
                             + " cannot be linked with any physical structure. Also there are no physical <mets:div> elements.");
                     }
                 }
@@ -125,11 +115,11 @@ public class StructLinkGenerator {
         }
 
         // add missing physical divs
-        List<String> orderedPhysicals = psm.getDivContainer()
-                .getChildren()
-                .stream()
-                .map(AbstractDiv::getId)
-                .collect(Collectors.toList());
+        List<String> orderedPhysicals = physicalStructMap.getDivContainer()
+            .getChildren()
+            .stream()
+            .map(AbstractDiv::getId)
+            .collect(Collectors.toList());
 
         for (String physicalId : missingPhysicalRefs) {
             String previousPhyiscalId = physicalId;
@@ -153,23 +143,13 @@ public class StructLinkGenerator {
     }
 
     /**
-     * Returns a list of file ids which are linked with the given logical div.
-     * 
+     * Returns a set of file identifiers which are linked with the given logical div. If there are not linked files, an
+     * empty set is returned.
+     *
      * @param div the logical div
      * @return a list of FILEID's which represent a physical file
      */
-    private List<String> findFileIds(LogicalDiv div) {
-        List<String> fileIds = getFileIdsFromArea(div);
-        if (fileIds.isEmpty()) {
-            String firstFileId = findFirstFileId(div);
-            if (firstFileId == null) {
-                return fileIds;
-            }
-            fileIds.add(firstFileId);
-        }
-        return fileIds;
-    }
-
+    protected abstract Set<String> getFileIds(LogicalDiv div);
 
     /**
      * <p>Returns a map containing all file id references. Each file id is bound
@@ -185,7 +165,7 @@ public class StructLinkGenerator {
      * @return map of file id references
      */
     protected HashMap<String, String> getFileIdRef(PhysicalStructMap psm) {
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
         PhysicalDiv divContainer = psm.getDivContainer();
         List<PhysicalSubDiv> divs = divContainer.getChildren();
         for (PhysicalSubDiv div : divs) {
@@ -204,53 +184,12 @@ public class StructLinkGenerator {
      * @return list of divs
      */
     protected List<LogicalDiv> getLogicalDivs(LogicalDiv div) {
-        List<LogicalDiv> divs = new ArrayList<LogicalDiv>();
+        List<LogicalDiv> divs = new ArrayList<>();
         divs.add(div);
         for (LogicalDiv subDiv : div.getChildren()) {
             divs.addAll(getLogicalDivs(subDiv));
         }
         return divs;
-    }
-
-    /**
-     * Finds the first corresponding file id for the given div.
-     * 
-     * @param div the div where the file id is looked for (runs recursive
-     * through the child nodes)
-     * 
-     * @return id of the first file which is referenced within the div
-     */
-    protected String findFirstFileId(LogicalDiv div) {
-        List<String> fileIds = getFileIdsFromArea(div);
-        String fileId = fileIds.isEmpty() ? null : fileIds.get(0);
-        if (fileId == null) {
-            for (LogicalDiv subDiv : div.getChildren()) {
-                fileId = findFirstFileId(subDiv);
-                if (fileId != null) {
-                    break;
-                }
-            }
-        }
-        return fileId;
-    }
-
-    /**
-     * Returns the first file id found in the fptr -&gt; seq -&gt; area section
-     * of the div. No sub div's are searched!
-     * 
-     * @param div the div to get the first file id from
-     * @return file id or null
-     */
-    protected List<String> getFileIdsFromArea(LogicalDiv div) {
-        List<String> fileIds = new ArrayList<>();
-        for (Fptr fptr : div.getFptrList()) {
-            for (Seq seq : fptr.getSeqList()) {
-                for (Area area : seq.getAreaList()) {
-                    fileIds.add(area.getFileId());
-                }
-            }
-        }
-        return fileIds;
     }
 
 }
