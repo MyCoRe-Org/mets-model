@@ -19,7 +19,6 @@
 package org.mycore.mets.model.struct;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
@@ -41,7 +40,7 @@ public class StructLink implements IMetsElement {
      * Creates a new StructLink section.
      */
     public StructLink() {
-        links = new LinkedHashMap<String, SmLink>();
+        links = new LinkedHashMap<>();
     }
 
     /**
@@ -95,9 +94,7 @@ public class StructLink implements IMetsElement {
      * @return a generated key of the from and to values
      */
     protected String getKey(String from, String to) {
-        StringBuilder key = new StringBuilder();
-        key.append(from).append("#").append(to);
-        return key.toString();
+        return from + "#" + to;
     }
 
     /**
@@ -106,7 +103,7 @@ public class StructLink implements IMetsElement {
      *         the parameter
      */
     public List<SmLink> getSmLinkByFrom(String from) {
-        Vector<SmLink> result = new Vector<SmLink>();
+        Vector<SmLink> result = new Vector<>();
         if (from == null || from.length() == 0) {
             return result;
         }
@@ -126,7 +123,7 @@ public class StructLink implements IMetsElement {
      *         the parameter
      */
     public List<SmLink> getSmLinkByTo(String to) {
-        Vector<SmLink> result = new Vector<SmLink>();
+        Vector<SmLink> result = new Vector<>();
         if (to == null || to.length() == 0) {
             return result;
         }
@@ -145,7 +142,7 @@ public class StructLink implements IMetsElement {
      *         {@link List}
      */
     public List<SmLink> getSmLinks() {
-        return new Vector<SmLink>(links.values());
+        return new Vector<>(links.values());
     }
 
     /*
@@ -155,10 +152,8 @@ public class StructLink implements IMetsElement {
      */
     public Element asElement() {
         Element structLink = new Element("structLink", IMetsElement.METS);
-
-        Iterator<SmLink> iterator = links.values().iterator();
-        while (iterator.hasNext()) {
-            structLink.addContent(iterator.next().asElement());
+        for (SmLink smLink : links.values()) {
+            structLink.addContent(smLink.asElement());
         }
         return structLink;
     }
@@ -175,13 +170,13 @@ public class StructLink implements IMetsElement {
             return false;
         }
         StructLink other = (StructLink) obj;
-        if(other.links.size() != this.links.size()) {
+        if (other.links.size() != this.links.size()) {
             return false;
         }
         Set<String> otherKeySet = other.links.keySet();
         Set<String> thisKeySet = this.links.keySet();
-        for(String key : otherKeySet) {
-            if(!thisKeySet.contains(key)) {
+        for (String key : otherKeySet) {
+            if (!thisKeySet.contains(key)) {
                 return false;
             }
         }
