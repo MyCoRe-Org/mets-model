@@ -18,6 +18,9 @@
  */
 package org.mycore.mets.model.sections;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jdom2.Element;
 import org.mycore.mets.model.IMetsElement;
 
@@ -26,52 +29,72 @@ import org.mycore.mets.model.IMetsElement;
  */
 public class AmdSec extends MdSection {
 
-    private TechMD techMD;
+    private List<TechMD> techMD;
 
-    private RightsMD rightsMD;
+    private List<RightsMD> rightsMD;
 
-    private SourceMD sourceMD;
+    private List<SourceMD> sourceMD;
 
-    private DigiprovMD digiprovMD;
+    private List<DigiprovMD> digiprovMD;
+
+    public AmdSec(String id) {
+        super(id);
+        this.techMD = new ArrayList<>();
+        this.rightsMD = new ArrayList<>();
+        this.sourceMD = new ArrayList<>();
+        this.digiprovMD = new ArrayList<>();
+    }
 
     public TechMD getTechMD() {
-        return techMD;
+        return techMD.isEmpty() ? null : techMD.get(0);
+    }
+
+    public List<TechMD> listTechMD() {
+        return this.techMD;
     }
 
     public void setTechMD(TechMD techMD) {
-        this.techMD = techMD;
+        this.techMD.clear();
+        this.techMD.add(techMD);
     }
 
     public RightsMD getRightsMD() {
-        return rightsMD;
+        return rightsMD.isEmpty() ? null : rightsMD.get(0);
+    }
+
+    public List<RightsMD> listRightsMD() {
+        return this.rightsMD;
     }
 
     public void setRightsMD(RightsMD rightsMD) {
-        this.rightsMD = rightsMD;
+        this.rightsMD.clear();
+        this.rightsMD.add(rightsMD);
     }
 
     public SourceMD getSourceMD() {
-        return sourceMD;
+        return sourceMD.isEmpty() ? null : sourceMD.get(0);
+    }
+
+    public List<SourceMD> listSourceMD() {
+        return this.sourceMD;
     }
 
     public void setSourceMD(SourceMD sourceMD) {
-        this.sourceMD = sourceMD;
+        this.sourceMD.clear();
+        this.sourceMD.add(sourceMD);
     }
 
     public DigiprovMD getDigiprovMD() {
-        return digiprovMD;
+        return digiprovMD.isEmpty() ? null : digiprovMD.get(0);
+    }
+
+    public List<DigiprovMD> listDigiprovMD() {
+        return this.digiprovMD;
     }
 
     public void setDigiprovMD(DigiprovMD digiprovMD) {
-        this.digiprovMD = digiprovMD;
-    }
-
-    /**
-     * @param id
-     *            the ID of the section
-     */
-    public AmdSec(String id) {
-        super(id);
+        this.digiprovMD.clear();
+        this.digiprovMD.add(digiprovMD);
     }
 
     /*
@@ -82,18 +105,11 @@ public class AmdSec extends MdSection {
     public Element asElement() {
         Element amdSec = new Element("amdSec", IMetsElement.METS);
         amdSec.setAttribute("ID", getId());
-        if(getRightsMD() != null) {
-            amdSec.addContent(getRightsMD().asElement());
-        }
-        if(getSourceMD() != null) {
-            amdSec.addContent(getSourceMD().asElement());
-        }
-        if(getTechMD() != null) {
-            amdSec.addContent(getTechMD().asElement());
-        }
-        if(getDigiprovMD() != null) {
-            amdSec.addContent(getDigiprovMD().asElement());
-        }
+        rightsMD.stream().map(RightsMD::asElement).forEach(amdSec::addContent);
+        sourceMD.stream().map(SourceMD::asElement).forEach(amdSec::addContent);
+        techMD.stream().map(TechMD::asElement).forEach(amdSec::addContent);
+        digiprovMD.stream().map(DigiprovMD::asElement).forEach(amdSec::addContent);
         return amdSec;
     }
+
 }

@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -79,48 +79,10 @@ public class Mets {
     private static final XPathFactory XPATH_FACTORY = XPathFactory.instance();
 
     // thread-safe
-    private static final Logger LOGGER = LogManager.getLogger(Mets.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     // thread-safe
     private static Schema SCHEMA;
-
-    static {
-        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        XMLCatalogResolver catalogResolver = getCatalogResolver();
-        schemaFactory.setResourceResolver(catalogResolver);
-            Source metsSchemaSource;
-            try {
-                metsSchemaSource = getMetsSchema(catalogResolver);
-                LOGGER.info("Loading METS XML Schema from: " + metsSchemaSource.getSystemId());
-                SCHEMA = schemaFactory.newSchema(metsSchemaSource);
-            } catch (SAXException | IOException e) {
-                LOGGER.error("Could not load METS XML Schema.");
-                e.printStackTrace();
-            }
-    }
-
-    private static Source getMetsSchema(XMLCatalogResolver catalogResolver) throws SAXException, IOException {
-        InputSource resolvedSchema = catalogResolver.resolveEntity(null, "http://www.loc.gov/standards/mets/mets.xsd");
-        StreamSource metsSchemaSource = new StreamSource(resolvedSchema.getSystemId());
-        return metsSchemaSource;
-    }
-
-    private static XMLCatalogResolver getCatalogResolver() {
-        Enumeration<URL> systemResources;
-        try {
-            systemResources = Mets.class.getClassLoader().getResources("catalog.xml");
-        } catch (IOException e) {
-            throw new ExceptionInInitializerError(e);
-        }
-        Vector<String> catalogURIs = new Vector<>();
-        while (systemResources.hasMoreElements()) {
-            URL catalogURL = systemResources.nextElement();
-            LOGGER.info("Using XML catalog: " + catalogURL);
-            catalogURIs.add(catalogURL.toString());
-        }
-        String[] catalogs = catalogURIs.toArray(new String[catalogURIs.size()]);
-        return new XMLCatalogResolver(catalogs);
-    }
 
     private Map<String, DmdSec> dmdsecs;
 
@@ -134,12 +96,26 @@ public class Mets {
 
     private MetsHdr metsHdr;
 
+    static {
+        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        XMLCatalogResolver catalogResolver = getCatalogResolver();
+        schemaFactory.setResourceResolver(catalogResolver);
+        Source metsSchemaSource;
+        try {
+            metsSchemaSource = getMetsSchema(catalogResolver);
+            LOGGER.info("Loading METS XML Schema from: {}", metsSchemaSource.getSystemId());
+            SCHEMA = schemaFactory.newSchema(metsSchemaSource);
+        } catch (SAXException | IOException e) {
+            LOGGER.error("Could not load METS XML Schema.", e);
+        }
+    }
+
     public Mets() {
-        this.dmdsecs = new HashMap<String, DmdSec>();
-        this.amdsecs = new HashMap<String, AmdSec>();
-        this.structMaps = new HashMap<String, IStructMap>();
-        this.structMaps.put(LogicalStructMap.TYPE, new LogicalStructMap());
+        this.dmdsecs = new LinkedHashMap<>();
+        this.amdsecs = new LinkedHashMap<>();
+        this.structMaps = new LinkedHashMap<>();
         this.structMaps.put(PhysicalStructMap.TYPE, new PhysicalStructMap());
+        this.structMaps.put(LogicalStructMap.TYPE, new LogicalStructMap());
         this.fileSec = new FileSec();
         this.structLink = new StructLink();
         this.metsHdr = null;
@@ -157,10 +133,32 @@ public class Mets {
         this.dmdsecs = createDmdSec(source);
         this.amdsecs = createAmdSec(source);
         this.fileSec = createFileSec(source);
-        this.structMaps = new HashMap<String, IStructMap>();
+        this.structMaps = new HashMap<>();
         this.structMaps.put(LogicalStructMap.TYPE, createLogicalStructMap(source));
         this.structMaps.put(PhysicalStructMap.TYPE, createPhysicalStructMap(source));
         this.structLink = createStuctLinks(source);
+    }
+
+    private static Source getMetsSchema(XMLCatalogResolver catalogResolver) throws SAXException, IOException {
+        InputSource resolvedSchema = catalogResolver.resolveEntity(null, "http://www.loc.gov/standards/mets/mets.xsd");
+        return new StreamSource(resolvedSchema.getSystemId());
+    }
+
+    private static XMLCatalogResolver getCatalogResolver() {
+        Enumeration<URL> systemResources;
+        try {
+            systemResources = Mets.class.getClassLoader().getResources("catalog.xml");
+        } catch (IOException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+        Vector<String> catalogURIs = new Vector<>();
+        while (systemResources.hasMoreElements()) {
+            URL catalogURL = systemResources.nextElement();
+            LOGGER.info("Using XML catalog: {}", catalogURL);
+            catalogURIs.add(catalogURL.toString());
+        }
+        String[] catalogs = catalogURIs.toArray(new String[catalogURIs.size()]);
+        return new XMLCatalogResolver(catalogs);
     }
 
     public static Map<String, DmdSec> createDmdSec(Document source) {
@@ -232,7 +230,7 @@ public class Mets {
             XPathExpression<Element> mdWrapXP = getXpathExpression("mets:mdWrap");
 
             flagElement = mdWrapXP.evaluateFirst(flagElement);
-            if (flagElement instanceof Element) {
+            if (flagElement != null) {
                 String name = flagElement.getAttributeValue("MDTYPE");
                 XPathExpression<Element> xmlDataXP = getXpathExpression("mets:xmlData/*");
                 Element element = xmlDataXP.evaluateFirst(flagElement);
@@ -259,12 +257,12 @@ public class Mets {
             logDivContainerElem.getAttributeValue("TYPE"), logDivContainerElem.getAttributeValue("LABEL"),
             logDivContainerElem.getAttributeValue("ADMID"), logDivContainerElem.getAttributeValue("DMDID"));
 
-        for (Element logSubDiv : (List<Element>) logDivContainerElem.getChildren()) {
+        for (Element logSubDiv : logDivContainerElem.getChildren()) {
             LogicalDiv lsd = new LogicalDiv(logSubDiv.getAttributeValue("ID"), logSubDiv.getAttributeValue("TYPE"),
                 logSubDiv.getAttributeValue("LABEL"));
             logDivContainer.add(lsd);
 
-            processLogicalChildren((List<Element>) logSubDiv.getChildren(), lsd);
+            processLogicalChildren(logSubDiv.getChildren(), lsd);
         }
 
         // add the div container to the struct map
@@ -285,8 +283,8 @@ public class Mets {
                     break;
                 case "div":
                     LogicalDiv lsd = new LogicalDiv(child.getAttributeValue("ID"),
-                            child.getAttributeValue("TYPE"),
-                            child.getAttributeValue("LABEL"));
+                        child.getAttributeValue("TYPE"),
+                        child.getAttributeValue("LABEL"));
                     parent.add(lsd);
 
                     processLogicalChildren((List<Element>) child.getChildren(), lsd);
@@ -313,7 +311,7 @@ public class Mets {
             List<Element> seqAreaChildren = seq.getChildren("area", IMetsElement.METS);
             for (Element area : seqAreaChildren) {
                 String fileId = area.getAttributeValue("FILEID");
-                if(fileId == null) {
+                if (fileId == null) {
                     throw new IllegalArgumentException("FILEID attribute value of mets:area must not be null");
                 }
                 String betype = area.getAttributeValue("BETYPE");
@@ -345,7 +343,7 @@ public class Mets {
         PhysicalDiv physDivContainer = new PhysicalDiv(id, type);
         structMap.setDivContainer(physDivContainer);
 
-        for (Element subDiv : (List<Element>) physDivElem.getChildren()) {
+        for (Element subDiv : physDivElem.getChildren()) {
             PhysicalSubDiv psd = new PhysicalSubDiv(subDiv.getAttributeValue("ID"), subDiv.getAttributeValue("TYPE"));
 
             String orderLabel = subDiv.getAttributeValue("ORDERLABEL");
@@ -632,17 +630,15 @@ public class Mets {
         mets.addNamespaceDeclaration(IMetsElement.XSI);
         mets.setAttribute("schemaLocation", IMetsElement.SCHEMA_LOC_METS, IMetsElement.XSI);
 
-        if(this.metsHdr != null) {
+        if (this.metsHdr != null) {
             mets.addContent(this.metsHdr.asElement());
         }
-        Iterator<DmdSec> dmdSecIt = this.dmdsecs.values().iterator();
-        while (dmdSecIt.hasNext()) {
-            mets.addContent(dmdSecIt.next().asElement());
+        for (DmdSec dmdSec : this.dmdsecs.values()) {
+            mets.addContent(dmdSec.asElement());
         }
 
-        Iterator<AmdSec> amdSecIt = this.amdsecs.values().iterator();
-        while (amdSecIt.hasNext()) {
-            mets.addContent(amdSecIt.next().asElement());
+        for (AmdSec amdSec : this.amdsecs.values()) {
+            mets.addContent(amdSec.asElement());
         }
         if (this.getFileSec() != null) {
             mets.addContent(this.getFileSec().asElement());
@@ -661,7 +657,7 @@ public class Mets {
      *            the document to validate against the mets schema
      * @return true if the document is a valid mets document false otherwise
      */
-    final public static boolean isValid(Document doc) {
+    public static boolean isValid(Document doc) {
         Validator validator = SCHEMA.newValidator();
         try {
             validator.validate(new JDOMSource(doc));
@@ -681,7 +677,7 @@ public class Mets {
      *         <code>false</code> otherwise
      */
     final public boolean isValid() {
-        Document doc = null;
+        Document doc;
         try {
             doc = this.asDocument();
         } catch (Throwable t) {
@@ -691,4 +687,5 @@ public class Mets {
 
         return Mets.isValid(doc);
     }
+
 }
