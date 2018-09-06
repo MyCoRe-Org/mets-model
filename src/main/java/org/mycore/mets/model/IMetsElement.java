@@ -27,22 +27,24 @@ import org.jdom2.Namespace;
 public interface IMetsElement {
 
     /** Namespace constant for METS namespace */
-    public static final Namespace METS = Namespace.getNamespace("mets", "http://www.loc.gov/METS/");
+    Namespace METS = Namespace.getNamespace("mets", "http://www.loc.gov/METS/");
 
     /** Namespace constant for XLINK namespace */
-    public static final Namespace XLINK = Namespace.getNamespace("xlink", "http://www.w3.org/1999/xlink");
+
+    Namespace XLINK = Namespace.getNamespace("xlink", "http://www.w3.org/1999/xlink");
 
     /** Namespace constant for XSI namespace */
-    public static final Namespace XSI = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+    Namespace XSI = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
 
     /** Namespace constant for DV namespace */
-    public static final Namespace DV = Namespace.getNamespace("dv", "http://dfg-viewer.de/");
+    Namespace DV = Namespace.getNamespace("dv", "http://dfg-viewer.de/");
 
     /** Schema location of METS */
-    public static final String SCHEMA_LOC_METS = METS.getURI() + " http://www.loc.gov/standards/mets/mets.xsd";
+    String SCHEMA_LOC_METS = METS.getURI() + " http://www.loc.gov/standards/mets/mets.xsd";
 
     /**
      * Creates an {@link org.jdom2.Element} of the IMetsElement.
      */
-    public Element asElement();
+    Element asElement();
+
 }

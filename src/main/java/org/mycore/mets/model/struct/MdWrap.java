@@ -4,8 +4,7 @@ import org.jdom2.Element;
 import org.mycore.mets.model.IMetsElement;
 
 /**
- * An mdWrap element provides a wrapper around metadata embedded within a METS
- * document.
+ * An mdWrap element provides a wrapper around metadata embedded within a METS document.
  * 
  * @author Matthias Eichner
  */
@@ -59,7 +58,7 @@ public class MdWrap implements IMetsElement {
         }
         if (mimetype.equals(MIMETYPE_XML)) {
             Element xmlData = new Element("xmlData", IMetsElement.METS);
-            xmlData.addContent((Element) this.metadata.clone());
+            xmlData.addContent(this.metadata.clone());
             mdwrap.addContent(xmlData);
         } else {
             Element binData = new Element("binData", IMetsElement.METS);
@@ -98,6 +97,10 @@ public class MdWrap implements IMetsElement {
 
     public String getOthermdtype() {
         return othermdtype;
+    }
+
+    public Element getMetadata() {
+        return metadata;
     }
 
     /**
