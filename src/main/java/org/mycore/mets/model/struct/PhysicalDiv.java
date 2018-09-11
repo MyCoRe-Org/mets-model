@@ -20,7 +20,7 @@ public class PhysicalDiv extends AbstractDiv<PhysicalSubDiv> {
     public PhysicalDiv(String id, String type) {
         this.id = id;
         this.type = type;
-        this.physicalSubDivContainer = new LinkedHashMap<String, PhysicalSubDiv>();
+        this.physicalSubDivContainer = new LinkedHashMap<>();
     }
 
     @Override
@@ -60,17 +60,14 @@ public class PhysicalDiv extends AbstractDiv<PhysicalSubDiv> {
      */
     public PhysicalSubDiv byFileId(String fileId) {
         return this.physicalSubDivContainer.values().stream()
-            .filter(subDiv -> {
-                return subDiv.getChildren().stream()
-                    .filter(fptr -> {
-                       return fptr.getFileId().equals(fileId); 
-                    }).findAny().isPresent();
-            }).findFirst().orElse(null);
+            .filter(subDiv -> subDiv.getChildren().stream().anyMatch(fptr -> fptr.getFileId().equals(fileId)))
+            .findFirst()
+            .orElse(null);
     }
 
     @Override
     public List<PhysicalSubDiv> getChildren() {
-        return new Vector<PhysicalSubDiv>(physicalSubDivContainer.values());
+        return new Vector<>(physicalSubDivContainer.values());
     }
 
     @Override

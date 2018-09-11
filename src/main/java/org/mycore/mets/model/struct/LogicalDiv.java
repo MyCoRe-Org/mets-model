@@ -14,25 +14,11 @@ import org.jdom2.Element;
  */
 public class LogicalDiv extends AbstractDiv<LogicalDiv> {
 
-    public final static String XML_AMDID = "ADMID";
-
-    public final static String XML_DMDID = "DMDID";
-
-    public final static String XML_ORDER = "ORDER";
-
-    public final static String XML_LABEL = "LABEL";
-
-    protected String label;
-
     protected HashMap<String, LogicalDiv> subDivContainer;
 
     protected List<Fptr> fptrList;
 
-    protected Integer order;
-
     private LogicalDiv parent;
-
-    protected String dmdId, amdId;
 
     private Mptr mptr;
 
@@ -53,9 +39,9 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
         this.setOrder(null);
     }
 
-    public LogicalDiv(String id, String type, String label, String amdId, String dmdId) {
+    public LogicalDiv(String id, String type, String label, String admId, String dmdId) {
         this(id, type, label);
-        this.setAmdId(amdId);
+        this.setAdmId(admId);
         this.setDmdId(dmdId);
     }
 
@@ -189,59 +175,9 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
         return descendants;
     }
 
-    /**
-     * Sets the label attribute.
-     * 
-     * @param label label to set
-     */
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    /**
-     * @return the label
-     */
-    public String getLabel() {
-        return label;
-    }
-
-    /**
-     * Sets the order attribute.
-     *
-     * @param order order to set
-     */
-    public void setOrder(Integer order) {
-        this.order = order;
-    }
-
-    /**
-     * Returns the order attribute.
-     *
-     * @return the value of the order attribute
-     */
-    public Integer getOrder() {
-        return order;
-    }
-
     @Override
     public String toString() {
         return this.id;
-    }
-
-    public void setAmdId(String amdId) {
-        this.amdId = amdId;
-    }
-
-    public void setDmdId(String dmdId) {
-        this.dmdId = dmdId;
-    }
-
-    public String getAmdId() {
-        return amdId;
-    }
-
-    public String getDmdId() {
-        return dmdId;
     }
 
     public void setMptr(Mptr mptr) {
@@ -255,18 +191,6 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
     @Override
     public Element asElement() {
         Element div = super.asElement();
-        if (this.getLabel() != null && !this.getLabel().equals("")) {
-            div.setAttribute(XML_LABEL, this.getLabel());
-        }
-        if (this.getOrder() != null && this.getOrder() != -1) {
-            div.setAttribute(XML_ORDER, String.valueOf(this.getOrder()));
-        }
-        if (this.getAmdId() != null && !this.getAmdId().equals("")) {
-            div.setAttribute(XML_AMDID, this.getAmdId());
-        }
-        if (this.getDmdId() != null && !this.getDmdId().equals("")) {
-            div.setAttribute(XML_DMDID, this.getDmdId());
-        }
         if (this.mptr != null) {
             div.addContent(this.mptr.asElement());
         }
