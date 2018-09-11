@@ -10,12 +10,6 @@ import org.jdom2.Element;
 
 public class PhysicalSubDiv extends AbstractDiv<Fptr> {
 
-    public static final String XML_ORDER = "ORDER";
-
-    public static final String XML_ORDERLABEL = "ORDERLABEL";
-
-    public static final String XML_CONTENTIDS = "CONTENTIDS";
-
     public static final String TYPE_PAGE = "page";
 
     public static final String ID_PREFIX = "phys_";
@@ -131,4 +125,5 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
         }
         return div;
     }
+
 }

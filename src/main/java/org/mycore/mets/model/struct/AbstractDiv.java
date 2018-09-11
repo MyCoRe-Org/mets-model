@@ -5,13 +5,15 @@ import org.mycore.mets.model.IMetsElement;
 
 public abstract class AbstractDiv<T extends IMetsElement> implements IDiv<T> {
 
+    public static final String XML_ORDER = "ORDER";
+
+    public static final String XML_ORDERLABEL = "ORDERLABEL";
+
+    public static final String XML_CONTENTIDS = "CONTENTIDS";
+
     public final static String XML_ADMID = "ADMID";
 
     public final static String XML_DMDID = "DMDID";
-
-    public final static String XML_ORDER = "ORDER";
-
-    public final static String XML_ORDERLABEL = "ORDERLABEL";
 
     public final static String XML_LABEL = "LABEL";
 
@@ -46,7 +48,7 @@ public abstract class AbstractDiv<T extends IMetsElement> implements IDiv<T> {
 
     @Override
     public String getLabel() {
-        return null;
+        return this.label;
     }
 
     @Override
@@ -114,11 +116,17 @@ public abstract class AbstractDiv<T extends IMetsElement> implements IDiv<T> {
         if (this.getOrder() != null && this.getOrder() != -1) {
             div.setAttribute(XML_ORDER, String.valueOf(this.getOrder()));
         }
+        if (this.getOrderLabel() != null && !this.getOrderLabel().equals("")) {
+            div.setAttribute(XML_ORDERLABEL, this.getOrderLabel());
+        }
         if (this.getAdmId() != null && !this.getAdmId().equals("")) {
             div.setAttribute(XML_ADMID, this.getAdmId());
         }
         if (this.getDmdId() != null && !this.getDmdId().equals("")) {
             div.setAttribute(XML_DMDID, this.getDmdId());
+        }
+        if (this.getContentIds() != null && !this.getContentIds().equals("")) {
+            div.setAttribute(XML_CONTENTIDS, this.getContentIds());
         }
         return div;
     }
