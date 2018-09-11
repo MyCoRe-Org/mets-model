@@ -353,7 +353,7 @@ public class Mets {
 
             String contentIDs = subDiv.getAttributeValue("CONTENTIDS");
             if (contentIDs != null) {
-                psd.setContentids(contentIDs);
+                psd.setContentIds(contentIDs);
             }
 
             xp = getXpathExpression("./mets:fptr");

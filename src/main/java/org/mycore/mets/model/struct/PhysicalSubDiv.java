@@ -22,10 +22,6 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
 
     private PhysicalDiv parent;
 
-    private Integer order;
-
-    private String orderLabel, contentids;
-
     private HashMap<String, Fptr> filePointers;
 
     public PhysicalSubDiv(String id, String type) {
@@ -36,14 +32,14 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
         this.id = id;
         this.type = type;
         this.orderLabel = orderLabel;
-        this.contentids = null;
+        this.contentIds = null;
         this.order = null;
         this.filePointers = new LinkedHashMap<>();
     }
 
     public PhysicalSubDiv(String id, String type, String orderLabel, String contentids) {
         this(id, type, orderLabel);
-        this.contentids = contentids;
+        this.contentIds = contentids;
     }
 
     /**
@@ -98,50 +94,6 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
     }
 
     /**
-     * Sets the order attribute.
-     *
-     * @param order order to set
-     */
-    public void setOrder(Integer order) {
-        this.order = order;
-    }
-
-    /**
-     * Returns the order attribute.
-     *
-     * @return the value of the order attribute
-     */
-    public Integer getOrder() {
-        return order;
-    }
-
-    /**
-     * @return the value of the orderlabel attribute
-     */
-    public String getOrderLabel() {
-        return orderLabel;
-    }
-
-    public void setOrderLabel(String orderLabel) {
-        this.orderLabel = orderLabel;
-    }
-
-    /**
-     * @param contentids
-     *            the contentids to set
-     */
-    public void setContentids(String contentids) {
-        this.contentids = contentids;
-    }
-
-    /**
-     * @return the contentids
-     */
-    public String getContentids() {
-        return contentids;
-    }
-
-    /**
      * Sets the parent for this div.
      * 
      * @param parent the parent
@@ -174,23 +126,9 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
     @Override
     public Element asElement() {
         Element div = super.asElement();
-
-        if (this.getOrder() != null && this.getOrder() != -1) {
-            div.setAttribute(XML_ORDER, String.valueOf(this.getOrder()));
-        }
-
-        if (this.getOrderLabel() != null && !this.getOrderLabel().equals("")) {
-            div.setAttribute(XML_ORDERLABEL, this.getOrderLabel());
-        }
-
-        if (this.getContentids() != null && !this.getContentids().equals("")) {
-            div.setAttribute(XML_CONTENTIDS, this.getContentids());
-        }
-
         for (Fptr f : filePointers.values()) {
             div.addContent(f.asElement());
         }
-
         return div;
     }
 }
