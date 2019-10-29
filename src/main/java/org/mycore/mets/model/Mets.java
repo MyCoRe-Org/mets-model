@@ -19,15 +19,21 @@
 package org.mycore.mets.model;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.StreamSupport;
 
 import javax.xml.XMLConstants;
+import javax.xml.catalog.CatalogFeatures;
+import javax.xml.catalog.CatalogManager;
+import javax.xml.catalog.CatalogResolver;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
@@ -36,7 +42,6 @@ import javax.xml.validation.Validator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.xerces.util.XMLCatalogResolver;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.filter.Filters;
@@ -98,10 +103,10 @@ public class Mets {
 
     static {
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        XMLCatalogResolver catalogResolver = getCatalogResolver();
-        schemaFactory.setResourceResolver(catalogResolver);
         Source metsSchemaSource;
         try {
+            CatalogResolver catalogResolver = getCatalogResolver();
+            schemaFactory.setResourceResolver(catalogResolver);
             metsSchemaSource = getMetsSchema(catalogResolver);
             LOGGER.info("Loading METS XML Schema from: {}", metsSchemaSource.getSystemId());
             SCHEMA = schemaFactory.newSchema(metsSchemaSource);
@@ -139,26 +144,20 @@ public class Mets {
         this.structLink = createStuctLinks(source);
     }
 
-    private static Source getMetsSchema(XMLCatalogResolver catalogResolver) throws SAXException, IOException {
+    private static Source getMetsSchema(CatalogResolver catalogResolver) throws SAXException, IOException {
         InputSource resolvedSchema = catalogResolver.resolveEntity(null, "http://www.loc.gov/standards/mets/mets.xsd");
         return new StreamSource(resolvedSchema.getSystemId());
     }
 
-    private static XMLCatalogResolver getCatalogResolver() {
-        Enumeration<URL> systemResources;
-        try {
-            systemResources = Mets.class.getClassLoader().getResources("catalog.xml");
-        } catch (IOException e) {
-            throw new ExceptionInInitializerError(e);
-        }
-        Vector<String> catalogURIs = new Vector<>();
-        while (systemResources.hasMoreElements()) {
-            URL catalogURL = systemResources.nextElement();
-            LOGGER.info("Using XML catalog: {}", catalogURL);
-            catalogURIs.add(catalogURL.toString());
-        }
-        String[] catalogs = catalogURIs.toArray(new String[catalogURIs.size()]);
-        return new XMLCatalogResolver(catalogs);
+    private static CatalogResolver getCatalogResolver() throws IOException {
+        Enumeration<URL> resources = Mets.class.getClassLoader().getResources("catalog.xml");
+        URI[] catalogURIs = StreamSupport.stream(
+            Spliterators.spliteratorUnknownSize(resources.asIterator(), Spliterator.ORDERED), false)
+            .map(URL::toString)
+            .peek(s -> LOGGER.info("Using XML catalog: {}", s))
+            .map(URI::create)
+            .toArray(URI[]::new);
+        return CatalogManager.catalogResolver(CatalogFeatures.defaults(), catalogURIs);
     }
 
     public static Map<String, DmdSec> createDmdSec(Document source) {
