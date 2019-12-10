@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.mycore</groupId>
     <artifactId>mycore-parent</artifactId>
-    <version>42-SNAPSHOT</version>
+    <version>43-SNAPSHOT</version>
   </parent>
   <groupId>org.mycore.mets</groupId>
   <artifactId>mets-model</artifactId>
