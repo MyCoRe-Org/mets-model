@@ -1,6 +1,7 @@
 package org.mycore.mets.model.header;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
@@ -50,8 +51,8 @@ public class MetsHdr implements IMetsElement {
 		this.id = null;
 		this.admId = null;
 		this.recordStatus = null;
-		this.setCreateDate(LocalDateTime.now());
-		this.setLastModDate(LocalDateTime.now());
+		this.setCreateDate(LocalDateTime.now(ZoneId.of("Europe/Paris")));
+		this.setLastModDate(LocalDateTime.now(ZoneId.of("Europe/Paris")));
 		this.agents = new ArrayList<>();
 		this.altRecordIds = new ArrayList<>();
 	}
