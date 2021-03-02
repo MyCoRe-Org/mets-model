@@ -15,36 +15,36 @@ import org.mycore.mets.model.IMetsElement;
  */
 public class Name implements IMetsElement {
 
-	private String text;
+    private String text;
 
-	public Name() {
-	}
+    public Name() {
+    }
 
-	public Name(String text) {
-		this.text = text;
-	}
+    public Name(String text) {
+        this.text = text;
+    }
 
-	public String getText() {
-		return text;
-	}
+    public String getText() {
+        return text;
+    }
 
-	public void setText(String text) {
-		this.text = text;
-	}
+    public void setText(String text) {
+        this.text = text;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.mycore.mets.model.IMetsElement#asElement()
-	 */
-	@SuppressWarnings("exports")
-	@Override
-	public Element asElement() {
-		Element name = new Element("name", IMetsElement.METS);
-		if (getText() != null) {
-			name.setText(getText());
-		}
-		return name;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.mycore.mets.model.IMetsElement#asElement()
+     */
+    @SuppressWarnings("exports")
+    @Override
+    public Element asElement() {
+        Element name = new Element("name", IMetsElement.METS);
+        if (getText() != null) {
+            name.setText(getText());
+        }
+        return name;
+    }
 
 }

@@ -19,41 +19,41 @@ import org.mycore.mets.model.IMetsElement;
  */
 public class AltRecordID implements IMetsElement {
 
-	private String id;
+    private String id;
 
-	private String type;
+    private String type;
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public String getType() {
-		return type;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.mycore.mets.model.IMetsElement#asElement()
-	 */
-	@SuppressWarnings("exports")
-	@Override
-	public Element asElement() {
-		Element altRecord = new Element("altRecordID", IMetsElement.METS);
-		if (getId() != null) {
-			altRecord.setAttribute("ID", getId());
-		}
-		if (getType() != null) {
-			altRecord.setAttribute("TYPE", this.getType());
-		}
-		return altRecord;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.mycore.mets.model.IMetsElement#asElement()
+     */
+    @SuppressWarnings("exports")
+    @Override
+    public Element asElement() {
+        Element altRecord = new Element("altRecordID", IMetsElement.METS);
+        if (getId() != null) {
+            altRecord.setAttribute("ID", getId());
+        }
+        if (getType() != null) {
+            altRecord.setAttribute("TYPE", this.getType());
+        }
+        return altRecord;
+    }
 }
