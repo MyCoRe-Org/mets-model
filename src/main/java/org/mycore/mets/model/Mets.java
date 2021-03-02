@@ -288,8 +288,6 @@ public class Mets {
 
                     processLogicalChildren((List<Element>) child.getChildren(), lsd);
                     break;
-                default:
-                    return;
             }
         }
     }
