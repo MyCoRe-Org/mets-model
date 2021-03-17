@@ -8,7 +8,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.List;
 
 import org.jdom2.Document;
@@ -46,8 +50,7 @@ public class MetsProcessResourceTest {
     public static void beforeClass() throws Exception {
 
         targetPath = Path.of(tempDir.getRoot().getAbsolutePath(), "mets.xml");
-        Path absPath = Path.of(sourcePath).toAbsolutePath();
-        Files.copy(absPath, targetPath);
+        Files.copy(Path.of(sourcePath), targetPath);
         mets = extractMets(targetPath.toString());
     }
 
@@ -115,8 +118,13 @@ public class MetsProcessResourceTest {
         Agent agent = new Agent("OTHER", new Name("digitalDerivans"));
         agent.setNotes(List.of(new Note("created for test purposes")));
         metsHdr.getAgents().add(agent);
-        String now = MetsHdr.DT_FORMATTER.format(LocalDateTime.now());
-        metsHdr.setLastModDate(LocalDateTime.parse(now));
+        final Instant nowI = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+        testWithDate(metsHdr, "2021-03-17T15:21:26");
+        testWithDate(metsHdr, Instant.now().truncatedTo(ChronoUnit.MILLIS).toString());
+    }
+
+    private void testWithDate(MetsHdr metsHdr, String now) throws IOException, JDOMException {
+        metsHdr.setLastModDate(now);
 
         // assert
         assertEquals(5, metsHdr.getAgents().size());
@@ -129,7 +137,7 @@ public class MetsProcessResourceTest {
         // re-act: check datetime serialization
         Mets mets = extractMets(targetPath.toString());
         assertEquals(5, mets.getMetsHdr().getAgents().size());
-        String serializedLastModifiedDate = MetsHdr.DT_FORMATTER.format(mets.getMetsHdr().getLastModDate());
+        String serializedLastModifiedDate = mets.getMetsHdr().getLastModDate().toString();
         assertEquals(now, serializedLastModifiedDate);
     }
 

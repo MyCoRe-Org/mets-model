@@ -21,7 +21,6 @@ package org.mycore.mets.model;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -157,13 +156,11 @@ public class Mets {
 
         String strCreateDate = metsHdrElement.getAttributeValue("CREATEDATE");
         if (strCreateDate != null) {
-            LocalDateTime localDateTime = LocalDateTime.parse(strCreateDate);
-            metsHdr.setCreateDate(localDateTime);
+            metsHdr.setCreateDate(strCreateDate);
         }
         String strModifiedDate = metsHdrElement.getAttributeValue("LASTMODDATE");
         if (strModifiedDate != null) {
-            LocalDateTime localDateTime = LocalDateTime.parse(strModifiedDate);
-            metsHdr.setLastModDate(localDateTime);
+            metsHdr.setLastModDate(strModifiedDate);
         }
 
         XPathExpression<Element> agentXP = getXpathExpression("mets:mets/mets:metsHdr/mets:agent");
