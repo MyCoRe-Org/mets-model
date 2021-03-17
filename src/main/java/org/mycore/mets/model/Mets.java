@@ -94,6 +94,18 @@ public class Mets {
     // thread-safe
     private static Schema SCHEMA;
 
+    private Map<String, DmdSec> dmdsecs;
+
+    private Map<String, AmdSec> amdsecs;
+
+    private Map<String, IStructMap> structMaps;
+
+    private StructLink structLink;
+
+    private FileSec fileSec;
+
+    private MetsHdr metsHdr;
+
     static {
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         Source metsSchemaSource;
@@ -107,13 +119,6 @@ public class Mets {
             LOGGER.error("Could not load METS XML Schema.", e);
         }
     }
-
-    private final Map<String, DmdSec> dmdsecs;
-    private final Map<String, AmdSec> amdsecs;
-    private final Map<String, IStructMap> structMaps;
-    private StructLink structLink;
-    private FileSec fileSec;
-    private MetsHdr metsHdr;
 
     public Mets() {
         this.dmdsecs = new LinkedHashMap<>();
@@ -212,9 +217,11 @@ public class Mets {
 
     private static CatalogResolver getCatalogResolver() throws IOException {
         Enumeration<URL> resources = Mets.class.getClassLoader().getResources("catalog.xml");
-        URI[] catalogURIs = StreamSupport
-            .stream(Spliterators.spliteratorUnknownSize(resources.asIterator(), Spliterator.ORDERED), false)
-            .map(URL::toString).peek(s -> LOGGER.info("Using XML catalog: {}", s)).map(URI::create)
+        URI[] catalogURIs = StreamSupport.stream(
+            Spliterators.spliteratorUnknownSize(resources.asIterator(), Spliterator.ORDERED), false)
+            .map(URL::toString)
+            .peek(s -> LOGGER.info("Using XML catalog: {}", s))
+            .map(URI::create)
             .toArray(URI[]::new);
         return CatalogManager.catalogResolver(CatalogFeatures.defaults(), catalogURIs);
     }
@@ -268,12 +275,13 @@ public class Mets {
     }
 
     /**
-     * Creates the elements embedded in the mets:amdSec. Currently the mets:rightsMD
-     * and the mets:digiprovMD sections are supported.
+     * Creates the elements embedded in the mets:amdSec. Currently the
+     * mets:rightsMD and the mets:digiprovMD sections are supported.
      *
      * @param section
      * @param amdSec
-     * @param flag    one of "rightsMD" or "addRightsMd"
+     * @param flag
+     *            one of "rightsMD" or "addRightsMd"
      */
     private static void addOther(Element section, AmdSec amdSec, String flag) {
         XPathExpression<Element> rightsMdXP = getXpathExpression("mets:" + flag);
@@ -339,7 +347,8 @@ public class Mets {
                     parent.getFptrList().add(fptr);
                     break;
                 case "div":
-                    LogicalDiv lsd = new LogicalDiv(child.getAttributeValue("ID"), child.getAttributeValue("TYPE"),
+                    LogicalDiv lsd = new LogicalDiv(child.getAttributeValue("ID"),
+                        child.getAttributeValue("TYPE"),
                         child.getAttributeValue("LABEL"));
                     parent.add(lsd);
 
@@ -489,33 +498,26 @@ public class Mets {
                 grp.addFile(f);
             }
 
-            // add the new created file group to the file section
+            //add the new created file group to the file section
             fileSec.addFileGrp(grp);
         }
         return fileSec;
     }
 
     /**
-     * @param doc the document to validate against the mets schema
-     * @return true if the document is a valid mets document false otherwise
+     * Sets the header for this document.
+     *
+     * @param metsHdr
+     *            the mets header
      */
-    public static boolean isValid(Document doc) {
-        Validator validator = SCHEMA.newValidator();
-        try {
-            validator.validate(new JDOMSource(doc));
-            return true;
-        } catch (SAXException saxEx) {
-            LOGGER.error("Error parsing and validating mets document", saxEx);
-        } catch (IOException ioEx) {
-            LOGGER.error("Error reading input stream", ioEx);
-        }
-        return false;
+    public void setMetsHdr(MetsHdr metsHdr) {
+        this.metsHdr = metsHdr;
     }
 
     /**
-     * Returns the header for this mets document. Can return null if no header is
-     * specified.
-     * 
+     * Returns the header for this mets document.
+     * Can return null if no header is specified.
+     *
      * @return the mets header or null
      */
     public MetsHdr getMetsHdr() {
@@ -523,18 +525,10 @@ public class Mets {
     }
 
     /**
-     * Sets the header for this document.
-     *
-     * @param metsHdr the mets header
-     */
-    public void setMetsHdr(MetsHdr metsHdr) {
-        this.metsHdr = metsHdr;
-    }
-
-    /**
      * Adds the section to the mets document
      *
-     * @param section the section to add
+     * @param section
+     *            the section to add
      * @return <code>true</code> if the section was added successfully,
      *         <code>false</code> otherwise
      */
@@ -566,7 +560,8 @@ public class Mets {
     /**
      * Adds the section to the mets document
      *
-     * @param section the section to add
+     * @param section
+     *            the section to add
      * @return <code>true</code> if the section was added successfully,
      *         <code>false</code> otherwise
      */
@@ -623,7 +618,8 @@ public class Mets {
     }
 
     /**
-     * @param structLink the structLink to set
+     * @param structLink
+     *            the structLink to set
      */
     public void setStructLink(StructLink structLink) {
         this.structLink = structLink;
@@ -637,15 +633,18 @@ public class Mets {
     }
 
     /**
-     * @param fileSec the fileSec to set
+     * @param fileSec
+     *            the fileSec to set
      */
     public void setFileSec(FileSec fileSec) {
         this.fileSec = fileSec;
     }
 
     /**
-     * @param id the id of the amdsec to retrieve
-     * @return the amdsec with the given id or null if there is no such amd section
+     * @param id
+     *            the id of the amdsec to retrieve
+     * @return the amdsec with the given id or null if there is no such amd
+     *         section
      */
     public AmdSec getAmdSecById(String id) {
         return this.amdsecs.get(id);
@@ -666,8 +665,10 @@ public class Mets {
     }
 
     /**
-     * @param id the id of the dmdsec to retrieve
-     * @return the dmdsec with the given id or null if there is no such dmd section
+     * @param id
+     *            the id of the dmdsec to retrieve
+     * @return the dmdsec with the given id or null if there is no such dmd
+     *         section
      */
     public DmdSec getDmdSecById(String id) {
         return this.dmdsecs.get(id);
@@ -700,6 +701,7 @@ public class Mets {
         for (DmdSec dmdSec : this.dmdsecs.values()) {
             mets.addContent(dmdSec.asElement());
         }
+
         for (AmdSec amdSec : this.amdsecs.values()) {
             mets.addContent(amdSec.asElement());
         }
@@ -713,6 +715,24 @@ public class Mets {
             mets.addContent(this.getStructLink().asElement());
         }
         return mets;
+    }
+
+    /**
+     * @param doc
+     *            the document to validate against the mets schema
+     * @return true if the document is a valid mets document false otherwise
+     */
+    public static boolean isValid(Document doc) {
+        Validator validator = SCHEMA.newValidator();
+        try {
+            validator.validate(new JDOMSource(doc));
+            return true;
+        } catch (SAXException saxEx) {
+            LOGGER.error("Error parsing and validating mets document", saxEx);
+        } catch (IOException ioEx) {
+            LOGGER.error("Error reading input stream", ioEx);
+        }
+        return false;
     }
 
     /**

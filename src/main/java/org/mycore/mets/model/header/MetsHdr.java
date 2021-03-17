@@ -11,14 +11,13 @@ import org.jdom2.Element;
 import org.mycore.mets.model.IMetsElement;
 
 /**
- * The mets header element &lt;metsHdr&gt; captures metadata about the METS
- * document itself, not the digital object the METS document encodes. Although
- * it records a more limited set of metadata, it is very similar in function and
- * purpose to the headers employed in other schema such as the Text Encoding
- * Initiative (TEI) or in the Encoded Archival Description (EAD).
+ * The mets header element &lt;metsHdr&gt; captures metadata about the METS document itself,
+ * not the digital object the METS document encodes. Although it records a more
+ * limited set of metadata, it is very similar in function and purpose to the headers
+ * employed in other schema such as the Text Encoding Initiative (TEI) or in the Encoded
+ * Archival Description (EAD).
  * 
- * @see <a href=
- *      "http://www.loc.gov/standards/mets/docs/mets.v1-9.html#metsHdr">metsHdr</a>
+ * @see <a href="http://www.loc.gov/standards/mets/docs/mets.v1-9.html#metsHdr">metsHdr</a>
  * @author Matthias Eichner
  */
 public class MetsHdr implements IMetsElement {
@@ -29,11 +28,17 @@ public class MetsHdr implements IMetsElement {
         .appendPattern("HH:mm:ss")
         .toFormatter();
     private String id;
+
     private String admId;
+
     private LocalDateTime createDate;
+
     private LocalDateTime lastModDate;
+
     private String recordStatus;
+
     private List<Agent> agents;
+
     private List<AltRecordID> altRecordIds;
 
     /**
@@ -80,11 +85,10 @@ public class MetsHdr implements IMetsElement {
     }
 
     /**
-     * This attribute uniquely identifies the element within the METS document, and
-     * would allow the element to be referenced unambiguously from another element
-     * or document via an IDREF or an XPTR. For more information on using ID
-     * attributes for internal and external linking see Chapter 4 of the METS
-     * Primer.
+     * This attribute uniquely identifies the element within the METS document,
+     * and would allow the element to be referenced unambiguously from another element or
+     * document via an IDREF or an XPTR. For more information on using ID attributes for
+     * internal and external linking see Chapter 4 of the METS Primer.
      * 
      * @return the id
      */
@@ -93,11 +97,10 @@ public class MetsHdr implements IMetsElement {
     }
 
     /**
-     * This attribute uniquely identifies the element within the METS document, and
-     * would allow the element to be referenced unambiguously from another element
-     * or document via an IDREF or an XPTR. For more information on using ID
-     * attributes for internal and external linking see Chapter 4 of the METS
-     * Primer.
+     * This attribute uniquely identifies the element within the METS document,
+     * and would allow the element to be referenced unambiguously from another element or
+     * document via an IDREF or an XPTR. For more information on using ID attributes for
+     * internal and external linking see Chapter 4 of the METS Primer.
      * 
      * @param id the new id
      */
@@ -107,10 +110,10 @@ public class MetsHdr implements IMetsElement {
 
     /**
      * Contains the ID attribute values of the &lt;techMD&gt;, &lt;sourceMD&gt;,
-     * &lt;rightsMD&gt; and/or &lt;digiprovMD&gt; elements within the &lt;amdSec&gt;
-     * of the METS document that contain administrative metadata pertaining to the
-     * METS document itself. For more information on using METS IDREFS and IDREF
-     * type attributes for internal linking, see Chapter 4 of the METS Primer.
+     * &lt;rightsMD&gt; and/or &lt;digiprovMD&gt; elements within the &lt;amdSec&gt; of the METS document
+     * that contain administrative metadata pertaining to the METS document itself. For
+     * more information on using METS IDREFS and IDREF type attributes for internal
+     * linking, see Chapter 4 of the METS Primer.
      * 
      * @return the adm identifier
      */
@@ -120,10 +123,10 @@ public class MetsHdr implements IMetsElement {
 
     /**
      * Contains the ID attribute values of the &lt;techMD&gt;, &lt;sourceMD&gt;,
-     * &lt;rightsMD&gt; and/or &lt;digiprovMD&gt; elements within the &lt;amdSec&gt;
-     * of the METS document that contain administrative metadata pertaining to the
-     * METS document itself. For more information on using METS IDREFS and IDREF
-     * type attributes for internal linking, see Chapter 4 of the METS Primer.
+     * &lt;rightsMD&gt; and/or &lt;digiprovMD&gt; elements within the &lt;amdSec&gt; of the METS document
+     * that contain administrative metadata pertaining to the METS document itself. For
+     * more information on using METS IDREFS and IDREF type attributes for internal
+     * linking, see Chapter 4 of the METS Primer.
      * 
      * @param admId the new adm identifier
      */
@@ -168,8 +171,7 @@ public class MetsHdr implements IMetsElement {
     }
 
     /**
-     * Specifies the status of the METS document. It is used for internal processing
-     * purposes.
+     * Specifies the status of the METS document. It is used for internal processing purposes.
      * 
      * @return status of the mets document
      */
@@ -178,8 +180,7 @@ public class MetsHdr implements IMetsElement {
     }
 
     /**
-     * Specifies the status of the METS document. It is used for internal processing
-     * purposes.
+     * Specifies the status of the METS document. It is used for internal processing purposes.
      * 
      * @param recordStatus status of this mets document
      */
