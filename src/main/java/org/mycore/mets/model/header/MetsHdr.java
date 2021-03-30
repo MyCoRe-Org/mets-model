@@ -1,11 +1,13 @@
 package org.mycore.mets.model.header;
 
 import java.time.Instant;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAccessor;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jdom2.Element;
 import org.mycore.mets.model.IMetsElement;
+import org.mycore.mets.utils.ISO8601DateTime;
 
 /**
  * The mets header element &lt;metsHdr&gt; captures metadata about the METS document itself,
@@ -23,11 +25,15 @@ public class MetsHdr implements IMetsElement {
 
     private String admId;
 
-    private Instant createDate;
+    private ISO8601DateTime createDate;
 
-    private Instant lastModDate;
+    private ISO8601DateTime lastModDate;
 
     private String recordStatus;
+
+    private List<Agent> agents;
+
+    private List<AltRecordID> altRecordIds;
 
     /**
      * Creates a new &lt;metsHdr&gt; object.
@@ -39,8 +45,11 @@ public class MetsHdr implements IMetsElement {
         this.recordStatus = null;
         this.setCreateDate(Instant.now());
         this.setLastModDate(Instant.now());
+        this.agents = new ArrayList<>();
+        this.altRecordIds = new ArrayList<>();
     }
 
+    @SuppressWarnings("exports")
     @Override
     public Element asElement() {
         Element metsHdr = new Element("metsHdr", IMetsElement.METS);
@@ -51,13 +60,18 @@ public class MetsHdr implements IMetsElement {
             metsHdr.setAttribute("ADMID", this.admId);
         }
         if (this.createDate != null) {
-            metsHdr.setAttribute("CREATEDATE", DateTimeFormatter.ISO_INSTANT.format(this.createDate));
+            metsHdr.setAttribute("CREATEDATE", createDate.getISOString());
         }
         if (this.lastModDate != null) {
-            metsHdr.setAttribute("LASTMODDATE", DateTimeFormatter.ISO_INSTANT.format(this.lastModDate));
+            metsHdr.setAttribute("LASTMODDATE", lastModDate.getISOString());
         }
         if (this.recordStatus != null) {
             metsHdr.setAttribute("RECORDSTATUS", this.recordStatus);
+        }
+        if (this.agents != null && !this.agents.isEmpty()) {
+            for (Agent agent : this.agents) {
+                metsHdr.addContent(agent.asElement());
+            }
         }
         return metsHdr;
     }
@@ -114,43 +128,53 @@ public class MetsHdr implements IMetsElement {
 
     /**
      * Records the date/time the METS document was created.
-     * 
+     *
      * @return mets document creation date time
      */
-    public Instant getCreateDate() {
-        return createDate;
+    public TemporalAccessor getCreateDate() {
+        return createDate.getTemporalAccessor();
     }
 
     /**
      * Records the date/time the METS document was created.
-     * 
+     *
      * @param createDate new creation date
      */
     public void setCreateDate(Instant createDate) {
-        this.createDate = Instant.ofEpochMilli(createDate.toEpochMilli()).with(ChronoField.MILLI_OF_SECOND, 0);
+        setCreateDate(createDate.toString());
+    }
+
+    public void setCreateDate(String strCreateDate) {
+        ISO8601DateTime parsed = new ISO8601DateTime(strCreateDate);
+        this.createDate = parsed;
     }
 
     /**
      * Is used to indicate the date/time the METS document was last modified.
-     * 
+     *
      * @return mets document modified date
      */
-    public Instant getLastModDate() {
-        return lastModDate;
+    public TemporalAccessor getLastModDate() {
+        return lastModDate.getTemporalAccessor();
     }
 
     /**
      * Is used to indicate the date/time the METS document was last modified.
-     * 
+     *
      * @param lastModDate new modified date
      */
     public void setLastModDate(Instant lastModDate) {
-        this.lastModDate = Instant.ofEpochMilli(lastModDate.toEpochMilli()).with(ChronoField.MILLI_OF_SECOND, 0);
+        setLastModDate(lastModDate.toString());
+    }
+
+    public void setLastModDate(String strLastModDate) {
+        ISO8601DateTime parsed = new ISO8601DateTime(strLastModDate);
+        this.lastModDate = parsed;
     }
 
     /**
      * Specifies the status of the METS document. It is used for internal processing purposes.
-     * 
+     *
      * @return status of the mets document
      */
     public String getRecordStatus() {
@@ -164,6 +188,22 @@ public class MetsHdr implements IMetsElement {
      */
     public void setRecordStatus(String recordStatus) {
         this.recordStatus = recordStatus;
+    }
+
+    public List<Agent> getAgents() {
+        return agents;
+    }
+
+    public void setAgents(List<Agent> agents) {
+        this.agents = agents;
+    }
+
+    public List<AltRecordID> getAltRecordIds() {
+        return altRecordIds;
+    }
+
+    public void setAltRecordIds(List<AltRecordID> altRecordIds) {
+        this.altRecordIds = altRecordIds;
     }
 
 }

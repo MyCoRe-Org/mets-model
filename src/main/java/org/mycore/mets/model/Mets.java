@@ -21,6 +21,7 @@ package org.mycore.mets.model;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -52,7 +53,10 @@ import org.mycore.mets.model.files.FLocat;
 import org.mycore.mets.model.files.File;
 import org.mycore.mets.model.files.FileGrp;
 import org.mycore.mets.model.files.FileSec;
+import org.mycore.mets.model.header.Agent;
 import org.mycore.mets.model.header.MetsHdr;
+import org.mycore.mets.model.header.Name;
+import org.mycore.mets.model.header.Note;
 import org.mycore.mets.model.sections.AmdSec;
 import org.mycore.mets.model.sections.DmdSec;
 import org.mycore.mets.model.sections.MdWrapSection;
@@ -123,7 +127,7 @@ public class Mets {
         this.structMaps.put(LogicalStructMap.TYPE, new LogicalStructMap());
         this.fileSec = new FileSec();
         this.structLink = new StructLink();
-        this.metsHdr = null;
+        this.metsHdr = new MetsHdr();
     }
 
     /**
@@ -142,6 +146,65 @@ public class Mets {
         this.structMaps.put(LogicalStructMap.TYPE, createLogicalStructMap(source));
         this.structMaps.put(PhysicalStructMap.TYPE, createPhysicalStructMap(source));
         this.structLink = createStuctLinks(source);
+        this.metsHdr = createMetsHdr(source);
+    }
+
+    public static MetsHdr createMetsHdr(Document source) {
+        XPathExpression<Element> metsHdrXP = getXpathExpression("mets:mets/mets:metsHdr");
+        Element metsHdrElement = metsHdrXP.evaluate(source).get(0);
+        MetsHdr metsHdr = new MetsHdr();
+
+        String strCreateDate = metsHdrElement.getAttributeValue("CREATEDATE");
+        if (strCreateDate != null) {
+            metsHdr.setCreateDate(strCreateDate);
+        }
+        String strModifiedDate = metsHdrElement.getAttributeValue("LASTMODDATE");
+        if (strModifiedDate != null) {
+            metsHdr.setLastModDate(strModifiedDate);
+        }
+
+        XPathExpression<Element> agentXP = getXpathExpression("mets:mets/mets:metsHdr/mets:agent");
+        List<Agent> agents = new ArrayList<>();
+        for (Element element : agentXP.evaluate(source)) {
+            Agent agent = new Agent();
+            String role = element.getAttributeValue("ROLE");
+            String otherRole = element.getAttributeValue("OTHERROLE");
+            String type = element.getAttributeValue("TYPE");
+            String otherType = element.getAttributeValue("OTHERTYPE");
+            String id = element.getAttributeValue("ID");
+            if (role != null) {
+                agent.setRole(role);
+            }
+            if (otherRole != null) {
+                agent.setOtherRole(otherRole);
+            }
+            if (type != null) {
+                agent.setType(type);
+            }
+            if (otherType != null) {
+                agent.setOtherType(otherType);
+            }
+            if (id != null) {
+                agent.setId(id);
+            }
+            Element elementName = element.getChild("name", IMetsElement.METS);
+            if (elementName != null) {
+                Name name = new Name(elementName.getTextNormalize());
+                agent.setName(name);
+            }
+            XPathExpression<Element> agentNotesXP = getXpathExpression("mets:mets/mets:metsHdr/mets:agent/mets:note");
+            List<Note> notes = new ArrayList<>();
+            for (Element elementNote : agentNotesXP.evaluate(source)) {
+                Note note = new Note(elementNote.getTextNormalize());
+                notes.add(note);
+            }
+            if (!notes.isEmpty()) {
+                agent.setNotes(notes);
+            }
+            agents.add(agent);
+        }
+        metsHdr.setAgents(agents);
+        return metsHdr;
     }
 
     private static Source getMetsSchema(CatalogResolver catalogResolver) throws SAXException, IOException {
@@ -175,7 +238,7 @@ public class Mets {
                 XPathExpression<Element> xmlDataXP = getXpathExpression("mets:xmlData/*");
                 Element element = xmlDataXP.evaluateFirst(wrap);
                 MdWrap mdWrap = new MdWrap(MdWrapSection.findTypeByName(wrap.getAttributeValue("MDTYPE")),
-                    (Element) element.clone());
+						element.clone());
                 dmdSec.setMdWrap(mdWrap);
             }
 
@@ -233,7 +296,7 @@ public class Mets {
                 String name = flagElement.getAttributeValue("MDTYPE");
                 XPathExpression<Element> xmlDataXP = getXpathExpression("mets:xmlData/*");
                 Element element = xmlDataXP.evaluateFirst(flagElement);
-                MdWrap mdWrap = new MdWrap(MdWrapSection.findTypeByName(name), (Element) element.clone());
+                MdWrap mdWrap = new MdWrap(MdWrapSection.findTypeByName(name), element.clone());
                 mdWrap.setOtherMdType(flagElement.getAttributeValue("OTHERMDTYPE"));
                 rightsMd.setMdWrap(mdWrap);
             }
@@ -286,7 +349,7 @@ public class Mets {
                         child.getAttributeValue("LABEL"));
                     parent.add(lsd);
 
-                    processLogicalChildren((List<Element>) child.getChildren(), lsd);
+                    processLogicalChildren(child.getChildren(), lsd);
                     break;
             }
         }
@@ -438,7 +501,7 @@ public class Mets {
 
     /**
      * Sets the header for this document.
-     * 
+     *
      * @param metsHdr
      *            the mets header
      */
@@ -449,7 +512,7 @@ public class Mets {
     /**
      * Returns the header for this mets document.
      * Can return null if no header is specified.
-     * 
+     *
      * @return the mets header or null
      */
     public MetsHdr getMetsHdr() {
