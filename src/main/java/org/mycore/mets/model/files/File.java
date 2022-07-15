@@ -18,8 +18,6 @@
  */
 package org.mycore.mets.model.files;
 
-import java.util.Optional;
-
 import org.jdom2.Element;
 import org.mycore.mets.model.IMetsElement;
 
