@@ -93,11 +93,11 @@ public class Mets {
     // thread-safe
     private static Schema SCHEMA;
 
-    private Map<String, DmdSec> dmdsecs;
+    private final Map<String, DmdSec> dmdsecs;
 
-    private Map<String, AmdSec> amdsecs;
+    private final Map<String, AmdSec> amdsecs;
 
-    private Map<String, IStructMap> structMaps;
+    private final Map<String, IStructMap> structMaps;
 
     private StructLink structLink;
 
@@ -151,7 +151,7 @@ public class Mets {
 
     public static MetsHdr createMetsHdr(Document source) {
         XPathExpression<Element> metsHdrXP = getXpathExpression("mets:mets/mets:metsHdr");
-        Element metsHdrElement = metsHdrXP.evaluate(source).get(0);
+        Element metsHdrElement = metsHdrXP.evaluate(source).getFirst();
         MetsHdr metsHdr = new MetsHdr();
 
         String strCreateDate = metsHdrElement.getAttributeValue("CREATEDATE");
@@ -161,6 +161,10 @@ public class Mets {
         String strModifiedDate = metsHdrElement.getAttributeValue("LASTMODDATE");
         if (strModifiedDate != null) {
             metsHdr.setLastModDate(strModifiedDate);
+        }
+        String recordStatus = metsHdrElement.getAttributeValue("RECORDSTATUS");
+        if (recordStatus != null) {
+            metsHdr.setRecordStatus(recordStatus);
         }
 
         XPathExpression<Element> agentXP = getXpathExpression("mets:mets/mets:metsHdr/mets:agent");
@@ -275,8 +279,8 @@ public class Mets {
      * Creates the elements embedded in the mets:amdSec. Currently the
      * mets:rightsMD and the mets:digiprovMD sections are supported.
      *
-     * @param section
-     * @param amdSec
+     * @param section jdom section element
+     * @param amdSec the mets amd section
      * @param flag
      *            one of "rightsMD" or "addRightsMd"
      */

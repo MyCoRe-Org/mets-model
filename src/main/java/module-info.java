@@ -1,5 +1,5 @@
 module org.mycore.mets.model {
-    requires jdom2;
+    requires org.jdom2;
     requires java.xml;
     requires org.apache.logging.log4j;
     exports org.mycore.mets.misc;
