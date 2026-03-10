@@ -1,3 +1,4 @@
+/** Module providing the METS model classes for creating and parsing METS documents. */
 module org.mycore.mets.model {
     requires org.jdom2;
     requires java.xml;

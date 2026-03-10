@@ -22,14 +22,23 @@ import org.jdom2.Element;
 import org.mycore.mets.model.IMetsElement;
 
 /**
+ * Represents the mets:structMap of TYPE="PHYSICAL" describing the physical structure of a METS document.
+ *
  * @author Silvio Hermann (shermann)
  * @author Matthias Eichner (matthias)
  */
 public class PhysicalStructMap implements IStructMap {
 
+    /** The TYPE attribute value for physical structure maps. */
     public final static String TYPE = "PHYSICAL";
 
     private PhysicalDiv divContainer;
+
+    /**
+     * Creates a new empty PhysicalStructMap.
+     */
+    public PhysicalStructMap() {
+    }
 
     @Override
     public String getType() {
@@ -37,6 +46,8 @@ public class PhysicalStructMap implements IStructMap {
     }
 
     /**
+     * Returns the root div container of this physical structure map.
+     *
      * @return the divContainer
      */
     public PhysicalDiv getDivContainer() {
@@ -44,6 +55,8 @@ public class PhysicalStructMap implements IStructMap {
     }
 
     /**
+     * Sets the root div container of this physical structure map.
+     *
      * @param divContainer
      *            the divContainer to set
      */

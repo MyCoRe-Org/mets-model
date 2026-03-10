@@ -25,24 +25,36 @@ import org.jdom2.Element;
 import org.mycore.mets.model.IMetsElement;
 
 /**
+ * Represents a mets:fptr (file pointer) element that references a file within a logical div.
+ *
  * @author Silvio Hermann (shermann)
  */
 public class Fptr implements IMetsElement {
 
     private String fileId;
 
-    private List<Seq> seqList;
+    private final List<Seq> seqList;
 
+    /**
+     * Creates a new Fptr with no file reference.
+     */
     public Fptr() {
         this(null);
     }
 
+    /**
+     * Creates a new Fptr referencing the given file identifier.
+     *
+     * @param fileId the FILEID to reference
+     */
     public Fptr(String fileId) {
         this.fileId = fileId;
         this.seqList = new ArrayList<Seq>();
     }
 
     /**
+     * Returns the file identifier referenced by this file pointer.
+     *
      * @return the fileId
      */
     public String getFileId() {
@@ -50,6 +62,8 @@ public class Fptr implements IMetsElement {
     }
 
     /**
+     * Sets the file identifier for this file pointer.
+     *
      * @param fileId
      *            the fileId to set
      */
@@ -58,6 +72,8 @@ public class Fptr implements IMetsElement {
     }
 
     /**
+     * Returns the modifiable list of sequence elements.
+     *
      * @return the modifiable sequence list.
      */
     public List<Seq> getSeqList() {

@@ -4,16 +4,28 @@ import org.jdom2.Element;
 import org.mycore.mets.model.IMetsElement;
 
 /**
- * 
+ * Represents a mets:area element referencing a portion of a file within a mets:seq element.
+ *
  * @author Matthias Eichner
  */
 public class Area implements IMetsElement {
 
     private String id, fileId, begin, end, betype;
 
+    /**
+     * Creates a new Area with no attributes set.
+     */
     public Area() {
     }
 
+    /**
+     * Creates a new Area with the given file reference and byte-range attributes.
+     *
+     * @param fileId the FILEID referencing the file
+     * @param betype the type of the begin/end values (e.g., BYTE, IDREF)
+     * @param begin  the begin position within the file
+     * @param end    the end position within the file
+     */
     public Area(String fileId, String betype, String begin, String end) {
         this.fileId = fileId;
         this.betype = betype;
@@ -22,6 +34,8 @@ public class Area implements IMetsElement {
     }
 
     /**
+     * Returns the area identifier.
+     *
      * @return the id
      */
     public String getId() {
@@ -29,6 +43,8 @@ public class Area implements IMetsElement {
     }
 
     /**
+     * Sets the area identifier.
+     *
      * @param id the id to set
      */
     public void setId(String id) {
@@ -36,6 +52,8 @@ public class Area implements IMetsElement {
     }
 
     /**
+     * Returns the file identifier referenced by this area.
+     *
      * @return the fileId
      */
     public String getFileId() {
@@ -43,6 +61,8 @@ public class Area implements IMetsElement {
     }
 
     /**
+     * Sets the file identifier referenced by this area.
+     *
      * @param fileId the fileId to set
      */
     public void setFileId(String fileId) {
@@ -50,6 +70,8 @@ public class Area implements IMetsElement {
     }
 
     /**
+     * Returns the begin position within the referenced file.
+     *
      * @return the begin
      */
     public String getBegin() {
@@ -57,6 +79,8 @@ public class Area implements IMetsElement {
     }
 
     /**
+     * Sets the begin position within the referenced file.
+     *
      * @param begin the begin to set
      */
     public void setBegin(String begin) {
@@ -64,6 +88,8 @@ public class Area implements IMetsElement {
     }
 
     /**
+     * Returns the end position within the referenced file.
+     *
      * @return the end
      */
     public String getEnd() {
@@ -71,6 +97,8 @@ public class Area implements IMetsElement {
     }
 
     /**
+     * Sets the end position within the referenced file.
+     *
      * @param end the end to set
      */
     public void setEnd(String end) {
@@ -78,6 +106,8 @@ public class Area implements IMetsElement {
     }
 
     /**
+     * Returns the type of the begin/end coordinate values.
+     *
      * @return the betype
      */
     public String getBetype() {
@@ -85,6 +115,8 @@ public class Area implements IMetsElement {
     }
 
     /**
+     * Sets the type of the begin/end coordinate values.
+     *
      * @param betype the betype to set
      */
     public void setBetype(String betype) {

@@ -22,6 +22,8 @@ import org.jdom2.Element;
 import org.jdom2.Namespace;
 
 /**
+ * Common interface for all METS model elements that can be serialized to a JDOM element.
+ *
  * @author Silvio Hermann (shermann)
  */
 public interface IMetsElement {
@@ -44,6 +46,8 @@ public interface IMetsElement {
 
     /**
      * Creates an {@link org.jdom2.Element} of the IMetsElement.
+     *
+     * @return the JDOM element representing this METS element
      */
     Element asElement();
 

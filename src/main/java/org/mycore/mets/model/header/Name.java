@@ -17,17 +17,35 @@ public class Name implements IMetsElement {
 
     private String text;
 
+    /**
+     * Creates a new Name with no text set.
+     */
     public Name() {
     }
 
+    /**
+     * Creates a new Name with the given text value.
+     *
+     * @param text the name text
+     */
     public Name(String text) {
         this.text = text;
     }
 
+    /**
+     * Returns the text content of this name element.
+     *
+     * @return the text
+     */
     public String getText() {
         return text;
     }
 
+    /**
+     * Sets the text content of this name element.
+     *
+     * @param text the text to set
+     */
     public void setText(String text) {
         this.text = text;
     }

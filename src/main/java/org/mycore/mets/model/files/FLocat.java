@@ -29,6 +29,7 @@ import org.mycore.mets.model.struct.LOCTYPE;
  */
 public class FLocat implements IMetsElement {
 
+    /** Constant for the URL LOCTYPE value. */
     public final static String LOCTYPE_URL = "URL";
 
     private String href;
@@ -36,6 +37,8 @@ public class FLocat implements IMetsElement {
     private LOCTYPE type;
 
     /**
+     * Creates a new FLocat with the given location type and href.
+     *
      * @param loctype
      *            the loctype
      * @param href
@@ -47,6 +50,8 @@ public class FLocat implements IMetsElement {
     }
 
     /**
+     * Returns the href attribute value.
+     *
      * @return the href
      */
     public String getHref() {
@@ -54,6 +59,8 @@ public class FLocat implements IMetsElement {
     }
 
     /**
+     * Sets the href attribute value.
+     *
      * @param href
      *            the href to set
      */
@@ -62,6 +69,8 @@ public class FLocat implements IMetsElement {
     }
 
     /**
+     * Returns the location type of this FLocat element.
+     *
      * @return the type
      */
     public LOCTYPE getType() {
@@ -69,6 +78,8 @@ public class FLocat implements IMetsElement {
     }
 
     /**
+     * Sets the location type from a string value.
+     *
      * @param loctype
      *            the loctype to set
      * @deprecated use {@link FLocat#setType(LOCTYPE)}
@@ -78,6 +89,8 @@ public class FLocat implements IMetsElement {
     }
 
     /**
+     * Sets the location type of this FLocat element.
+     *
      * @param loctype
      *            the {@link LOCTYPE} to set
      */

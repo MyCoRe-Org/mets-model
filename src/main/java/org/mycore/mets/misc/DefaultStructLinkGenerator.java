@@ -18,8 +18,13 @@ import org.mycore.mets.model.struct.PhysicalSubDiv;
  */
 public class DefaultStructLinkGenerator extends StructLinkGenerator {
 
-    private Map<LogicalDiv, List<PhysicalSubDiv>> logicalToPhysical;
+    private final Map<LogicalDiv, List<PhysicalSubDiv>> logicalToPhysical;
 
+    /**
+     * Creates a new DefaultStructLinkGenerator with the given logical-to-physical mapping.
+     *
+     * @param logicalToPhysical a map of logical divs to their associated physical sub-divs
+     */
     public DefaultStructLinkGenerator(Map<LogicalDiv, List<PhysicalSubDiv>> logicalToPhysical) {
         super();
         this.logicalToPhysical = logicalToPhysical;

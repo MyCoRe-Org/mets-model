@@ -44,11 +44,10 @@ public class Agent implements IMetsElement {
     }
 
     /**
-     * 
      * Attribute "ROLE" is required only
-     * 
-     * @param role
-     * @param name
+     *
+     * @param role the ROLE attribute value
+     * @param name the agent name element
      */
     public Agent(String role, Name name) {
         this.role = role;
@@ -56,58 +55,128 @@ public class Agent implements IMetsElement {
         this.notes = new ArrayList<>();
     }
 
+    /**
+     * Returns the agent identifier.
+     *
+     * @return the id
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Sets the agent identifier.
+     *
+     * @param id the id to set
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * Returns the agent type.
+     *
+     * @return the type
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     * Sets the agent type.
+     *
+     * @param type the type to set
+     */
     public void setType(String type) {
         this.type = type;
     }
 
+    /**
+     * Returns the role of this agent.
+     *
+     * @return the role
+     */
     public String getRole() {
         return role;
     }
 
+    /**
+     * Sets the role of this agent.
+     *
+     * @param role the role to set
+     */
     public void setRole(String role) {
         this.role = role;
     }
 
+    /**
+     * Returns the other role attribute value.
+     *
+     * @return the otherRole
+     */
     public String getOtherRole() {
         return otherRole;
     }
 
+    /**
+     * Sets the other role attribute value.
+     *
+     * @param otherRole the otherRole to set
+     */
     public void setOtherRole(String otherRole) {
         this.otherRole = otherRole;
     }
 
+    /**
+     * Returns the other type attribute value.
+     *
+     * @return the otherType
+     */
     public String getOtherType() {
         return otherType;
     }
 
+    /**
+     * Sets the other type attribute value.
+     *
+     * @param otherType the otherType to set
+     */
     public void setOtherType(String otherType) {
         this.otherType = otherType;
     }
 
+    /**
+     * Returns the name of this agent.
+     *
+     * @return the name
+     */
     public Name getName() {
         return name;
     }
 
+    /**
+     * Sets the name of this agent.
+     *
+     * @param name the name to set
+     */
     public void setName(Name name) {
         this.name = name;
     }
 
+    /**
+     * Returns the notes associated with this agent.
+     *
+     * @return the list of notes
+     */
     public List<Note> getNotes() {
         return notes;
     }
 
+    /**
+     * Sets the notes associated with this agent.
+     *
+     * @param notes the list of notes to set
+     */
     public void setNotes(List<Note> notes) {
         this.notes = notes;
     }

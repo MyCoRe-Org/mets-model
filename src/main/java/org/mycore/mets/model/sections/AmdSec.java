@@ -25,18 +25,25 @@ import org.jdom2.Element;
 import org.mycore.mets.model.IMetsElement;
 
 /**
+ * Represents the mets:amdSec (administrative metadata section) of a METS document.
+ *
  * @author Silvio Hermann (shermann)
  */
 public class AmdSec extends MdSection {
 
-    private List<TechMD> techMD;
+    private final List<TechMD> techMD;
 
-    private List<RightsMD> rightsMD;
+    private final List<RightsMD> rightsMD;
 
-    private List<SourceMD> sourceMD;
+    private final List<SourceMD> sourceMD;
 
-    private List<DigiprovMD> digiprovMD;
+    private final List<DigiprovMD> digiprovMD;
 
+    /**
+     * Creates a new AmdSec with the given identifier.
+     *
+     * @param id the section identifier
+     */
     public AmdSec(String id) {
         super(id);
         this.techMD = new ArrayList<>();
@@ -45,53 +52,113 @@ public class AmdSec extends MdSection {
         this.digiprovMD = new ArrayList<>();
     }
 
+    /**
+     * Returns the first TechMD element, or null if none exists.
+     *
+     * @return the first TechMD or null
+     */
     public TechMD getTechMD() {
         return techMD.isEmpty() ? null : techMD.get(0);
     }
 
+    /**
+     * Returns all TechMD elements.
+     *
+     * @return list of TechMD elements
+     */
     public List<TechMD> listTechMD() {
         return this.techMD;
     }
 
+    /**
+     * Sets the TechMD element, replacing any existing ones.
+     *
+     * @param techMD the TechMD to set
+     */
     public void setTechMD(TechMD techMD) {
         this.techMD.clear();
         this.techMD.add(techMD);
     }
 
+    /**
+     * Returns the first RightsMD element, or null if none exists.
+     *
+     * @return the first RightsMD or null
+     */
     public RightsMD getRightsMD() {
         return rightsMD.isEmpty() ? null : rightsMD.get(0);
     }
 
+    /**
+     * Returns all RightsMD elements.
+     *
+     * @return list of RightsMD elements
+     */
     public List<RightsMD> listRightsMD() {
         return this.rightsMD;
     }
 
+    /**
+     * Sets the RightsMD element, replacing any existing ones.
+     *
+     * @param rightsMD the RightsMD to set
+     */
     public void setRightsMD(RightsMD rightsMD) {
         this.rightsMD.clear();
         this.rightsMD.add(rightsMD);
     }
 
+    /**
+     * Returns the first SourceMD element, or null if none exists.
+     *
+     * @return the first SourceMD or null
+     */
     public SourceMD getSourceMD() {
         return sourceMD.isEmpty() ? null : sourceMD.get(0);
     }
 
+    /**
+     * Returns all SourceMD elements.
+     *
+     * @return list of SourceMD elements
+     */
     public List<SourceMD> listSourceMD() {
         return this.sourceMD;
     }
 
+    /**
+     * Sets the SourceMD element, replacing any existing ones.
+     *
+     * @param sourceMD the SourceMD to set
+     */
     public void setSourceMD(SourceMD sourceMD) {
         this.sourceMD.clear();
         this.sourceMD.add(sourceMD);
     }
 
+    /**
+     * Returns the first DigiprovMD element, or null if none exists.
+     *
+     * @return the first DigiprovMD or null
+     */
     public DigiprovMD getDigiprovMD() {
         return digiprovMD.isEmpty() ? null : digiprovMD.get(0);
     }
 
+    /**
+     * Returns all DigiprovMD elements.
+     *
+     * @return list of DigiprovMD elements
+     */
     public List<DigiprovMD> listDigiprovMD() {
         return this.digiprovMD;
     }
 
+    /**
+     * Sets the DigiprovMD element, replacing any existing ones.
+     *
+     * @param digiprovMD the DigiprovMD to set
+     */
     public void setDigiprovMD(DigiprovMD digiprovMD) {
         this.digiprovMD.clear();
         this.digiprovMD.add(digiprovMD);

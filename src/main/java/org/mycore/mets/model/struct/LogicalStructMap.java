@@ -22,14 +22,24 @@ import org.jdom2.Element;
 import org.mycore.mets.model.IMetsElement;
 
 /**
+ * Represents the mets:structMap of TYPE="LOGICAL" describing the logical structure of a METS document.
+ *
  * @author Silvio Hermann (shermann)
  * @author Matthias Eichner (matthias)
  */
 public class LogicalStructMap implements IStructMap {
 
+    /** The TYPE attribute value for logical structure maps. */
     public final static String TYPE = "LOGICAL";
 
+    /** The root div container of this logical structure map. */
     private LogicalDiv divContainer;
+
+    /**
+     * Creates a new empty LogicalStructMap.
+     */
+    public LogicalStructMap() {
+    }
 
     @Override
     public String getType() {
@@ -37,6 +47,8 @@ public class LogicalStructMap implements IStructMap {
     }
 
     /**
+     * Returns the root div container of this logical structure map.
+     *
      * @return the divContainer
      */
     public LogicalDiv getDivContainer() {
@@ -44,6 +56,8 @@ public class LogicalStructMap implements IStructMap {
     }
 
     /**
+     * Sets the root div container of this logical structure map.
+     *
      * @param divContainer
      *            the divContainer to set
      */

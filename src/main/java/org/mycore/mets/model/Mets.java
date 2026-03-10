@@ -80,6 +80,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
+ * Represents a complete METS document, providing access to all its sections and utility methods for serialization and validation.
+ *
  * @author Silvio Hermann (shermann)
  */
 public class Mets {
@@ -119,6 +121,9 @@ public class Mets {
         }
     }
 
+    /**
+     * Creates a new empty Mets document with default physical and logical structure maps.
+     */
     public Mets() {
         this.dmdsecs = new LinkedHashMap<>();
         this.amdsecs = new LinkedHashMap<>();
@@ -149,6 +154,12 @@ public class Mets {
         this.metsHdr = createMetsHdr(source);
     }
 
+    /**
+     * Creates the MetsHdr section from the given source document.
+     *
+     * @param source the source document
+     * @return a new MetsHdr populated from the source
+     */
     public static MetsHdr createMetsHdr(Document source) {
         XPathExpression<Element> metsHdrXP = getXpathExpression("mets:mets/mets:metsHdr");
         Element metsHdrElement = metsHdrXP.evaluate(source).getFirst();
@@ -227,6 +238,12 @@ public class Mets {
         return CatalogManager.catalogResolver(CatalogFeatures.defaults(), catalogURIs);
     }
 
+    /**
+     * Creates all DmdSec sections from the given source document.
+     *
+     * @param source the source document
+     * @return a map of DmdSec objects keyed by their ID
+     */
     public static Map<String, DmdSec> createDmdSec(Document source) {
         Map<String, DmdSec> dmdsecs = new HashMap<>();
         XPathExpression<Element> xp = getXpathExpression("mets:mets/mets:dmdSec");
@@ -261,6 +278,12 @@ public class Mets {
         return dmdsecs;
     }
 
+    /**
+     * Creates all AmdSec sections from the given source document.
+     *
+     * @param source the source document
+     * @return a map of AmdSec objects keyed by their ID
+     */
     public static Map<String, AmdSec> createAmdSec(Document source) {
         Map<String, AmdSec> amdsecs = new HashMap<>();
         XPathExpression<Element> xp = getXpathExpression("mets:mets/mets:amdSec");
@@ -589,27 +612,55 @@ public class Mets {
         amdsecs.clear();
     }
 
+    /**
+     * Returns the structural map with the given type.
+     *
+     * @param type the TYPE attribute value
+     * @return the structural map with the given type or null
+     */
     public IStructMap getStructMap(String type) {
         return this.structMaps.get(type);
     }
 
+    /**
+     * Returns the physical structural map.
+     *
+     * @return the physical structural map
+     */
     public PhysicalStructMap getPhysicalStructMap() {
         return (PhysicalStructMap) this.structMaps.get(PhysicalStructMap.TYPE);
     }
 
+    /**
+     * Returns the logical structural map.
+     *
+     * @return the logical structural map
+     */
     public LogicalStructMap getLogicalStructMap() {
         return (LogicalStructMap) this.structMaps.get(LogicalStructMap.TYPE);
     }
 
+    /**
+     * Adds a structural map to this METS document.
+     *
+     * @param structMap the structural map to add
+     */
     public void addStructMap(IStructMap structMap) {
         this.structMaps.put(structMap.getType(), structMap);
     }
 
+    /**
+     * Removes the structural map with the given type from this METS document.
+     *
+     * @param type the TYPE attribute value of the structural map to remove
+     */
     public void removeStructMap(String type) {
         this.structMaps.remove(type);
     }
 
     /**
+     * Returns the struct link section of this METS document.
+     *
      * @return the structLink
      */
     public StructLink getStructLink() {
@@ -617,6 +668,8 @@ public class Mets {
     }
 
     /**
+     * Sets the struct link section of this METS document.
+     *
      * @param structLink
      *            the structLink to set
      */
@@ -625,6 +678,8 @@ public class Mets {
     }
 
     /**
+     * Returns the file section of this METS document.
+     *
      * @return the fileSec
      */
     public FileSec getFileSec() {
@@ -632,6 +687,8 @@ public class Mets {
     }
 
     /**
+     * Sets the file section of this METS document.
+     *
      * @param fileSec
      *            the fileSec to set
      */
@@ -640,6 +697,8 @@ public class Mets {
     }
 
     /**
+     * Returns the AmdSec with the given identifier.
+     *
      * @param id
      *            the id of the amdsec to retrieve
      * @return the amdsec with the given id or null if there is no such amd
@@ -650,6 +709,8 @@ public class Mets {
     }
 
     /**
+     * Returns all administrative metadata sections in this document.
+     *
      * @return all amd sections
      */
     public AmdSec[] getAmdSections() {
@@ -657,6 +718,8 @@ public class Mets {
     }
 
     /**
+     * Returns all descriptive metadata sections in this document.
+     *
      * @return all dmd sections
      */
     public DmdSec[] getDmdSections() {
@@ -664,6 +727,8 @@ public class Mets {
     }
 
     /**
+     * Returns the DmdSec with the given identifier.
+     *
      * @param id
      *            the id of the dmdsec to retrieve
      * @return the dmdsec with the given id or null if there is no such dmd
@@ -717,6 +782,8 @@ public class Mets {
     }
 
     /**
+     * Validates the given document against the METS schema.
+     *
      * @param doc
      *            the document to validate against the mets schema
      * @return true if the document is a valid mets document false otherwise

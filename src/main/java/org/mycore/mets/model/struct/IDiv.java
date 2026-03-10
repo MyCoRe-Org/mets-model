@@ -4,20 +4,32 @@ import java.util.List;
 
 import org.mycore.mets.model.IMetsElement;
 
+/**
+ * Interface for mets:div elements in a METS structural map.
+ *
+ * @param <T> the type of child elements managed by this div
+ */
 public interface IDiv<T extends IMetsElement> extends IMetsElement {
 
+    /** XML element name for a div element. */
     String XML_NAME = "div";
 
+    /** XML attribute name for the ID attribute. */
     String XML_ID = "ID";
 
+    /** XML attribute name for the TYPE attribute. */
     String XML_TYPE = "TYPE";
 
     /**
+     * Sets the identifier of this div.
+     *
      * @param id new id
      */
     void setId(String id);
 
     /**
+     * Returns the identifier of this div.
+     *
      * @return the id
      */
     String getId();
@@ -135,16 +147,22 @@ public interface IDiv<T extends IMetsElement> extends IMetsElement {
     String getType();
 
     /**
+     * Adds a child element to this div.
+     *
      * @param element a new element
      */
     void add(T element);
 
     /**
+     * Removes a child element from this div.
+     *
      * @param element element to remove
      */
     void remove(T element);
 
     /**
+     * Returns a list of all direct children of this div.
+     *
      * @return list of all children
      */
     List<T> getChildren();

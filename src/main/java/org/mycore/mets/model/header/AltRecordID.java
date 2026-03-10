@@ -23,18 +23,44 @@ public class AltRecordID implements IMetsElement {
 
     private String type;
 
+    /**
+     * Creates a new AltRecordID instance.
+     */
+    public AltRecordID() {
+    }
+
+    /**
+     * Returns the alternative record identifier value.
+     *
+     * @return the id
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Sets the alternative record identifier value.
+     *
+     * @param id the id to set
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * Returns the type attribute of this alternative record identifier.
+     *
+     * @return the type
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     * Sets the type attribute of this alternative record identifier.
+     *
+     * @param type the type to set
+     */
     public void setType(String type) {
         this.type = type;
     }

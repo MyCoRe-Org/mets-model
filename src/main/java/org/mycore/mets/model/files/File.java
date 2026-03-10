@@ -22,6 +22,8 @@ import org.jdom2.Element;
 import org.mycore.mets.model.IMetsElement;
 
 /**
+ * Represents a mets:file element within a mets:fileGrp in a METS document.
+ *
  * @author Silvio Hermann (shermann)
  */
 public class File implements IMetsElement {
@@ -61,6 +63,8 @@ public class File implements IMetsElement {
     private FLocat fLocat;
 
     /**
+     * Creates a new File with the given id and MIME type.
+     *
      * @param id
      *            the id of the file
      * @param mimeType
@@ -73,6 +77,8 @@ public class File implements IMetsElement {
     }
 
     /**
+     * Returns the file identifier.
+     *
      * @return the id
      */
     public String getId() {
@@ -80,6 +86,8 @@ public class File implements IMetsElement {
     }
 
     /**
+     * Sets the file identifier.
+     *
      * @param id
      *            the id to set
      */
@@ -88,6 +96,8 @@ public class File implements IMetsElement {
     }
 
     /**
+     * Returns the MIME type of this file.
+     *
      * @return the mimeType
      */
     public String getMimeType() {
@@ -95,6 +105,8 @@ public class File implements IMetsElement {
     }
 
     /**
+     * Sets the MIME type of this file.
+     *
      * @param mimeType
      *            the mimeType to set
      */
@@ -103,6 +115,8 @@ public class File implements IMetsElement {
     }
 
     /**
+     * Returns the FLocat element associated with this file.
+     *
      * @return the fLocat
      */
     public FLocat getFLocat() {
@@ -110,6 +124,8 @@ public class File implements IMetsElement {
     }
 
     /**
+     * Sets the FLocat element for this file.
+     *
      * @param fLocat
      *            the fLocat to set
      */
