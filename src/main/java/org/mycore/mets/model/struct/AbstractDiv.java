@@ -3,23 +3,42 @@ package org.mycore.mets.model.struct;
 import org.jdom2.Element;
 import org.mycore.mets.model.IMetsElement;
 
+/**
+ * Abstract base implementation of {@link IDiv} providing common attributes and XML serialization for mets:div elements.
+ *
+ * @param <T> the type of child elements managed by this div
+ */
 public abstract class AbstractDiv<T extends IMetsElement> implements IDiv<T> {
 
+    /** XML attribute name for the ORDER attribute. */
     public static final String XML_ORDER = "ORDER";
 
+    /** XML attribute name for the ORDERLABEL attribute. */
     public static final String XML_ORDERLABEL = "ORDERLABEL";
 
+    /** XML attribute name for the CONTENTIDS attribute. */
     public static final String XML_CONTENTIDS = "CONTENTIDS";
 
+    /** XML attribute name for the ADMID attribute. */
     public final static String XML_ADMID = "ADMID";
 
+    /** XML attribute name for the DMDID attribute. */
     public final static String XML_DMDID = "DMDID";
 
+    /** XML attribute name for the LABEL attribute. */
     public final static String XML_LABEL = "LABEL";
 
+    /** Common string attributes of this div element. */
     protected String id, type, label, orderLabel, dmdId, admId, contentIds;
 
+    /** The numeric order of this div among its siblings. */
     protected Integer order;
+
+    /**
+     * Creates a new AbstractDiv instance.
+     */
+    protected AbstractDiv() {
+    }
 
     @Override
     public void setId(String id) {

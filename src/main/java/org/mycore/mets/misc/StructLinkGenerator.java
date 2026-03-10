@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.mycore.mets.model.struct.LogicalDiv;
 import org.mycore.mets.model.struct.LogicalStructMap;
@@ -23,7 +22,7 @@ import org.mycore.mets.model.struct.StructLink;
  * <p>Its not required to link every single logical or physical div. This class can interpolate missing both logical
  * or physical divs if "fail easy" is disabled.</p>
  *
- * <h3>logical div interpolation:</h3>
+ * <h2>logical div interpolation:</h2>
  * <ol>
  *     <li>add a physical div to each logical div missing</li>
  *     <li>if the root logical div is missing, its linked with the first physical div</li>
@@ -32,7 +31,7 @@ import org.mycore.mets.model.struct.StructLink;
  *     then the preceding logical divs are searched for a physical div</li>
  * </ol>
  *
- * <h3>physical div interpolation:</h3>
+ * <h2>physical div interpolation:</h2>
  * <ol>
  *     <li>each missing physical div has to be linked with a logical div</li>
  *     <li>if the first physical div is not linked, then its added to the root logical div</li>
@@ -63,20 +62,38 @@ public abstract class StructLinkGenerator {
      */
     private boolean failEasy;
 
+    /**
+     * Creates a new StructLinkGenerator with interpolation enabled and fail-easy disabled.
+     */
     public StructLinkGenerator() {
         this.interpolateLogical = true;
         this.interpolatePhysical = true;
         this.failEasy = false;
     }
 
+    /**
+     * Sets whether the generator should throw an exception on missing links.
+     *
+     * @param failEasy true to throw an exception when links are missing
+     */
     public void setFailEasy(boolean failEasy) {
         this.failEasy = failEasy;
     }
 
+    /**
+     * Sets whether logical divs without physical links should be interpolated.
+     *
+     * @param interpolateLogical true to enable logical interpolation
+     */
     public void setInterpolateLogical(boolean interpolateLogical) {
         this.interpolateLogical = interpolateLogical;
     }
 
+    /**
+     * Sets whether physical divs without logical links should be interpolated.
+     *
+     * @param interpolatePhysical true to enable physical interpolation
+     */
     public void setInterpolatePhysical(boolean interpolatePhysical) {
         this.interpolatePhysical = interpolatePhysical;
     }
@@ -115,6 +132,13 @@ public abstract class StructLinkGenerator {
         return buildStructLink(rootLink);
     }
 
+    /**
+     * Handles logical divs that are not yet linked to physical divs by interpolating missing links.
+     *
+     * @param rootLink          the root logical link
+     * @param physicalStructMap the physical structure map
+     * @param logicalStructMap  the logical structure map
+     */
     protected void handleLogicalStructMap(LogicalLink rootLink, PhysicalStructMap physicalStructMap,
         LogicalStructMap logicalStructMap) {
         // list of empty links
@@ -127,8 +151,7 @@ public abstract class StructLinkGenerator {
         // some divs are missing, we are not interpolating and we fail easy -> exception
         if (!interpolateLogical && failEasy) {
             throw new StructLinkGenerationException(
-                "some logical ids are not set: " + emptyLinks.stream().map(LogicalLink::getLogicalDiv).collect(
-                    Collectors.toList()));
+                "some logical ids are not set: " + emptyLinks.stream().map(LogicalLink::getLogicalDiv).toList());
         }
         // interpolate logical divs
         interpolateLogicalDivs(emptyLinks, physicalStructMap, logicalStructMap);
@@ -145,7 +168,7 @@ public abstract class StructLinkGenerator {
     protected void interpolateLogicalDivs(List<LogicalLink> emptyLinks, PhysicalStructMap physicalStructMap,
         LogicalStructMap logicalStructMap) {
         PhysicalDiv divContainer = physicalStructMap.getDivContainer();
-        PhysicalSubDiv firstPhysicalDiv = divContainer.getChildren().get(0);
+        PhysicalSubDiv firstPhysicalDiv = divContainer.getChildren().getFirst();
         emptyLinks.forEach(emptyLink -> {
             if (emptyLink.getLogicalDiv().equals(logicalStructMap.getDivContainer())) {
                 // root node -> always linked with the first physical div
@@ -160,6 +183,13 @@ public abstract class StructLinkGenerator {
         });
     }
 
+    /**
+     * Handles physical divs that are not yet linked to logical divs by interpolating missing links.
+     *
+     * @param rootLink          the root logical link
+     * @param physicalStructMap the physical structure map
+     * @param logicalStructMap  the logical structure map
+     */
     protected void handlePhysicalStructMap(LogicalLink rootLink, PhysicalStructMap physicalStructMap,
         LogicalStructMap logicalStructMap) {
         Set<PhysicalSubDiv> linkedPhysicalDivs = rootLink.getAllPhysicalDivs();
@@ -222,12 +252,24 @@ public abstract class StructLinkGenerator {
         }
     }
 
+    /**
+     * Builds a new StructLink from the given root logical link.
+     *
+     * @param rootLink the root logical link to build from
+     * @return the resulting StructLink
+     */
     protected StructLink buildStructLink(LogicalLink rootLink) {
         StructLink structLink = new StructLink();
         buildStructLink(rootLink, structLink);
         return structLink;
     }
 
+    /**
+     * Recursively populates the given StructLink with smLink elements from the logical link tree.
+     *
+     * @param link        the current logical link to process
+     * @param structLink  the StructLink to add smLink elements to
+     */
     protected void buildStructLink(LogicalLink link, StructLink structLink) {
         // add own physical divs
         for (PhysicalSubDiv physicalDiv : link.getPhysicalDivs()) {
@@ -239,12 +281,25 @@ public abstract class StructLinkGenerator {
         }
     }
 
+    /**
+     * Adds a physical sub-div to the given logical link and re-sorts the physical div list.
+     *
+     * @param link         the logical link to update
+     * @param physicalDiv  the physical sub-div to add
+     * @param divContainer the physical div container used for sort order
+     */
     protected static void addPhysicalDivToLink(LogicalLink link, PhysicalSubDiv physicalDiv, PhysicalDiv divContainer) {
         List<PhysicalSubDiv> physicalDivs = link.getPhysicalDivs();
         physicalDivs.add(physicalDiv);
         sortPhysicalDivs(divContainer, physicalDivs);
     }
 
+    /**
+     * Sorts the given list of physical sub-divs by their order attribute or container index.
+     *
+     * @param divContainer  the physical div container providing the reference order
+     * @param physicalDivs  the list of physical sub-divs to sort in place
+     */
     protected static void sortPhysicalDivs(PhysicalDiv divContainer, List<PhysicalSubDiv> physicalDivs) {
         if (!physicalDivs.isEmpty()) {
             physicalDivs.sort((div1, div2) -> {
@@ -263,13 +318,15 @@ public abstract class StructLinkGenerator {
      */
     protected static class LogicalLink {
 
-        private LogicalDiv logicalDiv;
+        private final LogicalDiv logicalDiv;
 
-        private List<PhysicalSubDiv> physicalDivs;
+        private final List<PhysicalSubDiv> physicalDivs;
 
-        private List<LogicalLink> children;
+        private final List<LogicalLink> children;
 
-        private LogicalLink previous, next;
+        private final LogicalLink previous;
+
+        private LogicalLink next;
 
         LogicalLink(LogicalLink previous, LogicalDiv logicalDiv, List<PhysicalSubDiv> physicalSubDivs) {
             this.previous = previous;
@@ -281,18 +338,38 @@ public abstract class StructLinkGenerator {
             this.physicalDivs = physicalSubDivs;
         }
 
+        /**
+         * Returns the logical div associated with this link.
+         *
+         * @return the logical div
+         */
         public LogicalDiv getLogicalDiv() {
             return logicalDiv;
         }
 
+        /**
+         * Returns the list of physical sub-divs linked to this logical div.
+         *
+         * @return the list of physical sub-divs
+         */
         public List<PhysicalSubDiv> getPhysicalDivs() {
             return physicalDivs;
         }
 
+        /**
+         * Returns the child logical links.
+         *
+         * @return the list of child links
+         */
         public List<LogicalLink> getChildren() {
             return children;
         }
 
+        /**
+         * Adds a child logical link.
+         *
+         * @param link the child link to add
+         */
         public void add(LogicalLink link) {
             this.children.add(link);
         }
@@ -361,7 +438,7 @@ public abstract class StructLinkGenerator {
             while (previous != null) {
                 List<PhysicalSubDiv> physicalDivs = previous.getPhysicalDivs();
                 if (!physicalDivs.isEmpty()) {
-                    return Optional.of(physicalDivs.get(physicalDivs.size() - 1));
+                    return Optional.of(physicalDivs.getLast());
                 }
                 previous = previous.previous;
             }
@@ -378,7 +455,7 @@ public abstract class StructLinkGenerator {
             if (physicalDivs.isEmpty()) {
                 return findFirstPhysicalDivOfAncestors();
             }
-            return Optional.of(physicalDivs.get(0));
+            return Optional.of(physicalDivs.getFirst());
         }
 
         /**
@@ -409,12 +486,27 @@ public abstract class StructLinkGenerator {
             return allPhysicalDivs;
         }
 
+        /**
+         * Creates a root LogicalLink from the given logical structure map and linked map.
+         *
+         * @param logicalStructMap the logical structure map
+         * @param linkedMap        the map of logical divs to their physical sub-divs
+         * @return the root logical link
+         */
         public static LogicalLink of(LogicalStructMap logicalStructMap,
             Map<LogicalDiv, List<PhysicalSubDiv>> linkedMap) {
             LogicalDiv divContainer = logicalStructMap.getDivContainer();
             return of(null, divContainer, linkedMap);
         }
 
+        /**
+         * Creates a LogicalLink for the given div, recursively building child links.
+         *
+         * @param previous  the preceding logical link in traversal order, or null
+         * @param div       the logical div for this link
+         * @param linkedMap the map of logical divs to their physical sub-divs
+         * @return the created logical link
+         */
         public static LogicalLink of(LogicalLink previous, LogicalDiv div,
             Map<LogicalDiv, List<PhysicalSubDiv>> linkedMap) {
             List<PhysicalSubDiv> physicalSubDivs = linkedMap.get(div);

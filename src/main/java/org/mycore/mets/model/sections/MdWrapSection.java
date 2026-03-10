@@ -17,6 +17,11 @@ public abstract class MdWrapSection extends MdSection {
 
     private MdWrap mdWrap;
 
+    /**
+     * Creates a new MdWrapSection with the given identifier.
+     *
+     * @param id the section identifier
+     */
     public MdWrapSection(String id) {
         super(id);
     }
@@ -38,18 +43,38 @@ public abstract class MdWrapSection extends MdSection {
         return wrapSection;
     }
 
+    /**
+     * Returns the mdRef element of this section.
+     *
+     * @return the mdRef or null if not set
+     */
     public MdRef getMdRef() {
         return mdRef;
     }
 
+    /**
+     * Sets the mdRef element of this section.
+     *
+     * @param mdRef the mdRef to set
+     */
     public void setMdRef(MdRef mdRef) {
         this.mdRef = mdRef;
     }
 
+    /**
+     * Returns the mdWrap element of this section.
+     *
+     * @return the mdWrap or null if not set
+     */
     public MdWrap getMdWrap() {
         return mdWrap;
     }
 
+    /**
+     * Sets the mdWrap element of this section.
+     *
+     * @param mdWrap the mdWrap to set
+     */
     public void setMdWrap(MdWrap mdWrap) {
         this.mdWrap = mdWrap;
     }
@@ -65,13 +90,13 @@ public abstract class MdWrapSection extends MdSection {
      * @return {@link MDTYPE#OTHER} if no other matching MDTYPE could be found
      */
     public static MDTYPE findTypeByName(String name) {
-        Object o = MDTYPE.valueOf(name);
-        if (o instanceof MDTYPE) {
-            return (MDTYPE) o;
-        }
-
-        return MDTYPE.OTHER;
+        return MDTYPE.valueOf(name);
     }
 
+    /**
+     * Returns the XML element name for this metadata section.
+     *
+     * @return the XML element name
+     */
     public abstract String getXMLName();
 }

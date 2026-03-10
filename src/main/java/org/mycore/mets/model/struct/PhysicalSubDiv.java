@@ -8,20 +8,38 @@ import java.util.Vector;
 
 import org.jdom2.Element;
 
+/**
+ * Represents a child mets:div element within the physical structural map of a METS document.
+ */
 public class PhysicalSubDiv extends AbstractDiv<Fptr> {
 
+    /** Default type value for page divs. */
     public static final String TYPE_PAGE = "page";
 
+    /** Default id prefix for physical sub-div identifiers. */
     public static final String ID_PREFIX = "phys_";
 
     private PhysicalDiv parent;
 
-    private HashMap<String, Fptr> filePointers;
+    private final HashMap<String, Fptr> filePointers;
 
+    /**
+     * Creates a new PhysicalSubDiv with the given id and type.
+     *
+     * @param id   the identifier of this div
+     * @param type the type attribute value
+     */
     public PhysicalSubDiv(String id, String type) {
         this(id, type, null);
     }
 
+    /**
+     * Creates a new PhysicalSubDiv with the given id, type, and order label.
+     *
+     * @param id         the identifier of this div
+     * @param type       the type attribute value
+     * @param orderLabel the order label string
+     */
     public PhysicalSubDiv(String id, String type, String orderLabel) {
         this.id = id;
         this.type = type;
@@ -31,6 +49,14 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
         this.filePointers = new LinkedHashMap<>();
     }
 
+    /**
+     * Creates a new PhysicalSubDiv with the given id, type, order label, and content IDs.
+     *
+     * @param id         the identifier of this div
+     * @param type       the type attribute value
+     * @param orderLabel the order label string
+     * @param contentids the content IDs
+     */
     public PhysicalSubDiv(String id, String type, String orderLabel, String contentids) {
         this(id, type, orderLabel);
         this.contentIds = contentids;
@@ -38,7 +64,7 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
 
     /**
      * Adds a new file pointer.
-     * 
+     *
      * @param fprt
      *            the {@link Fptr} to add
      */
@@ -60,7 +86,7 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
 
     /**
      * Removes a {@link Fptr} by its file id.
-     * 
+     *
      * @param fileId file identifier to remove
      */
     public void remove(String fileId) {
@@ -78,7 +104,7 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
     /**
      * Returns the {@link Fptr} with the given id, or null if there is no such
      * Fprt.
-     * 
+     *
      * @param id
      *            the id of the {@link Fptr}
      * @return the {@link Fptr} with the given id
@@ -89,7 +115,7 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
 
     /**
      * Sets the parent for this div.
-     * 
+     *
      * @param parent the parent
      */
     public void setParent(PhysicalDiv parent) {
@@ -98,7 +124,7 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
 
     /**
      * Gets the parent of this div
-     * 
+     *
      * @return the parent div
      */
     public PhysicalDiv getParent() {
@@ -107,7 +133,7 @@ public class PhysicalSubDiv extends AbstractDiv<Fptr> {
 
     /**
      * Returns the index position of this div in its parent.
-     * 
+     *
      * @return the index position
      */
     public Optional<Integer> getPositionInParent() {

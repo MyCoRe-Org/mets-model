@@ -144,9 +144,13 @@ public class MetsHdr implements IMetsElement {
         setCreateDate(createDate.toString());
     }
 
+    /**
+     * Sets the creation date from an ISO 8601 date string.
+     *
+     * @param strCreateDate the creation date string
+     */
     public void setCreateDate(String strCreateDate) {
-        ISO8601DateTime parsed = new ISO8601DateTime(strCreateDate);
-        this.createDate = parsed;
+        this.createDate = new ISO8601DateTime(strCreateDate);
     }
 
     /**
@@ -167,9 +171,13 @@ public class MetsHdr implements IMetsElement {
         setLastModDate(lastModDate.toString());
     }
 
+    /**
+     * Sets the last modified date from an ISO 8601 date string.
+     *
+     * @param strLastModDate the last modified date string
+     */
     public void setLastModDate(String strLastModDate) {
-        ISO8601DateTime parsed = new ISO8601DateTime(strLastModDate);
-        this.lastModDate = parsed;
+        this.lastModDate = new ISO8601DateTime(strLastModDate);
     }
 
     /**
@@ -190,18 +198,38 @@ public class MetsHdr implements IMetsElement {
         this.recordStatus = recordStatus;
     }
 
+    /**
+     * Returns the list of agents associated with this METS header.
+     *
+     * @return the list of agents
+     */
     public List<Agent> getAgents() {
         return agents;
     }
 
+    /**
+     * Sets the list of agents associated with this METS header.
+     *
+     * @param agents the list of agents to set
+     */
     public void setAgents(List<Agent> agents) {
         this.agents = agents;
     }
 
+    /**
+     * Returns the list of alternative record identifiers.
+     *
+     * @return the list of alternative record IDs
+     */
     public List<AltRecordID> getAltRecordIds() {
         return altRecordIds;
     }
 
+    /**
+     * Sets the list of alternative record identifiers.
+     *
+     * @param altRecordIds the list of alternative record IDs to set
+     */
     public void setAltRecordIds(List<AltRecordID> altRecordIds) {
         this.altRecordIds = altRecordIds;
     }

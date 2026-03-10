@@ -20,11 +20,15 @@ package org.mycore.mets.model.sections;
 
 
 /**
+ * Represents the mets:dmdSec (descriptive metadata section) of a METS document.
+ *
  * @author Silvio Hermann (shermann)
  */
 public class DmdSec extends MdWrapSection {
 
     /**
+     * Creates a new DmdSec with the given identifier.
+     *
      * @param id
      *            the ID of the section
      */

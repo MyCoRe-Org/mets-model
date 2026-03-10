@@ -24,6 +24,12 @@ import org.mycore.mets.model.struct.Seq;
  */
 public class AreaStructLinkGenerator extends StructLinkGenerator {
 
+    /**
+     * Creates a new AreaStructLinkGenerator instance.
+     */
+    public AreaStructLinkGenerator() {
+    }
+
     @Override
     protected Map<LogicalDiv, List<PhysicalSubDiv>> getLinkedMap(PhysicalStructMap physicalStructMap,
         LogicalStructMap logicalStructMap) {
@@ -35,6 +41,13 @@ public class AreaStructLinkGenerator extends StructLinkGenerator {
         return linkedMap;
     }
 
+    /**
+     * Resolves the physical sub-divs linked to the given logical div via area elements and adds them to the map.
+     *
+     * @param logicalDiv         the logical div to process
+     * @param physicalStructMap  the physical structure map to look up physical divs
+     * @param linkedMap          the map to add the resolved link entry to
+     */
     protected void addLink(LogicalDiv logicalDiv, PhysicalStructMap physicalStructMap,
         Map<LogicalDiv, List<PhysicalSubDiv>> linkedMap) {
         Set<String> fileIds = getFileIdsFromArea(logicalDiv);

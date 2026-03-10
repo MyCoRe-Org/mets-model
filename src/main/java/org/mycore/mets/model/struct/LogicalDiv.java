@@ -10,19 +10,27 @@ import java.util.Vector;
 import org.jdom2.Element;
 
 /**
+ * Represents a mets:div element within the logical structure map of a METS document.
+ *
  * @author Matthias Eichner
  */
 public class LogicalDiv extends AbstractDiv<LogicalDiv> {
 
+    /** Map of child logical divs keyed by their identifier. */
     protected HashMap<String, LogicalDiv> subDivContainer;
 
+    /** List of file pointers belonging to this logical div. */
     protected List<Fptr> fptrList;
 
+    /** The parent logical div, or null if this is the root div. */
     private LogicalDiv parent;
 
+    /** Optional METS pointer referencing an external METS document. */
     private Mptr mptr;
 
     /**
+     * Creates a new LogicalDiv with the given identifier, type, and label.
+     *
      * @param id
      *            the id of the div
      * @param type
@@ -39,6 +47,15 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
         this.setOrder(null);
     }
 
+    /**
+     * Creates a new LogicalDiv with the given identifier, type, label, administrative id, and descriptive metadata id.
+     *
+     * @param id     the id of the div
+     * @param type   the type attribute
+     * @param label  the label of the div
+     * @param admId  the administrative metadata identifier
+     * @param dmdId  the descriptive metadata identifier
+     */
     public LogicalDiv(String id, String type, String label, String admId, String dmdId) {
         this(id, type, label);
         this.setAdmId(admId);
@@ -92,10 +109,20 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
         subDivContainer.remove(identifier);
     }
 
+    /**
+     * Returns a list of the direct children of this logical div.
+     *
+     * @return list of direct child logical divs
+     */
     public List<LogicalDiv> getChildren() {
         return new Vector<>(subDivContainer.values());
     }
 
+    /**
+     * Sets the parent logical div of this element.
+     *
+     * @param parentToSet the parent div to set
+     */
     protected void setParent(LogicalDiv parentToSet) {
         this.parent = parentToSet;
     }
@@ -113,6 +140,8 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
     }
 
     /**
+     * Returns the parent logical div of this element.
+     *
      * @return the parent of this div
      */
     public LogicalDiv getParent() {
@@ -180,10 +209,20 @@ public class LogicalDiv extends AbstractDiv<LogicalDiv> {
         return this.id;
     }
 
+    /**
+     * Sets the METS pointer for this logical div.
+     *
+     * @param mptr the mptr to set
+     */
     public void setMptr(Mptr mptr) {
         this.mptr = mptr;
     }
 
+    /**
+     * Returns the METS pointer of this logical div.
+     *
+     * @return the mptr or null
+     */
     public Mptr getMptr() {
         return this.mptr;
     }

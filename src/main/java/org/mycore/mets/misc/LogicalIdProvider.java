@@ -19,17 +19,21 @@
 package org.mycore.mets.misc;
 
 /**
+ * Provides sequentially numbered logical identifiers with a configurable prefix and digit count.
+ *
  * @author Silvio Hermann (shermann)
  */
 public class LogicalIdProvider {
 
-    private String prefix;
+    private final String prefix;
 
     private int counter;
 
-    private int digits;
+    private final int digits;
 
     /**
+     * Creates a new LogicalIdProvider with the given prefix and digit count.
+     *
      * @param idPrefix
      *            the prefix of the generated identifiers
      * @param digits
@@ -42,6 +46,8 @@ public class LogicalIdProvider {
     }
 
     /**
+     * Returns the prefix used for generated logical identifiers.
+     *
      * @return the prefix to be used for the generated logical identifiers
      */
     public String getPrefix() {
@@ -49,6 +55,8 @@ public class LogicalIdProvider {
     }
 
     /**
+     * Returns the next sequentially generated identifier.
+     *
      * @return the next identifier
      */
     public String getNextId() {

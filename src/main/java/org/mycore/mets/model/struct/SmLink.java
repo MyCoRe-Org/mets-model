@@ -22,35 +22,66 @@ import org.jdom2.Element;
 import org.mycore.mets.model.IMetsElement;
 
 /**
+ * Represents a mets:smLink element that connects a logical div to a physical div in the struct link section.
+ *
  * @author Silvio Hermann (shermann)
  */
 public class SmLink implements IMetsElement {
 
+    /** XML element name for smLink elements. */
     public static final String XML_NAME = "smLink";
 
+    /** XML attribute name for the xlink:from attribute. */
     public static final String XML_FROM = "from";
 
+    /** XML attribute name for the xlink:to attribute. */
     public static final String XML_TO = "to";
 
     private String from, to;
 
+    /**
+     * Creates a new SmLink connecting the given from and to identifiers.
+     *
+     * @param from the xlink:from attribute value (logical div id)
+     * @param to   the xlink:to attribute value (physical div id)
+     */
     public SmLink(String from, String to) {
         this.from = from;
         this.to = to;
     }
 
+    /**
+     * Returns the xlink:from attribute value.
+     *
+     * @return the from identifier
+     */
     public String getFrom() {
         return from;
     }
 
+    /**
+     * Returns the xlink:to attribute value.
+     *
+     * @return the to identifier
+     */
     public String getTo() {
         return to;
     }
 
+    /**
+     * Sets the xlink:from attribute value.
+     *
+     * @param from the from identifier to set
+     */
     public void setFrom(String from) {
         this.from = from;
     }
 
+    /**
+     * Sets the xlink:to attribute value.
+     *
+     * @param to the to identifier to set
+     */
     public void setTo(String to) {
         this.to = to;
     }

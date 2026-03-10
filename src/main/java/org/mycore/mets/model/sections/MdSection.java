@@ -26,11 +26,16 @@ import org.mycore.mets.model.IMetsElement;
  * @author Silvio Hermann (shermann)
  */
 public abstract class MdSection implements IMetsElement {
-    /***/
+    /** The identifier of this metadata section. */
     private String id;
 
+    /**
+     * Creates a new MdSection with the given identifier.
+     *
+     * @param id the section identifier, must not be null or empty
+     */
     public MdSection(String id) {
-        if (id == null || id.length() == 0) {
+        if (id == null || id.isEmpty()) {
             throw new IllegalArgumentException("The id of the " + this.getClass().getSimpleName()
                     + " must not be null.");
         }
@@ -38,6 +43,8 @@ public abstract class MdSection implements IMetsElement {
     }
 
     /**
+     * Returns the section identifier.
+     *
      * @return the id
      */
     public String getId() {
@@ -45,6 +52,8 @@ public abstract class MdSection implements IMetsElement {
     }
 
     /**
+     * Sets the section identifier.
+     *
      * @param id
      *            the id to set
      */

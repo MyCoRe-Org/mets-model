@@ -33,10 +33,11 @@ import org.mycore.mets.model.IMetsElement;
  * @author Silvio Hermann (shermann)
  */
 public class FileSec implements IMetsElement {
-    private HashMap<String, FileGrp> fGroups;
+
+    private final HashMap<String, FileGrp> fGroups;
 
     /**
-     * 
+     * Creates a new empty FileSec.
      */
     public FileSec() {
         fGroups = new LinkedHashMap<String, FileGrp>();
@@ -78,13 +79,15 @@ public class FileSec implements IMetsElement {
      * @return true if the file group was removed successfully
      */
     public boolean removeFileGrpByUse(String use) {
-        if (use == null || use.length() == 0) {
+        if (use == null || use.isEmpty()) {
             return false;
         }
         return this.fGroups.remove(use) != null;
     }
 
     /**
+     * Returns all file groups owned by this file section.
+     *
      * @return all {@link FileGrp} owned by this file section
      */
     public List<FileGrp> getFileGroups() {
@@ -92,6 +95,8 @@ public class FileSec implements IMetsElement {
     }
 
     /**
+     * Returns the file group with the given USE attribute value.
+     *
      * @param use
      *            one of {@link FileGrp#USE_DEFAULT}, {@link FileGrp#USE_MAX},
      *            {@link FileGrp#USE_MIN}, {@link FileGrp#USE_DEFAULT}
@@ -117,9 +122,8 @@ public class FileSec implements IMetsElement {
      */
     public Element asElement() {
         Element fSec = new Element("fileSec", IMetsElement.METS);
-        Iterator<FileGrp> iterator = this.fGroups.values().iterator();
-        while (iterator.hasNext()) {
-            fSec.addContent(iterator.next().asElement());
+        for (FileGrp fileGrp : this.fGroups.values()) {
+            fSec.addContent(fileGrp.asElement());
         }
         return fSec;
     }

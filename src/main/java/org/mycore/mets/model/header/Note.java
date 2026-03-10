@@ -10,7 +10,6 @@ import org.mycore.mets.model.IMetsElement;
  * 
  * @see <a href=
  *      "http://www.loc.gov/standards/mets/docs/mets.v1-8.html#note">metsHdr</a>
- * 
  * element can be used to
  * @author Uwe Hartwig (M3ssman)
  *
@@ -19,17 +18,35 @@ public class Note implements IMetsElement {
 
     private String text;
 
+    /**
+     * Creates a new Note with no text set.
+     */
     public Note() {
     }
 
+    /**
+     * Creates a new Note with the given text value.
+     *
+     * @param text the note text
+     */
     public Note(String text) {
         this.text = text;
     }
 
+    /**
+     * Returns the text content of this note element.
+     *
+     * @return the text
+     */
     public String getText() {
         return text;
     }
 
+    /**
+     * Sets the text content of this note element.
+     *
+     * @param text the text to set
+     */
     public void setText(String text) {
         this.text = text;
     }

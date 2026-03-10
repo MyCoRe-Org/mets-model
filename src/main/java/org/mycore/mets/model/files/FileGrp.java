@@ -48,9 +48,13 @@ public class FileGrp implements IMetsElement {
 
     private String use;
 
-    private HashMap<String, File> fMap, hrefMap;
+    private final HashMap<String, File> fMap;
+
+    private final HashMap<String, File> hrefMap;
 
     /**
+     * Creates a new FileGrp with the given USE attribute value.
+     *
      * @param use
      *            the use attribute of the file group
      */
@@ -61,6 +65,8 @@ public class FileGrp implements IMetsElement {
     }
 
     /**
+     * Returns the USE attribute value of this file group.
+     *
      * @return the use
      */
     public String getUse() {
@@ -68,6 +74,8 @@ public class FileGrp implements IMetsElement {
     }
 
     /**
+     * Sets the USE attribute value of this file group.
+     *
      * @param use
      *            the use to set
      */
@@ -84,7 +92,7 @@ public class FileGrp implements IMetsElement {
      *             when the id of the file is null
      */
     public void addFile(File f) {
-        if (f == null || f.getId() == null || f.getId().length() == 0) {
+        if (f == null || f.getId() == null || f.getId().isEmpty()) {
             throw new IllegalArgumentException("ID must not be null");
         }
         fMap.put(f.getId(), f);
@@ -135,7 +143,7 @@ public class FileGrp implements IMetsElement {
      * @return the {@link File} with the given id or null
      */
     public File getFileById(String identifier) {
-        if (identifier == null || identifier.length() == 0) {
+        if (identifier == null || identifier.isEmpty()) {
             return null;
         }
 
@@ -161,14 +169,21 @@ public class FileGrp implements IMetsElement {
     }
 
     /**
+     * Returns whether the file with the given href is contained in this file group.
+     *
      * @param href the href attribute value of the {@link FLocat}
-     * 
      * @return true if the file is contained by this file group, false otherwise
      */
     public boolean contains(String href) {
         return hrefMap.containsKey(href);
     }
 
+    /**
+     * Returns whether the given file is contained in this file group.
+     *
+     * @param file the file to check
+     * @return true if the file is contained in this file group, false otherwise
+     */
     public boolean contains(File file) {
         return fMap.containsKey(file.getId());
     }
@@ -177,9 +192,8 @@ public class FileGrp implements IMetsElement {
     public Element asElement() {
         Element fileGrp = new Element("fileGrp", IMetsElement.METS);
         fileGrp.setAttribute("USE", this.getUse());
-        Iterator<File> iterator = this.fMap.values().iterator();
-        while (iterator.hasNext()) {
-            fileGrp.addContent(iterator.next().asElement());
+        for (File file : this.fMap.values()) {
+            fileGrp.addContent(file.asElement());
         }
         return fileGrp;
     }

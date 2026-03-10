@@ -24,6 +24,12 @@ public class MdWrap implements IMetsElement {
 
     private String othermdtype;
 
+    /**
+     * Creates a new MdWrap for XML metadata with the given metadata type and element.
+     *
+     * @param mdtype   the metadata type
+     * @param metadata the XML metadata element to wrap
+     */
     public MdWrap(MDTYPE mdtype, Element metadata) {
         this.mdtype = mdtype;
         this.mimetype = MIMETYPE_XML;
@@ -71,34 +77,74 @@ public class MdWrap implements IMetsElement {
         return mdwrap;
     }
 
+    /**
+     * Returns the metadata type.
+     *
+     * @return the mdtype
+     */
     public MDTYPE getMdtype() {
         return mdtype;
     }
 
+    /**
+     * Sets the metadata type.
+     *
+     * @param mdtype the mdtype to set
+     */
     public void setMdtype(MDTYPE mdtype) {
         this.mdtype = mdtype;
     }
 
+    /**
+     * Returns the MIME type of the wrapped metadata.
+     *
+     * @return the mimetype
+     */
     public String getMimetype() {
         return mimetype;
     }
 
+    /**
+     * Sets the MIME type of the wrapped metadata.
+     *
+     * @param mimetype the mimetype to set
+     */
     public void setMimetype(String mimetype) {
         this.mimetype = mimetype;
     }
 
+    /**
+     * Returns the label attribute value.
+     *
+     * @return the label
+     */
     public String getLabel() {
         return label;
     }
 
+    /**
+     * Sets the label attribute value.
+     *
+     * @param label the label to set
+     */
     public void setLabel(String label) {
         this.label = label;
     }
 
+    /**
+     * Returns the OTHERMDTYPE attribute value.
+     *
+     * @return the othermdtype
+     */
     public String getOthermdtype() {
         return othermdtype;
     }
 
+    /**
+     * Returns the wrapped XML metadata element.
+     *
+     * @return the metadata element
+     */
     public Element getMetadata() {
         return metadata;
     }
@@ -111,7 +157,7 @@ public class MdWrap implements IMetsElement {
      *            the OTHERMDTYPE attribute to set
      */
     public void setOtherMdType(String otherMdType) {
-        if (otherMdType != null && otherMdType.length() > 0) {
+        if (otherMdType != null && !otherMdType.isEmpty()) {
             this.othermdtype = otherMdType;
             this.mdtype = MDTYPE.OTHER;
         }

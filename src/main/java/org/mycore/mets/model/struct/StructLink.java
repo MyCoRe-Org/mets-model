@@ -34,7 +34,7 @@ import org.mycore.mets.model.IMetsElement;
  */
 public class StructLink implements IMetsElement {
 
-    private HashMap<String, SmLink> links;
+    private final HashMap<String, SmLink> links;
 
     /**
      * Creates a new StructLink section.
@@ -52,7 +52,7 @@ public class StructLink implements IMetsElement {
         String from = smLink.getFrom();
         String to = smLink.getTo();
 
-        if (from == null || from.length() == 0 || to == null || to.length() == 0) {
+        if (from == null || from.isEmpty() || to == null || to.isEmpty()) {
             return;
         }
 
@@ -78,7 +78,7 @@ public class StructLink implements IMetsElement {
      *            the to attribute of the smlink (not null)
      */
     public void removeSmLink(String from, String to) {
-        if (from == null || from.length() == 0 || to == null || to.length() == 0) {
+        if (from == null || from.isEmpty() || to == null || to.isEmpty()) {
             return;
         }
         this.links.remove(getKey(from, to));
@@ -98,13 +98,15 @@ public class StructLink implements IMetsElement {
     }
 
     /**
+     * Returns all SmLinks where the from attribute matches the given value.
+     *
      * @param from from attribute
      * @return all {@link SmLink} where the from attribute matches the value of
      *         the parameter
      */
     public List<SmLink> getSmLinkByFrom(String from) {
         Vector<SmLink> result = new Vector<>();
-        if (from == null || from.length() == 0) {
+        if (from == null || from.isEmpty()) {
             return result;
         }
 
@@ -118,13 +120,15 @@ public class StructLink implements IMetsElement {
     }
 
     /**
+     * Returns all SmLinks where the to attribute matches the given value.
+     *
      * @param to to attribute
      * @return all {@link SmLink} where the to attribute matches the value of
      *         the parameter
      */
     public List<SmLink> getSmLinkByTo(String to) {
         Vector<SmLink> result = new Vector<>();
-        if (to == null || to.length() == 0) {
+        if (to == null || to.isEmpty()) {
             return result;
         }
 
@@ -138,6 +142,8 @@ public class StructLink implements IMetsElement {
     }
 
     /**
+     * Returns all SmLinks contained in this StructLink as a list.
+     *
      * @return all {@link SmLink} within this {@link StructLink} as a
      *         {@link List}
      */
