@@ -10,7 +10,7 @@
   <artifactId>mets-model</artifactId>
   <version>2.1-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <name>Mets Model</name>
+  <name>METS Model</name>
   <issueManagement>
     <system>GitHub</system>
     <url>https://github.com/MyCoRe-Org/mets-model/issues</url>
