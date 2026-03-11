@@ -211,45 +211,72 @@ public abstract class StructLinkGenerator {
     }
 
     /**
-     * Tries to assign each missing physical div to a logical div.
+     * Tries to interpolate missing physical divs by assigning each of them to the logical div that
+     * most recently owns the preceding physical div.
+     * <p>
+     * The physical divs are processed in physical order. For each missing physical div, the
+     * preceding physical div is determined from the physical struct map. The missing physical div is
+     * then attached to the last logical link that still contains this preceding physical div. This
+     * causes gaps between explicitly linked physical divs to be filled with the logical section that
+     * is currently active at that position.
+     * <p>
+     * If the first physical div is missing, it is linked to the root logical link.
      *
-     * @param missingPhysicalDivs ordered missing physical div list
-     * @param rootLink the root link
+     * @param missingPhysicalDivs ordered list of physical divs that are currently not linked
+     * @param rootLink the root logical link
      * @param physicalStructMap the physical struct map
      * @param logicalStructMap the logical struct map
      */
     protected void interpolatePhysicalDivs(List<PhysicalSubDiv> missingPhysicalDivs, LogicalLink rootLink,
         PhysicalStructMap physicalStructMap, LogicalStructMap logicalStructMap) {
-        LogicalLink link = rootLink;
-        Optional<LogicalLink> nextLink = rootLink.next();
         PhysicalDiv divContainer = physicalStructMap.getDivContainer();
         List<PhysicalSubDiv> physicalDivs = divContainer.getChildren();
-
         for (PhysicalSubDiv missingPhysicalDiv : missingPhysicalDivs) {
-            // get preceding sibling of the missing physical div
             int index = physicalDivs.indexOf(missingPhysicalDiv);
-            // the first physical image is not linked -> add to root link
             if (index == 0) {
                 addPhysicalDivToLink(rootLink, missingPhysicalDiv, divContainer);
                 continue;
             }
-            // the preceding physical div should always be linked, cause the list is handled in order
             PhysicalSubDiv precedingPhysicalDiv = physicalDivs.get(index - 1);
-            // get the last link where the preceding physical div is present
-            boolean found = link.getPhysicalDivs().contains(precedingPhysicalDiv);
-            while (nextLink.isPresent()) {
-                LogicalLink nextLinkInstance = nextLink.get();
-                if (nextLinkInstance.getPhysicalDivs().contains(precedingPhysicalDiv)) {
-                    found = true;
-                } else if (found) {
-                    break;
-                }
-                link = nextLinkInstance;
-                nextLink = nextLinkInstance.next();
-            }
-            // add missing physical div to last available link where the preceding physical div is present
-            addPhysicalDivToLink(link, missingPhysicalDiv, divContainer);
+            LogicalLink lastMatch = getLogicalLink(rootLink, missingPhysicalDiv, precedingPhysicalDiv);
+            addPhysicalDivToLink(lastMatch, missingPhysicalDiv, divContainer);
         }
+    }
+
+    /**
+     * Finds the logical link to which a missing physical div should be assigned.
+     * <p>
+     * The returned logical link is the last logical link in traversal order that still contains
+     * the preceding physical div. This represents the logical section that is active directly before
+     * the missing physical div and is therefore the best interpolation target.
+     *
+     * @param rootLink the root logical link used as traversal start
+     * @param missingPhysicalDiv the physical div that should be interpolated
+     * @param precedingPhysicalDiv the physical div directly preceding the missing physical div
+     * @return the logical link the missing physical div should be attached to
+     * @throws StructLinkGenerationException if the preceding physical div is not linked to any logical div
+     */
+    protected LogicalLink getLogicalLink(LogicalLink rootLink, PhysicalSubDiv missingPhysicalDiv,
+        PhysicalSubDiv precedingPhysicalDiv) {
+        LogicalLink lastMatch = null;
+        LogicalLink current = rootLink;
+
+        while (current != null) {
+            if (current.getPhysicalDivs().contains(precedingPhysicalDiv)) {
+                lastMatch = current;
+            } else if (lastMatch != null) {
+                break;
+            }
+            current = current.next().orElse(null);
+        }
+
+        if (lastMatch == null) {
+            throw new StructLinkGenerationException(
+                "Could not interpolate physical div " + missingPhysicalDiv.getId()
+                    + " because preceding physical div " + precedingPhysicalDiv.getId()
+                    + " is not linked to any logical div.");
+        }
+        return lastMatch;
     }
 
     /**

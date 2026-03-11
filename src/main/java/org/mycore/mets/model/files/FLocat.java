@@ -84,6 +84,7 @@ public class FLocat implements IMetsElement {
      *            the loctype to set
      * @deprecated use {@link FLocat#setType(LOCTYPE)}
      */
+    @Deprecated
     public void setType(String loctype) {
         this.type = LOCTYPE.valueOf(loctype);
     }
