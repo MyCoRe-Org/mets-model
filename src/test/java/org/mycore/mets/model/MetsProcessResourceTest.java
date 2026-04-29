@@ -2,17 +2,16 @@ package org.mycore.mets.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.List;
 
 import org.jdom2.Document;
@@ -86,6 +85,23 @@ public class MetsProcessResourceTest {
     @Test
     public void testOriginalMetsHdrPresent() {
         assertNotNull(mets.getMetsHdr());
+    }
+
+    @Test
+    public void testMetsWithoutHeaderIsParsed() throws Exception {
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+            + "<mets:mets xmlns:mets=\"http://www.loc.gov/METS/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+            + "xsi:schemaLocation=\"http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd\">"
+            + "<mets:structMap TYPE=\"LOGICAL\"><mets:div ID=\"log_1\" TYPE=\"Monograph\"/></mets:structMap>"
+            + "<mets:structMap TYPE=\"PHYSICAL\"><mets:div ID=\"phys_1\" TYPE=\"physSequence\"/></mets:structMap>"
+            + "</mets:mets>";
+
+        SAXBuilder builder = new SAXBuilder();
+        Document document = builder.build(new StringReader(xml));
+
+        Mets mets = new Mets(document);
+
+        assertNull(mets.getMetsHdr());
     }
 
     @Test

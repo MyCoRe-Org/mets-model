@@ -162,7 +162,10 @@ public class Mets {
      */
     public static MetsHdr createMetsHdr(Document source) {
         XPathExpression<Element> metsHdrXP = getXpathExpression("mets:mets/mets:metsHdr");
-        Element metsHdrElement = metsHdrXP.evaluate(source).getFirst();
+        Element metsHdrElement = metsHdrXP.evaluateFirst(source);
+        if (metsHdrElement == null) {
+            return null;
+        }
         MetsHdr metsHdr = new MetsHdr();
 
         String strCreateDate = metsHdrElement.getAttributeValue("CREATEDATE");
